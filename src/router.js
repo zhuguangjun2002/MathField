@@ -32,6 +32,12 @@ const routes = [
   { path: '/mathphys/heat', component: () => import('./views/mathphys/HeatView.vue') },
   { path: '/mathphys/laplace', component: () => import('./views/mathphys/LaplaceView.vue') },
   { path: '/mathphys/separation', component: () => import('./views/mathphys/SeparationView.vue') },
+  { path: '/numerical', component: () => import('./views/CourseView.vue') },
+  { path: '/numerical/float-error', component: () => import('./views/numerical/FloatErrorView.vue') },
+  { path: '/numerical/root-finding', component: () => import('./views/numerical/RootFindingView.vue') },
+  { path: '/numerical/interpolation', component: () => import('./views/numerical/InterpolationView.vue') },
+  { path: '/numerical/quadrature', component: () => import('./views/numerical/QuadratureView.vue') },
+  { path: '/numerical/linear-system', component: () => import('./views/numerical/LinearSystemView.vue') },
 ]
 
 const router = createRouter({
