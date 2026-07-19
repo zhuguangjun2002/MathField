@@ -1,0 +1,9 @@
+{
+  // Cloudflare Pages 配置（静态站点，无 Pages Functions）
+  // 文档：https://developers.cloudflare.com/pages/functions/wrangler-configuration/
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "mathfield",
+  "compatibility_date": "2026-07-19",
+  // Vite 构建产物目录：`npm run build` 输出到 dist
+  "pages_build_output_dir": "./dist"
+}

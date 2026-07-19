@@ -1,0 +1,10 @@
+# Cloudflare Pages 响应头规则（Vite 会把 public/ 下文件原样拷到 dist 根，
+# Pages 从产物根目录读取此文件）。文档：https://developers.cloudflare.com/pages/configuration/headers/
+
+# Vite 产出的资源文件名都带内容哈希，可安全地永久强缓存
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# HTML 入口不做长缓存，保证每次都能拿到最新的资源引用
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate

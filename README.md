@@ -13,6 +13,32 @@ npm run build   # 构建到 dist/
 npm run preview # 预览构建产物
 ```
 
+## 部署（Cloudflare Pages）
+
+本站是纯静态 SPA + hash 路由，天然适合 Cloudflare Pages：路由都在 `#` 之后，
+服务器只需返回 `/index.html`，**无需 SPA 回退规则**；Pages 在 `*.pages.dev` 根路径提供服务，
+Vite 的 `base` 保持默认 `/` 即可。配置见 `wrangler.jsonc`（项目名 `mathfield`，产物目录 `dist`）。
+
+**方式一：Git 集成（推荐，推送即自动部署）**
+在 Cloudflare 控制台 → Workers & Pages → Create → Pages → 连接 GitHub 仓库 `MathField`，构建设置：
+
+| 项 | 值 |
+|---|---|
+| Framework preset | Vue（或 None） |
+| Build command | `npm run build` |
+| Build output directory | `dist` |
+| Node 版本 | 由 `.node-version`（22）指定 |
+
+之后每次 `git push` 到 `master` 都会自动构建并上线。
+
+**方式二：Wrangler CLI 手动部署**
+```bash
+npx wrangler login       # 首次，浏览器授权
+npm run deploy           # = vite build && wrangler pages deploy（读取 wrangler.jsonc）
+```
+
+`public/_headers` 已为带内容哈希的 `/assets/*` 设置长期强缓存、为 `index.html` 关闭长缓存。
+
 ## 技术栈
 
 - Vue 3 + Vite + vue-router（hash 路由）
