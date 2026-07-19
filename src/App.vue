@@ -1,6 +1,8 @@
 <script setup>
 import { useRoute } from 'vue-router'
+import { courses } from './data/courses.js'
 const route = useRoute()
+const openCourses = courses.filter((c) => c.available)
 </script>
 
 <template>
@@ -12,7 +14,12 @@ const route = useRoute()
       </router-link>
       <nav class="site-nav">
         <router-link to="/" :class="{ active: route.path === '/' }">首页</router-link>
-        <router-link to="/calculus" :class="{ active: route.path.startsWith('/calculus') }">微积分</router-link>
+        <router-link
+          v-for="c in openCourses"
+          :key="c.slug"
+          :to="c.path"
+          :class="{ active: route.path.startsWith(c.path) }"
+        >{{ c.title }}</router-link>
       </nav>
     </header>
     <main class="site-main">

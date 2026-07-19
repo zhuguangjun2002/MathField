@@ -8,6 +8,12 @@ const routes = [
   { path: '/calculus/integral', component: () => import('./views/concepts/IntegralView.vue') },
   { path: '/calculus/ftc', component: () => import('./views/concepts/FTCView.vue') },
   { path: '/calculus/taylor', component: () => import('./views/concepts/TaylorView.vue') },
+  { path: '/linear-algebra', component: () => import('./views/CourseView.vue') },
+  { path: '/linear-algebra/elimination', component: () => import('./views/linear-algebra/EliminationView.vue') },
+  { path: '/linear-algebra/determinant', component: () => import('./views/linear-algebra/DeterminantView.vue') },
+  { path: '/linear-algebra/linear-map', component: () => import('./views/linear-algebra/LinearMapView.vue') },
+  { path: '/linear-algebra/vector-space', component: () => import('./views/linear-algebra/VectorSpaceView.vue') },
+  { path: '/linear-algebra/eigen', component: () => import('./views/linear-algebra/EigenView.vue') },
 ]
 
 const router = createRouter({

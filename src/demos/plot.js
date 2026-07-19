@@ -56,7 +56,43 @@ export function makeView(w, h, x0, x1, y0, y1, pad = {}) {
   const X = (x) => p.l + ((x - x0) / (x1 - x0)) * iw
   const Y = (y) => p.t + ih - ((y - y0) / (y1 - y0)) * ih
   const invX = (px) => x0 + ((px - p.l) / iw) * (x1 - x0)
-  return { X, Y, invX, x0, x1, y0, y1, pad: p, iw, ih, w, h }
+  const invY = (py) => y0 + ((p.t + ih - py) / ih) * (y1 - y0)
+  return { X, Y, invX, invY, x0, x1, y0, y1, pad: p, iw, ih, w, h }
+}
+
+/** 等比例视图：x、y 单位长度在屏幕上相等（几何/变换类动画必用，否则旋转会变形） */
+export function makeSquareView(w, h, halfY = 2.5, { cy = 0, pad } = {}) {
+  const p = { l: 12, r: 12, t: 12, b: 12, ...pad }
+  const iw = w - p.l - p.r
+  const ih = h - p.t - p.b
+  const halfX = halfY * (iw / ih)
+  return makeView(w, h, -halfX, halfX, cy - halfY, cy + halfY, p)
+}
+
+/** 从数学坐标 (x0,y0) 指向 (x1,y1) 的箭头 */
+export function drawArrow(ctx, v, x0, y0, x1, y1, { color = C.accent, width = 2.4, head = 9 } = {}) {
+  const px0 = v.X(x0)
+  const py0 = v.Y(y0)
+  const px1 = v.X(x1)
+  const py1 = v.Y(y1)
+  const ang = Math.atan2(py1 - py0, px1 - px0)
+  const len = Math.hypot(px1 - px0, py1 - py0)
+  if (len < 1) return
+  ctx.save()
+  ctx.strokeStyle = color
+  ctx.fillStyle = color
+  ctx.lineWidth = width
+  ctx.beginPath()
+  ctx.moveTo(px0, py0)
+  ctx.lineTo(px1 - head * 0.6 * Math.cos(ang), py1 - head * 0.6 * Math.sin(ang))
+  ctx.stroke()
+  ctx.beginPath()
+  ctx.moveTo(px1, py1)
+  ctx.lineTo(px1 - head * Math.cos(ang - 0.42), py1 - head * Math.sin(ang - 0.42))
+  ctx.lineTo(px1 - head * Math.cos(ang + 0.42), py1 - head * Math.sin(ang + 0.42))
+  ctx.closePath()
+  ctx.fill()
+  ctx.restore()
 }
 
 export function drawAxes(ctx, v, { xTicks = [], yTicks = [], xLabel = '', yLabel = '' } = {}) {
