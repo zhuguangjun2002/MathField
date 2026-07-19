@@ -65,8 +65,8 @@ usePlot(
     drawPoint(ctx, v, b, s(b), { color: C.accent, hollow: true })
     drawLabel(ctx, v.X(a) - 8, v.Y(s(a)) - 10, `t₀=${fmt(a)}`, { color: C.accent, align: 'right' })
 
-    drawLabel(ctx, v.pad.l + 10, v.pad.t + 18, '— 割线（平均速度）', { color: C.accent })
-    drawLabel(ctx, v.pad.l + 10, v.pad.t + 38, '- - 切线（瞬时速度）', { color: C.indigo })
+    drawLabel(ctx, v.pad.l + 10, v.pad.t + 40, '— 割线（平均速度）', { color: C.accent })
+    drawLabel(ctx, v.pad.l + 10, v.pad.t + 60, '- - 切线（瞬时速度）', { color: C.indigo })
   },
   { height: 380, watchSources: [t0, logH] },
 )
