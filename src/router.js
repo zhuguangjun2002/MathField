@@ -26,6 +26,12 @@ const routes = [
   { path: '/complex/cauchy-integral', component: () => import('./views/complex/CauchyIntegralView.vue') },
   { path: '/complex/residue', component: () => import('./views/complex/ResidueView.vue') },
   { path: '/complex/continuation', component: () => import('./views/complex/ContinuationView.vue') },
+  { path: '/mathphys', component: () => import('./views/CourseView.vue') },
+  { path: '/mathphys/pde-intro', component: () => import('./views/mathphys/PdeIntroView.vue') },
+  { path: '/mathphys/wave', component: () => import('./views/mathphys/WaveView.vue') },
+  { path: '/mathphys/heat', component: () => import('./views/mathphys/HeatView.vue') },
+  { path: '/mathphys/laplace', component: () => import('./views/mathphys/LaplaceView.vue') },
+  { path: '/mathphys/separation', component: () => import('./views/mathphys/SeparationView.vue') },
 ]
 
 const router = createRouter({
