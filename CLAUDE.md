@@ -34,7 +34,8 @@ src/views/concepts/*.vue   微积分每讲一个页面，套 ConceptPage（传 s
 src/views/linear-algebra/  线性代数每讲一个页面（同样套 ConceptPage）
 src/views/probability/     概率论每讲一个页面；模拟类动画用 plot.js 的 rng(seed) 保证可复现
 src/views/complex/         复变函数每讲一个页面（复数运算在各 demo 内手写展开为实虚部）
-docs/course-plans.md       待建课程的详细规划（讲次、动画构想）——新开课先读它
+docs/course-plans.md       各课程蓝图与上线进度（讲次、动画构想）——新开课先读它；
+                           仅剩数学物理方程待建（用户零基础，写最细）
 ```
 
 ## 新增一讲的流程
