@@ -4,6 +4,8 @@
 「历史困境 → 为什么发明 → 交互动画 → 严格定义 → 应用与联系」展开，
 配手写 Canvas 交互动画帮助建立直觉。
 
+**🌐 线上地址：<https://mathfield-a4l.pages.dev>**（Cloudflare Pages）
+
 ## 运行
 
 ```bash
@@ -18,6 +20,9 @@ npm run preview # 预览构建产物
 本站是纯静态 SPA + hash 路由，天然适合 Cloudflare Pages：路由都在 `#` 之后，
 服务器只需返回 `/index.html`，**无需 SPA 回退规则**；Pages 在 `*.pages.dev` 根路径提供服务，
 Vite 的 `base` 保持默认 `/` 即可。配置见 `wrangler.jsonc`（项目名 `mathfield`，产物目录 `dist`）。
+
+> 已部署：Cloudflare Pages 项目 `mathfield`，生产地址 <https://mathfield-a4l.pages.dev>。
+> 当前用「命令行直传」方式上线（`npm run deploy`）；若想改为推送即自动部署，按下方方式一在控制台接上 GitHub 仓库即可。
 
 **方式一：Git 集成（推荐，推送即自动部署）**
 在 Cloudflare 控制台 → Workers & Pages → Create → Pages → 连接 GitHub 仓库 `MathField`，构建设置：
