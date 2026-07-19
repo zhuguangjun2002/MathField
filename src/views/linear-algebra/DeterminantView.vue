@@ -3,6 +3,7 @@ import ConceptPage from '../../components/ConceptPage.vue'
 import MathBlock from '../../components/MathBlock.vue'
 import MathInline from '../../components/MathInline.vue'
 import DeterminantDemo from '../../demos/DeterminantDemo.vue'
+import DetAreaCutDemo from '../../demos/DetAreaCutDemo.vue'
 </script>
 
 <template>
@@ -42,6 +43,13 @@ import DeterminantDemo from '../../demos/DeterminantDemo.vue'
       它们张成一个平行四边形。用初中几何硬算这块面积（大矩形减去四周的三角形），得到的正是
     </p>
     <MathBlock tex="S = ad - bc" />
+    <p>这句"大矩形减去四周的三角形"是关键，下面这张图把它拆给你看——拖滑杆把边角料推出去：</p>
+    <DetAreaCutDemo />
+    <p>
+      六块边角料合起来是 <MathInline tex="ac + bd + 2bc" />，大矩形是 <MathInline tex="(a+b)(c+d)" />，
+      两者相减，交叉项一抵消，剩下的正好是 <MathInline tex="ad - bc" />。
+      行列式那个"交叉相乘再相减"的怪异写法，几何上就是这么一块被割补出来的面积。
+    </p>
     <div class="insight">
       <div class="insight-title">💡 核心直觉：det = 有向面积</div>
       <p>
