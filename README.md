@@ -23,33 +23,36 @@ npm run preview # 预览构建产物
 
 ```
 src/
-  data/courses.js        课程与概念元数据（新增章节先在这里登记）
+  data/courses.js        课程与概念元数据（单一事实来源，课程页/导航/上下讲全由它驱动）
   components/            公式渲染、演示卡片框架、滑杆、概念页布局
   demos/                 各概念的 Canvas 交互动画 + plot.js 绘图工具
-  views/                 首页、课程页
-  views/concepts/        每个概念一个页面
+  views/                 首页、课程总览页（数据驱动，多课程共用）
+  views/concepts/        微积分各讲页面
+  views/linear-algebra/  线性代数各讲页面
+  views/probability/     概率论各讲页面
 ```
 
 ## 已完成 / 计划
 
 - [x] 微积分（5 讲）：极限、导数、积分、微积分基本定理、泰勒展开
-- [ ] 线性代数（5 讲已规划）
-- [ ] 概率论（5 讲已规划）
+- [x] 线性代数（5 讲）：消元法、行列式、矩阵与线性变换、向量空间、特征值
+- [x] 概率论（5 讲）：点数分配、贝叶斯、随机变量与分布、大数定律、中心极限定理
 - [ ] 复变函数（5 讲已规划）
 - [ ] 数学物理方程（5 讲已规划，用户零基础，写最细）
 
-四门待建课程的**详细规划**（讲次划分、每讲的困境/动画构想/课程间联系）见
+待建课程的**详细规划**（讲次划分、每讲的困境/动画构想/课程间联系）见
 [`docs/course-plans.md`](docs/course-plans.md)，开工顺序建议也在其中。
 
 ## 其他文档
 
 - [`CLAUDE.md`](CLAUDE.md) —— 开发工作指引：内容五段式风格约定、目录结构、
   新增一讲/新开一门课的流程、样式与动画配色约定、验证方法
-- [`docs/course-plans.md`](docs/course-plans.md) —— 四门待建课程的完整蓝图
+- [`docs/course-plans.md`](docs/course-plans.md) —— 各课程的完整蓝图与上线进度
 
 ## 新增一讲的步骤
 
-1. 在 `src/data/courses.js` 的 `calculusConcepts`（或新课程）里登记元数据；
-2. 在 `src/demos/` 写动画组件（用 `usePlot` + `makeView` 等工具）；
-3. 在 `src/views/concepts/` 写内容页（套 `ConceptPage` 布局）；
+1. 在 `src/data/courses.js` 对应课程的 concepts 数组里登记元数据；
+2. 在 `src/demos/` 写动画组件（用 `usePlot` + `makeView` 等工具；
+   几何/变换类用 `makeSquareView` 保持等比例，模拟类用 `rng(seed)` 保证可复现）；
+3. 在 `src/views/<课程目录>/` 写内容页（套 `ConceptPage` 布局）；
 4. 在 `src/router.js` 加路由。
