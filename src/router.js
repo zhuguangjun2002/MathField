@@ -20,6 +20,12 @@ const routes = [
   { path: '/probability/distribution', component: () => import('./views/probability/DistributionView.vue') },
   { path: '/probability/lln', component: () => import('./views/probability/LLNView.vue') },
   { path: '/probability/clt', component: () => import('./views/probability/CLTView.vue') },
+  { path: '/complex', component: () => import('./views/CourseView.vue') },
+  { path: '/complex/imaginary', component: () => import('./views/complex/ImaginaryView.vue') },
+  { path: '/complex/holomorphic', component: () => import('./views/complex/HolomorphicView.vue') },
+  { path: '/complex/cauchy-integral', component: () => import('./views/complex/CauchyIntegralView.vue') },
+  { path: '/complex/residue', component: () => import('./views/complex/ResidueView.vue') },
+  { path: '/complex/continuation', component: () => import('./views/complex/ContinuationView.vue') },
 ]
 
 const router = createRouter({

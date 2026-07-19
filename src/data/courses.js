@@ -142,6 +142,54 @@ export const probabilityConcepts = [
   },
 ]
 
+export const complexConcepts = [
+  {
+    slug: 'imaginary',
+    path: '/complex/imaginary',
+    title: '虚数的诞生',
+    subtitle: '不是为了解 x²+1=0，是被三次方程逼出来的',
+    question: '明明在求一个实数根，中途为什么必须穿过 √−121？',
+    era: '1545 — 1831',
+    figures: '卡尔达诺 · 邦贝利 · 韦塞尔 · 高斯',
+  },
+  {
+    slug: 'holomorphic',
+    path: '/complex/holomorphic',
+    title: '复函数与复可导',
+    subtitle: '同一个导数定义，搬到复数上苛刻得惊人',
+    question: '复可导的函数为什么自动无穷次可导？实函数怎么没这种好事？',
+    era: '1748 — 1851',
+    figures: '欧拉 · 柯西 · 黎曼',
+  },
+  {
+    slug: 'cauchy-integral',
+    path: '/complex/cauchy-integral',
+    title: '柯西积分定理',
+    subtitle: '解析函数是"全息"的',
+    question: '复平面上从 A 到 B 路径千万条，积分值凭什么不变？',
+    era: '1814 — 1900',
+    figures: '柯西 · 古萨',
+  },
+  {
+    slug: 'residue',
+    path: '/complex/residue',
+    title: '留数定理',
+    subtitle: '把积分变成数圈圈',
+    question: '∫dx/(1+x⁴) 硬算是酷刑，为什么数几个点就出答案？',
+    era: '1826 — 1846',
+    figures: '柯西',
+  },
+  {
+    slug: 'continuation',
+    path: '/complex/continuation',
+    title: '解析延拓与黎曼的遗产',
+    subtitle: '一小段决定全体',
+    question: '「1+2+3+… = −1/12」这句"胡话"，严格的说法是什么？',
+    era: '1859 — 1900',
+    figures: '黎曼 · 魏尔斯特拉斯',
+  },
+]
+
 export const courses = [
   {
     slug: 'calculus',
@@ -280,9 +328,48 @@ export const courses = [
   },
   {
     slug: 'complex',
+    path: '/complex',
     title: '复变函数',
     subtitle: '从"不可能的数"到最优雅的分析学',
-    available: false,
+    available: true,
+    concepts: complexConcepts,
+    intro:
+      '√−1 在数学里住了三百年"黑户"：人人都用它算题，人人都不承认它存在——笛卡尔给它起的蔑称"虚数"沿用至今。这门课讲它的平反史：它如何被三次方程<strong>逼</strong>进数学（不是请进来的），如何在复平面上获得肉身，以及一件教科书很少直说的怪事——把实分析搬到复数上，非但没有变难，反而处处出现<strong>实函数享受不到的奇迹</strong>：可导一次就无穷可导、函数值由边界全息决定、算不动的实积分数几个点就出答案。',
+    timelineTitle: '三百年时间线',
+    timeline: [
+      {
+        era: '1545 年',
+        title: '卡尔达诺《大术》',
+        text: '三次方程求根公式发表。公式没错，可某些方程明明有实根，代入公式却要对负数开平方——赖不掉了。',
+      },
+      {
+        era: '1572 年',
+        title: '邦贝利"狂野的想法"',
+        text: '工程师邦贝利硬着头皮给 √−1 立了运算规则，让它在计算中途出现又消掉，最后吐出正确的实根。',
+      },
+      {
+        era: '1748 年',
+        title: '欧拉的恒等式',
+        text: 'e^{iθ} = cos θ + i sin θ——指数、三角、虚数在一行里合流。欧拉用 i 大杀四方，但仍称其为"不可能的数"。',
+      },
+      {
+        era: '1797 — 1831 年',
+        title: '复平面：虚数获得肉身',
+        text: '挪威测量员韦塞尔、巴黎书商阿尔冈先后画出复平面，高斯一锤定音：复数就是平面上的点，乘 i 就是旋转 90°。',
+      },
+      {
+        era: '1814 — 1831 年',
+        title: '柯西建立复积分',
+        text: '回路积分为零、积分公式、留数演算——柯西几乎凭一人之力把复分析盖成大厦。',
+      },
+      {
+        era: '1851 — 1859 年',
+        title: '黎曼的几何视角',
+        text: '博士论文引入保角观点与黎曼面；1859 年那篇八页短文把 ζ 函数解析延拓到全平面，留下黎曼猜想。',
+      },
+    ],
+    tocNote:
+      '建议按顺序读：先看虚数怎么被逼出来、怎么"看得见"，再看复可导这个条件多苛刻（柯西-黎曼方程），然后是三级火箭——柯西定理、留数定理、解析延拓，一级比一级离谱，一级比一级好用。',
   },
   {
     slug: 'mathphys',
