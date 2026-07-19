@@ -14,6 +14,12 @@ const routes = [
   { path: '/linear-algebra/linear-map', component: () => import('./views/linear-algebra/LinearMapView.vue') },
   { path: '/linear-algebra/vector-space', component: () => import('./views/linear-algebra/VectorSpaceView.vue') },
   { path: '/linear-algebra/eigen', component: () => import('./views/linear-algebra/EigenView.vue') },
+  { path: '/probability', component: () => import('./views/CourseView.vue') },
+  { path: '/probability/points-problem', component: () => import('./views/probability/PointsProblemView.vue') },
+  { path: '/probability/bayes', component: () => import('./views/probability/BayesView.vue') },
+  { path: '/probability/distribution', component: () => import('./views/probability/DistributionView.vue') },
+  { path: '/probability/lln', component: () => import('./views/probability/LLNView.vue') },
+  { path: '/probability/clt', component: () => import('./views/probability/CLTView.vue') },
 ]
 
 const router = createRouter({

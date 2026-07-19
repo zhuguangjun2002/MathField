@@ -94,6 +94,54 @@ export const linearAlgebraConcepts = [
   },
 ]
 
+export const probabilityConcepts = [
+  {
+    slug: 'points-problem',
+    path: '/probability/points-problem',
+    title: '概率的诞生：点数分配问题',
+    subtitle: '一场没赌完的赌局，怎么分钱才公平',
+    question: '赌局中途散场，赌注按什么比例分给两个赌徒？',
+    era: '1654 — 1657',
+    figures: '帕斯卡 · 费马 · 惠更斯',
+  },
+  {
+    slug: 'bayes',
+    path: '/probability/bayes',
+    title: '条件概率与贝叶斯',
+    subtitle: '新信息来了，"可能性"怎么更新',
+    question: '检测呈阳性，患病概率却不到一成——哪里出了错？',
+    era: '1763 — 1812',
+    figures: '贝叶斯 · 普莱斯 · 拉普拉斯',
+  },
+  {
+    slug: 'distribution',
+    path: '/probability/distribution',
+    title: '随机变量与分布',
+    subtitle: '单点概率为零之后，概率住进了"面积"里',
+    question: '身高恰好等于 1.75000… 米的概率是 0，那"身高的分布"说的是什么？',
+    era: '1733 — 1933',
+    figures: '棣莫弗 · 拉普拉斯 · 柯尔莫哥洛夫',
+  },
+  {
+    slug: 'lln',
+    path: '/probability/lln',
+    title: '期望与大数定律',
+    subtitle: '频率凭什么趋于概率',
+    question: '扔一万次骰子，平均点数为什么总在 3.5 附近？"总"是多总？',
+    era: '1657 — 1713',
+    figures: '惠更斯 · 雅各布·伯努利',
+  },
+  {
+    slug: 'clt',
+    path: '/probability/clt',
+    title: '中心极限定理与正态分布',
+    subtitle: '为什么误差、身高、噪声都长成钟形',
+    question: '骰子的分布是平的，可 100 个骰子的平均数为什么是钟形的？',
+    era: '1733 — 1810',
+    figures: '棣莫弗 · 拉普拉斯 · 高斯',
+  },
+]
+
 export const courses = [
   {
     slug: 'calculus',
@@ -187,9 +235,48 @@ export const courses = [
   },
   {
     slug: 'probability',
+    path: '/probability',
     title: '概率论',
     subtitle: '从赌桌纠纷到测度论：给"运气"建立数学',
-    available: false,
+    available: true,
+    concepts: probabilityConcepts,
+    intro:
+      '几千年来人类一直在掷骰子，却始终认为"运气"属于神明，不属于数学——直到 1654 年两个法国人为一场没赌完的赌局通了几封信。概率论是数学史上罕见的<strong>出生证齐全</strong>的分支：我们确切知道它诞生在哪一年、为了什么问题。这门课从那张赌桌讲起，看"运气"如何一步步变成可计算的对象，你教科书里那些测度味十足的定义（分布函数、期望、依概率收敛）各自是被什么麻烦逼出来的。',
+    timelineTitle: '三百年时间线',
+    timeline: [
+      {
+        era: '1654 年',
+        title: '帕斯卡与费马的通信',
+        text: '赌徒德·梅雷提问：赌局中途散场，赌注怎么分？两位数学家往来数信，把"未来的可能性"第一次算成了数。',
+      },
+      {
+        era: '1657 年',
+        title: '惠更斯《论赌博中的计算》',
+        text: '第一本概率论著作。核心概念"赌局的价值"——就是今天的数学期望。',
+      },
+      {
+        era: '1713 年',
+        title: '雅各布·伯努利《猜度术》',
+        text: '死后出版的遗著证明了第一个大数定律：频率必然趋于概率——概率论从赌桌走向整个经验世界。',
+      },
+      {
+        era: '1733 年',
+        title: '棣莫弗发现钟形曲线',
+        text: '为逼近二项分布的系数，棣莫弗算出了 e^{-x²} 型曲线——正态分布悄然登场，当时无人在意。',
+      },
+      {
+        era: '1763 — 1812 年',
+        title: '贝叶斯与拉普拉斯',
+        text: '贝叶斯的遗稿给出"看到证据后如何更新信念"；拉普拉斯集大成，把概率论用到天文、司法与人口。',
+      },
+      {
+        era: '1933 年',
+        title: '柯尔莫哥洛夫公理化',
+        text: '用测度论三条公理终结"概率是什么"的百年争论——你教科书的第一章，就是这份苏联小册子的后代。',
+      },
+    ],
+    tocNote:
+      '建议按顺序读：点数分配问题是全部概念的胚胎，条件概率讲"信息如何改变可能性"，随机变量与分布是从赌桌到函数的关键一跃，大数定律兑现"频率≈概率"的承诺，中心极限定理解释钟形曲线为何无处不在。',
   },
   {
     slug: 'complex',
