@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { conceptContext } from '../data/courses.js'
+import RichText from './RichText.vue'
 
 const props = defineProps({ slug: { type: String, required: true } })
 
@@ -14,7 +15,7 @@ const course = computed(() => ctx.value.course)
     <header class="concept-header">
       <div class="concept-eyebrow">{{ course.title }} · 第 {{ ctx.index }} 讲</div>
       <h1 class="concept-title">{{ info.title }}</h1>
-      <p class="concept-subtitle">{{ info.subtitle }}</p>
+      <p class="concept-subtitle"><RichText :text="info.subtitle" /></p>
       <div class="concept-meta">
         <span>🕰 {{ info.era }}</span>
         <span>👤 {{ info.figures }}</span>

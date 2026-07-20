@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { courseByPath, numerals } from '../data/courses.js'
+import RichText from '../components/RichText.vue'
 
 const route = useRoute()
 const course = computed(() => courseByPath(route.path))
@@ -16,14 +17,14 @@ const course = computed(() => courseByPath(route.path))
     </header>
 
     <div class="concept-body">
-      <p v-html="course.intro"></p>
+      <p><RichText :text="course.intro" /></p>
 
       <h2>{{ course.timelineTitle }}</h2>
       <div class="timeline">
         <div v-for="t in course.timeline" :key="t.era" class="timeline-item">
           <div class="tl-era">{{ t.era }}</div>
-          <div class="tl-title">{{ t.title }}</div>
-          <div class="tl-text">{{ t.text }}</div>
+          <div class="tl-title"><RichText :text="t.title" /></div>
+          <div class="tl-text"><RichText :text="t.text" /></div>
         </div>
       </div>
 
@@ -34,8 +35,8 @@ const course = computed(() => courseByPath(route.path))
           <div class="concept-index">{{ numerals[i] }}</div>
           <div>
             <div class="ci-title">{{ c.title }}</div>
-            <div class="ci-sub">{{ c.subtitle }}</div>
-            <div class="ci-q">🤔 {{ c.question }}</div>
+            <div class="ci-sub"><RichText :text="c.subtitle" /></div>
+            <div class="ci-q">🤔 <RichText :text="c.question" /></div>
             <div class="ci-meta">{{ c.era }} · {{ c.figures }}</div>
           </div>
         </router-link>
