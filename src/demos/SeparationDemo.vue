@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { usePlot, makeView, drawAxes, plotFn, drawLabel, C, fmt } from './plot.js'
 import DemoFrame from '../components/DemoFrame.vue'
 import ControlSlider from '../components/ControlSlider.vue'
+import MathInline from '../components/MathInline.vue'
 
 // 同一初始条件（偏左的三角形拨弦），在波动方程 vs 热方程下演化
 const EQ = ref('wave')
@@ -90,7 +91,7 @@ const modeStatus = computed(() =>
       灰虚线是同一份初始条件（在 x = 0.3 处拨起的弦 / 同形状的初始温度）。解法三步走：
       <b>① 分解</b>——把初始形状拆到正弦模式上（细彩线，系数 bₙ 由傅里叶积分给出）；
       <b>② 独立演化</b>——每个模式不理会别人，按自己的常微分方程走：波动方程给它配
-      cos(nπt)（永恒振荡），热方程给它配 e^(−n²π²τ)（指数消亡）；
+      cos(nπt)（永恒振荡），热方程给它配 <MathInline tex="e^{-n^2\pi^2\tau}" />（指数消亡）；
       <b>③ 叠加</b>——黑线 = 各模式之和。切换方程看两种命运：同一份初始数据，
       在波动方程下永远荡下去（拖到任何 t 形状都还"记得"当初），在热方程下高频秒死、
       最终归于平坦（历史被遗忘——这就是可逆与不可逆的分水岭）。

@@ -37,7 +37,7 @@ import SeparationDemo from '../../demos/SeparationDemo.vue'
     <p>
       <strong>边界条件把 λ 筛成了离散的一串</strong>——能"住进"这根弦的形状只有可数多个。
       每个 λₙ 再去驱动自己的 T 方程：波动方程给出 cos(nπct/L)（振荡），热方程给出
-      e^(−λₙa²t)（衰减）。剩下的交给叠加原理与傅里叶系数——任意初始条件按 {Xₙ} 分解，
+      <MathInline tex="e^{-\lambda_n a^2 t}" />（衰减）。剩下的交给叠加原理与傅里叶系数——任意初始条件按 {Xₙ} 分解，
       各模式独立演化，再加回来。
     </p>
 

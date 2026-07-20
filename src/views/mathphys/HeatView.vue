@@ -87,7 +87,7 @@ import FourierHeatDemo from '../../demos/FourierHeatDemo.vue'
       </li>
       <li>
         <strong>与波动方程的对照</strong>：同一套正弦模式，波动配 cos（转圈，能量守恒），
-        热配 e^(−λt)（滑坡，能量耗散）——时间导数差一阶，宇宙观差一个热力学第二定律；
+        热配 <MathInline tex="e^{-\lambda t}" />（滑坡，能量耗散）——时间导数差一阶，宇宙观差一个热力学第二定律；
       </li>
       <li>
         <strong>瞬时传播的代价</strong>：t 取任意小正数，解已是无穷光滑函数——初始尖角瞬间被磨掉，

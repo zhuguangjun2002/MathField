@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { usePlot, makeView, drawAxes, plotFn, drawLabel, C, fmt } from './plot.js'
 import DemoFrame from '../components/DemoFrame.vue'
 import ControlSlider from '../components/ControlSlider.vue'
+import MathInline from '../components/MathInline.vue'
 
 // 初始温度：方波（左半棒 1 度、右半棒 −1 度），傅里叶系数 bₙ = 4/(nπ)（n 奇数）
 const nTerms = ref(3) // 部分和取到第几个奇数项
@@ -68,7 +69,7 @@ usePlot(
       <ControlSlider label="热时间 τ（×10⁻³）" :model-value="tau * 1000" @update:model-value="(v) => (tau = v / 1000)" :min="0" :max="30" :step="0.2" />
     </template>
     <template #readout>
-      u(x, τ) = Σ (4/nπ)·sin(nπx)·e^(−n²π²τ)（n 取奇数）：n = 1 衰减因子 e^(−π²τ) ≈
+      u(x, τ) = Σ (4/nπ)·sin(nπx)·<MathInline tex="e^{-n^2\pi^2\tau}" />（n 取奇数）：n = 1 衰减因子 <MathInline tex="e^{-\pi^2\tau}" /> ≈
       <b>{{ fmt(Math.exp(-Math.PI * Math.PI * tau), 3) }}</b>，n = 5 已衰到
       <b>{{ fmt(Math.exp(-25 * Math.PI * Math.PI * tau), 4) }}</b>
     </template>
@@ -77,7 +78,7 @@ usePlot(
       红线越来越贴近灰色方波——"任意形状 = 正弦之和"不是空话，是可以亲眼看着拼出来的。
       注意跳变点旁那两个甩不掉的小尖角（吉布斯现象）：部分和在间断点附近永远过冲约 9%——
       收敛是逐点的，不是均匀的，这正是当年严格化要啃的硬骨头。
-      <b>第二步（拖热时间 τ）</b>：热方程下每个模式按 e^(−n²π²τ) 独立衰减——指数上有 <b>n²</b>，
+      <b>第二步（拖热时间 τ）</b>：热方程下每个模式按 <MathInline tex="e^{-n^2\pi^2\tau}" /> 独立衰减——指数上有 <b>n²</b>，
       高频死得极快：先是尖角圆掉，再是细节褪去，最后只剩一个懒洋洋的基频拱形。
       热传导 = 一台"高频粉碎机"，这就是为什么烫手的东西摸起来先失去纹理、后失去温度。
     </template>

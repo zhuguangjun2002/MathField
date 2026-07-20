@@ -97,7 +97,7 @@ import WaveDemo from '../../demos/WaveDemo.vue'
     <h2><span class="sec-no">伍</span>买到了什么：从琴房到光</h2>
     <ul>
       <li>
-        <strong>乐器设计的物理</strong>：音高 = c/2L = (1/2L)√(T/ρ)——调音旋钮改 T，粗细弦改 ρ，品丝改 L；
+        <strong>乐器设计的物理</strong>：音高 = <MathInline tex="\frac{c}{2L} = \frac{1}{2L}\sqrt{T/\rho}" />——调音旋钮改 T，粗细弦改 ρ，品丝改 L；
         音色 = 各泛音的配比，而配比由<strong>拨弦位置</strong>决定（在 1/5 处拨，第 5 泛音缺席——
         分离变量讲会算给你看）；
       </li>

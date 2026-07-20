@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { usePlot, makeView, drawAxes, plotFn, drawLabel, C, fmt } from './plot.js'
 import DemoFrame from '../components/DemoFrame.vue'
 import ControlSlider from '../components/ControlSlider.vue'
+import MathInline from '../components/MathInline.vue'
 
 // 被积函数 f(x)=e^{−x²}（没有初等原函数！正态分布表就靠数值积分算），区间 [−2,2]。
 const f = (x) => Math.exp(-x * x)
@@ -134,7 +135,7 @@ const methodName = computed(() =>
       <b :style="{ color: err < 1e-6 ? '#2f7d4f' : '#b23a2f' }">{{ err < 1e-14 ? '≈ 0' : err.toExponential(2) }}</b>
     </template>
     <template #note>
-      <b>∫e^(−x²)dx 没有初等原函数</b>——微积分基本定理在这里失灵，牛顿-莱布尼茨那套"找原函数再代端点"彻底用不上。
+      <b><MathInline tex="\int e^{-x^2}\,\mathrm{d}x" /> 没有初等原函数</b>——微积分基本定理在这里失灵，牛顿-莱布尼茨那套"找原函数再代端点"彻底用不上。
       可正态分布表、误差函数 erf 里的每个数都实实在在存在，它们全是这么<b>数出来</b>的：回到积分最原始的含义——面积，
       用一堆算得出的简单形状去填。中点矩形顶是平的，误差随步长 <b>h²</b> 缩小（N 翻倍误差降到 1/4）；
       梯形顶改成斜线，同样 h² 但更贴；辛普森最妙——顶换成<b>抛物线</b>，三个点却能精确到三次多项式，
