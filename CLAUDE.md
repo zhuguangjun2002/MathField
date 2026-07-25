@@ -90,12 +90,35 @@ docs/course-plans.md       各课程蓝图（讲次、动画构想）——六�
   全站体检：`python3 scripts/scan-math-katex.py`（只扫 `<template>`，已抠掉 Math* 标签与 `{{ }}` 插值；
   剩下报出来的多是刻意保留的 Unicode 大算符与"讨论符号本身"的句子，逐条看一眼即可）
 - **保留 Unicode 内联**的两种情形：①简单单字符上下标（`x²`、`n²`、`t₀`、`aₙ`）是全站刻意的轻量风格
-  ——**但根号不在此列**，见上条（2026-07-25 全站散文里的裸 `√` 已清零，别再引入）；
-  ②canvas 的 `drawLabel`/`yLabel`/`xLabel` 字符串——canvas 画不了 KaTeX，Unicode 是唯一写法
+  ——**但根号与大算符不在此列**，见上条（2026-07-25 全站散文与 readout 里的裸 `√`、`∫ ∮ ∂`
+  已清零，别再引入）；②canvas 的 `drawLabel`/`yLabel`/`xLabel` 字符串——canvas 画不了 KaTeX，
+  Unicode 是唯一写法
+- **唯一该留裸符号的情形**：句子在**讨论这个符号本身**（"计算器芯片不认识'√'这个符号"、
+  "所以才共用一个 `∫` 记号"、"`∂` 这个弯尾巴的 d"）。此外站标那个 `∫` 是 logo，不是公式。
+
+## 读数区（`#readout`）不能超宽
+
+`.demo-readout` 是 `white-space: nowrap` + `overflow-x: auto`：**一超宽就变成横向滚动条**，
+右边的内容读者根本不知道存在（曾经偏导数 demo 的"两者之比"被挤出去，而紧接着的 `#note`
+正文还写着"读数区里那个比值始终在 1 附近"）。改完 readout（尤其把 Unicode 换成 KaTeX，会变宽）必量：
+
+```bash
+node scripts/measure-readout.mjs                      # 全站，1280px 桌面宽，只报溢出的
+node scripts/measure-readout.mjs /calculus/derivative  # 单页，逐档 1440→390px
+```
+
+目标：**1024px 以上必须为 0，820px 尽量为 0**（640/390 手机宽放不下任何一条读数，是全站通病，暂不处理）。
+超宽了怎么办，按这个顺序：① 删冗余前缀与括注（"[t₀, t₀+h] **上的**平均速度"→"[t₀, t₀+h] 平均速度"）；
+② 重复结构压缩（"两个 ½ac 三角形（合 ac = 3）"→"½ac 三角形×2 = 3"）；
+③ 信息不能删时（如各项配色与画布图块一一对应）**插 `<br>` 断行**——`nowrap` 只挡自动换行，`<br>` 照断。
 
 ## 常用命令
 
 ```bash
 npm run dev      # 开发
 npx vite build   # 构建验证（改完必跑）
+
+# 体检（起 dev server 后跑；两个都在 scripts/）
+python3 scripts/scan-math-katex.py       # 散文里漏掉 KaTeX 的公式（^ / _ / √ / 大算符）
+node scripts/measure-readout.mjs         # demo 读数区横向溢出
 ```
