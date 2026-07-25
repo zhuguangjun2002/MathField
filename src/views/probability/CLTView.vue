@@ -68,7 +68,7 @@ import CLTDemo from '../../demos/CLTDemo.vue'
     <p>条款拆解：</p>
     <ul>
       <li>
-        <strong>收敛的是分布函数</strong>：断言是"P(Z_n ≤ z) → Φ(z) 对每个 z"——第三讲备好的分布函数语言
+        <strong>收敛的是分布函数</strong>：断言是"<MathInline tex="P(Z_n \le z) \to \Phi(z)" /> 对每个 z"——第三讲备好的分布函数语言
         在此正式上岗（术语叫"依分布收敛"，比大数定律的"依概率"更弱、也更普适）；
       </li>
       <li>
@@ -76,8 +76,8 @@ import CLTDemo from '../../demos/CLTDemo.vue'
         它的样本均值不管 n 多大都还是柯西分布，永不变钟形。"细节被抹平"的前提是没有谁的嗓门无穷大；
       </li>
       <li>
-        <strong>√n 是唯一正确的倍率</strong>：除以 n（大数定律的镜头）涨落缩成一个点，除以 1 涨落炸到无穷——
-        只有 √n 尺度恰好让画面稳定成曲线。三个课程的极限概念在此各就各位：
+        <strong><MathInline tex="\sqrt{n}" /> 是唯一正确的倍率</strong>：除以 n（大数定律的镜头）涨落缩成一个点，除以 1 涨落炸到无穷——
+        只有 <MathInline tex="\sqrt{n}" /> 尺度恰好让画面稳定成曲线。三个课程的极限概念在此各就各位：
         点（大数定律）、曲线（中心极限定理）、发散，全看镜头倍率；
       </li>
       <li>

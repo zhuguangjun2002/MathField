@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { usePlot, makeView, drawAxes, plotFn, drawPoint, drawLabel, C, fmt } from './plot.js'
 import DemoFrame from '../components/DemoFrame.vue'
 import ControlSlider from '../components/ControlSlider.vue'
+import MathInline from '../components/MathInline.vue'
 
 // 解 f(x) = x² − 2 = 0，根是 √2。牛顿迭代 x ← x − f/f' = (x + 2/x)/2 —— 正是巴比伦开方术。
 const x0 = ref(3)
@@ -95,7 +96,7 @@ usePlot(
       误差 <b>{{ errs[errs.length - 1] < 1e-14 ? '≈ 0（已到机器精度）' : errs[errs.length - 1].toExponential(2) }}</b>
     </template>
     <template #note>
-      方程 <b>x² − 2 = 0</b> 你一眼知道根是 √2，但计算器芯片不认识"√"这个符号，它只会加减乘除。
+      方程 <b>x² − 2 = 0</b> 你一眼知道根是 <MathInline tex="\sqrt{2}" />，但计算器芯片不认识"√"这个符号，它只会加减乘除。
       牛顿的主意：在当前猜测处画一条<b>切线</b>（曲线太难，就用它的一次泰勒近似代替），
       切线撞到横轴的地方就是更好的下一个猜测。红色斜线就是切线，蓝虚线把它接回曲线，一级一级往下滑。
       盯着误差看它有多快：<b>{{ errs.map((e, i) => 'x' + i + '误差 ' + (e < 1e-14 ? '0' : e.toExponential(1))).join('　') }}</b>——

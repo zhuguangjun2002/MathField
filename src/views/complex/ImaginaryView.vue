@@ -7,11 +7,11 @@ import ComplexMulDemo from '../../demos/ComplexMulDemo.vue'
 
 <template>
   <ConceptPage slug="imaginary">
-    <h2><span class="sec-no">壹</span>困境：求实根的路上，冒出了 √−121</h2>
+    <h2><span class="sec-no">壹</span>困境：求实根的路上，冒出了 <MathInline tex="\sqrt{-121}" /></h2>
     <p>
       先纠正一个流传极广的误会：虚数<strong>不是</strong>为了解 <MathInline tex="x^2 + 1 = 0" /> 发明的。
       这种方程无解就无解了，数学家完全可以耸耸肩走开——就像"最大的整数"不存在一样，天塌不下来。
-      真正把 √−1 逼进数学的，是三次方程，而且是它<strong>有实根</strong>的情形。
+      真正把 <MathInline tex="\sqrt{-1}" /> 逼进数学的，是三次方程，而且是它<strong>有实根</strong>的情形。
     </p>
     <div class="story">
       <div class="story-title">📜 1545 年 · 《大术》与一桩数学公案</div>
@@ -30,7 +30,7 @@ import ComplexMulDemo from '../../demos/ComplexMulDemo.vue'
       </p>
     </div>
     <p>
-      1572 年，水利工程师<strong>邦贝利</strong>做了他自称"狂野的想法"的事：不追问 √−1 是什么，
+      1572 年，水利工程师<strong>邦贝利</strong>做了他自称"狂野的想法"的事：不追问 <MathInline tex="\sqrt{-1}" /> 是什么，
       先给它立好运算规则（照普通代数算，遇到 <MathInline tex="(\sqrt{-1})^2" /> 就换成 −1），然后硬算：
     </p>
     <MathBlock tex="\sqrt[3]{2 + \sqrt{-121}} = 2 + \sqrt{-1}, \qquad \sqrt[3]{2 - \sqrt{-121}} = 2 - \sqrt{-1}" />
@@ -50,7 +50,7 @@ import ComplexMulDemo from '../../demos/ComplexMulDemo.vue'
     <div class="insight">
       <div class="insight-title">💡 核心直觉：复数 = 平面上的点，乘法 = 旋转 + 伸缩</div>
       <p>
-        实数排成一条线，早已被"占满"了——√−1 在线上确实无处可住。但谁规定数只能住在线上？
+        实数排成一条线，早已被"占满"了——<MathInline tex="\sqrt{-1}" /> 在线上确实无处可住。但谁规定数只能住在线上？
         <strong>把数轴扩建成平面</strong>：横轴照旧是实数，纵轴留给 i 的倍数，复数 a+bi 就是点 (a, b)。
         加法是平移（向量相加），而乘法的几何意义堪称神来之笔：
         <strong>乘一个复数 = 按它的辐角旋转 + 按它的模伸缩</strong>。
@@ -84,7 +84,7 @@ import ComplexMulDemo from '../../demos/ComplexMulDemo.vue'
     <p>拆几个关键处：</p>
     <ul>
       <li>
-        <strong>定义里没有 √−1</strong>：哈密顿的贡献是把"神秘实体"驱逐出定义——复数就是实数对加上两条运算规则，
+        <strong>定义里没有 <MathInline tex="\sqrt{-1}" /></strong>：哈密顿的贡献是把"神秘实体"驱逐出定义——复数就是实数对加上两条运算规则，
         i 只是 (0, 1) 的绰号。你验证 (0,1)·(0,1) = (−1, 0) 即得 i²=−1，全程无鬼；
       </li>
       <li>
