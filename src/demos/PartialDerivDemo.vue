@@ -71,9 +71,9 @@ const utt = computed(() => {
       <ControlSlider label="观察时刻 t₀" v-model="t0" :min="0" :max="2" :step="0.01" />
     </template>
     <template #readout>
-      在 (x₀, t₀) 处沿两个方向各求二阶导：<MathInline tex="\partial^2 u/\partial x^2" /> ≈ <b>{{ fmt(uxx, 1) }}</b>（弦形的弯曲度）
-      &nbsp;&nbsp;<MathInline tex="\partial^2 u/\partial t^2" /> ≈ <b>{{ fmt(utt, 1) }}</b>（该点的加速度）&nbsp;&nbsp;两者之比 ≈
-      <b>{{ fmt(utt / (uxx || 1e-9), 2) }}</b>
+      在 (x₀, t₀) 处：<MathInline tex="\partial^2 u/\partial x^2" /> ≈ <b>{{ fmt(uxx, 1) }}</b>（弯曲度）
+      &nbsp;&nbsp;<MathInline tex="\partial^2 u/\partial t^2" /> ≈ <b>{{ fmt(utt, 1) }}</b>（加速度）
+      &nbsp;&nbsp;两者之比 ≈ <b>{{ fmt(utt / (uxx || 1e-9), 2) }}</b>
     </template>
     <template #note>
       同一个函数 u(x,t)，切法不同，看到的东西完全不同：<b>固定时刻 t₀ 沿 x 切</b>，
