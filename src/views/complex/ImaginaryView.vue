@@ -184,9 +184,52 @@ import ComplexMulDemo from '../../demos/ComplexMulDemo.vue'
     <ul>
       <li>
         <strong>三角恒等式批发部</strong>：棣莫弗公式 <MathInline tex="(\cos\theta + i\sin\theta)^n = \cos n\theta + i\sin n\theta" />
-        就是"转 n 次 = 转 n 倍角"；展开取实虚部，倍角、和角公式成打掉落——
-        线代讲里用旋转矩阵变过这个魔术，复数把它压缩成一行；
+        就是"转 n 次 = 转 n 倍角"——单位圆上的复数 <MathInline tex="\cos\theta + i\sin\theta" /> 模为 1，
+        乘它只转不伸缩，乘 n 次自然转到 <MathInline tex="n\theta" />。
+        这个"批发部"到底怎么出货，值得拆一次（下面这段是整节唯一要动笔算的地方）：
       </li>
+    </ul>
+    <div class="insight">
+      <div class="insight-title">🎁 拆一次：一条乘法怎么掉出两条三角公式</div>
+      <p>
+        <strong>关键机制先说破</strong>：一个复数等式<strong>顶两条实数等式</strong>。
+        因为复数说到底是有序对 <MathInline tex="(a,b)" />，两个复数相等<strong>当且仅当实部与实部相等、虚部与虚部相等</strong>。
+        所以每次你写下一个复数等式再展开，都会同时收到两条实数恒等式——三角公式就是这么"成打"掉出来的。
+      </p>
+      <p>
+        <strong>先要和角公式？把两个单位复数乘一次就够。</strong>左边按几何（辐角相加）算，右边按代数硬展开：
+      </p>
+      <MathBlock tex="\begin{aligned} (\cos\alpha + i\sin\alpha)(\cos\beta + i\sin\beta) &= \cos(\alpha+\beta) + i\sin(\alpha+\beta) \quad \text{（辐角相加）}\\[2pt] &= (\cos\alpha\cos\beta - \sin\alpha\sin\beta) + i(\sin\alpha\cos\beta + \cos\alpha\sin\beta) \end{aligned}" />
+      <p>
+        两行的实部对实部、虚部对虚部，<strong>一次落地两条</strong>：
+      </p>
+      <MathBlock tex="\cos(\alpha+\beta) = \cos\alpha\cos\beta - \sin\alpha\sin\beta, \qquad \sin(\alpha+\beta) = \sin\alpha\cos\beta + \cos\alpha\sin\beta" />
+      <p>
+        中学背这两条要靠口诀（"符号反着来"），这里它们只是<strong>乘法展开的实部和虚部</strong>，
+        那个恼人的负号来源清清楚楚：<MathInline tex="i\sin\alpha \cdot i\sin\beta" /> 里的
+        <MathInline tex="i^2 = -1" />。
+      </p>
+      <p>
+        <strong>再要倍角公式？令 <MathInline tex="\alpha = \beta = \theta" /> 即可</strong>（也就是棣莫弗取 n = 2）：
+      </p>
+      <MathBlock tex="\cos 2\theta = \cos^2\theta - \sin^2\theta, \qquad \sin 2\theta = 2\sin\theta\cos\theta" />
+      <p>
+        <strong>三倍角？把 n 换成 3，按二项式展开就是了</strong>（记得 <MathInline tex="i^2=-1" />、
+        <MathInline tex="i^3=-i" />），实部虚部各自站队：
+      </p>
+      <MathBlock tex="(\cos\theta + i\sin\theta)^3 = \underbrace{(\cos^3\theta - 3\cos\theta\sin^2\theta)}_{\cos 3\theta} + i\,\underbrace{(3\cos^2\theta\sin\theta - \sin^3\theta)}_{\sin 3\theta}" />
+      <p>
+        再用 <MathInline tex="\sin^2\theta = 1 - \cos^2\theta" /> 收拾一下，就是你在公式表上见过的：
+      </p>
+      <MathBlock tex="\cos 3\theta = 4\cos^3\theta - 3\cos\theta, \qquad \sin 3\theta = 3\sin\theta - 4\sin^3\theta" />
+      <p>
+        <strong>这才是"批发"的意思</strong>：n 想取多大取多大，公式表上那一栏永远列不完，
+        而生产它们的机制自始至终只有一条——<strong>乘法即旋转</strong>，展开取实虚部。
+        线性代数讲里我们用旋转矩阵连乘变过同一个魔术（<MathInline tex="R(\alpha)R(\beta) = R(\alpha+\beta)" />
+        的四个矩阵元就是上面那两条和角公式），复数把那个 2×2 的账本压缩成了一行乘法。
+      </p>
+    </div>
+    <ul>
       <li>
         <strong>电工程的母语</strong>：交流电路的阻抗、相位全用复数记账——"相位差"就是辐角差，
         电容电感不过是"乘 ±i"的元件。傅里叶分析（数理方程课的主角）同样建立在
