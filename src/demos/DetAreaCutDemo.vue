@@ -163,10 +163,10 @@ usePlot(
       />
     </template>
     <template #readout>
-      <b>大矩形</b> (a+b)(c+d) = {{ W }}×{{ H }} = <b>{{ W * H }}</b>
-      &nbsp;−&nbsp; 两个 <span :style="{ color: '#b07d2b' }">½ac 三角形</span>（合 ac = {{ a * c }}）
-      &nbsp;−&nbsp; 两个 <span :style="{ color: '#33518f' }">½bd 三角形</span>（合 bd = {{ b * d }}）
-      &nbsp;−&nbsp; 两个 <span :style="{ color: '#2f7d4f' }">b×c 长方形</span>（合 2bc = {{ 2 * b * c }}）
+      <b>大矩形</b> (a+b)(c+d) = {{ W }}×{{ H }} = <b>{{ W * H }}</b><br />
+      &nbsp;−&nbsp; <span :style="{ color: '#b07d2b' }">½ac 三角形</span>×2 = {{ a * c }}
+      &nbsp;−&nbsp; <span :style="{ color: '#33518f' }">½bd 三角形</span>×2 = {{ b * d }}
+      &nbsp;−&nbsp; <span :style="{ color: '#2f7d4f' }">b×c 长方形</span>×2 = {{ 2 * b * c }}
       &nbsp;=&nbsp; <b :style="{ color: '#b23a2f' }">ad − bc = {{ det }}</b>
     </template>
     <template #note>

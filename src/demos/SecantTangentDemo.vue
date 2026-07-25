@@ -94,9 +94,9 @@ usePlot(
       />
     </template>
     <template #readout>
-      [t₀, t₀+h] 上的平均速度 Δs/Δt = <b>{{ avgV.toFixed(4) }}</b> m/s
-      &nbsp;&nbsp;→&nbsp;&nbsp; t₀ 时刻的瞬时速度 = <b>{{ instV.toFixed(4) }}</b> m/s
-      &nbsp;&nbsp;（差距 {{ Math.abs(avgV - instV).toExponential(2) }}）
+      [t₀, t₀+h] 平均速度 Δs/Δt = <b>{{ avgV.toFixed(4) }}</b> m/s
+      &nbsp;&nbsp;→&nbsp;&nbsp; 瞬时速度 = <b>{{ instV.toFixed(4) }}</b> m/s
+      &nbsp;（差距 {{ Math.abs(avgV - instV).toExponential(2) }}）
     </template>
     <template #note>
       石头下落的距离是 s(t) = 5t²。把 h 从 1 秒一路缩小到 0.001 秒：割线（红）越来越贴近切线（蓝），
