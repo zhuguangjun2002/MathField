@@ -213,9 +213,9 @@ import ComplexMulDemo from '../../demos/ComplexMulDemo.vue'
       <p>
         <strong>先要和角公式？把两个单位复数乘一次就够。</strong>左边按几何（辐角相加）算，右边按代数硬展开：
       </p>
-      <MathBlock tex="\begin{aligned} (\cos\alpha + i\sin\alpha)(\cos\beta + i\sin\beta) &= \cos(\alpha+\beta) + i\sin(\alpha+\beta) \quad \text{（辐角相加）}\\[2pt] &= (\cos\alpha\cos\beta - \sin\alpha\sin\beta) + i(\sin\alpha\cos\beta + \cos\alpha\sin\beta) \end{aligned}" />
+      <MathBlock tex="\begin{aligned} (\cos\alpha + i\sin\alpha)(\cos\beta + i\sin\beta) &= \cos(\alpha+\beta) + i\sin(\alpha+\beta) \\[2pt] &= (\cos\alpha\cos\beta - \sin\alpha\sin\beta) \\[2pt] &\quad + i(\sin\alpha\cos\beta + \cos\alpha\sin\beta) \end{aligned}" />
       <p>
-        两行的实部对实部、虚部对虚部，<strong>一次落地两条</strong>：
+        上下一对照，实部对实部、虚部对虚部，<strong>一次落地两条</strong>：
       </p>
       <MathBlock tex="\cos(\alpha+\beta) = \cos\alpha\cos\beta - \sin\alpha\sin\beta, \qquad \sin(\alpha+\beta) = \sin\alpha\cos\beta + \cos\alpha\sin\beta" />
       <p>
@@ -247,8 +247,80 @@ import ComplexMulDemo from '../../demos/ComplexMulDemo.vue'
       <li>
         <strong>电工程的母语</strong>：交流电路的阻抗、相位全用复数记账——"相位差"就是辐角差，
         电容电感不过是"乘 ±i"的元件。傅里叶分析（数理方程课的主角）同样建立在
-        <MathInline tex="e^{i\omega t}" /> 上；
+        <MathInline tex="e^{i\omega t}" /> 上。这句话听着像黑话，其实拆开只要两条物理常识，
+        下面那个框把它翻译成人话；
       </li>
+    </ul>
+    <RevealBox
+      title='🔌 把"电工的母语"翻译一遍（不需要任何电学基础）'
+      label="展开翻译（只用到导数 + 乘 i 是转 90°）"
+      close-label="收起这段翻译"
+    >
+      <template #hint>
+        点开之前先想一个问题：一段交流电压 <MathInline tex="V\cos(\omega t + \varphi)" />，
+        要完整描述它得给几个数？（频率是全电路公用的，不算）——想清楚这个数字，
+        你其实已经猜到复数为什么会成为电工的母语了。
+      </template>
+      <p>
+        <strong>① 一个正弦量 = 两个数 = 一个复数。</strong>
+        交流电路里所有电压电流都是<strong>同一个频率</strong>的正弦（这是它跟直流最大的不同），
+        彼此的差别只剩两项：<strong>振幅多大、波形前后错开多少（相位）</strong>。
+        两个数——正好装进一个复数 <MathInline tex="V e^{i\varphi}" />（模是振幅、辐角是相位），
+        工程上管它叫<strong>相量</strong>。这一步没有物理，只是把"两个数"打了个包。
+      </p>
+      <p>
+        <strong>② 让它转起来。</strong>把整条电路想成一个匀速转动的转盘：
+      </p>
+      <MathBlock tex="V\cos(\omega t + \varphi) = \operatorname{Re}\left[\underbrace{V e^{i\varphi}}_{\text{相量：静止的}} \cdot \underbrace{e^{i\omega t}}_{\text{转盘：大家共用}}\right]" />
+      <p>
+        实际电压就是转盘上那个点<strong>在实轴上的投影</strong>——上上下下的正弦波，
+        不过是匀速圆周运动的影子。既然 <MathInline tex="e^{i\omega t}" /> 是全电路共用的因子，
+        干脆<strong>跟着转盘一起转</strong>，把它约掉，只留下静止的相量来记账。
+      </p>
+      <p>
+        <strong>③ 奇迹只有一句：求导 = 乘 <MathInline tex="i\omega" />。</strong>
+        因为 <MathInline tex="\frac{d}{dt}e^{i\omega t} = i\omega\, e^{i\omega t}" />。
+        而乘 i 是<strong>逆时针转 90°</strong>（本讲第贰节的老结论）。于是——
+        示波器上看到的"电容里电流比电压早四分之一个周期"这件物理现象，
+        代数上不过是<strong>求一次导多转 90°</strong>。<strong>那个 90° 不是巧合，
+        它就是 i 的几何身份。</strong>
+      </p>
+      <p>
+        <strong>④ 于是微分方程降级成了乘除法。</strong>全部物理输入只有两条中学之后的常识：
+        电容上<strong>电流正比于电压的变化率</strong>（<MathInline tex="i = C\,dv/dt" />，
+        电容像个水桶：进水快慢决定水位上升快慢）；电感上<strong>电压正比于电流的变化率</strong>
+        （<MathInline tex="v = L\,di/dt" />，电感像个飞轮：想让它变速就得使劲）。
+        把 ③ 的"求导 = 乘 <MathInline tex="i\omega" />"代进去，两条微分关系当场变成两条乘法关系：
+      </p>
+      <MathBlock tex="Z_R = R, \qquad Z_L = i\omega L, \qquad Z_C = \frac{1}{i\omega C} = -\frac{i}{\omega C}" />
+      <p>
+        这三个复数就叫<strong>阻抗</strong>，而欧姆定律原封不动地升级成
+        <MathInline tex="V = I \cdot Z" />——只不过 V、I、Z 现在都是复数。
+        <strong>解交流电路从此不必再解微分方程</strong>：串联相加、并联倒数相加，
+        照初中算电阻的老规矩算就是了。这就是"电工的母语"的全部含义。
+      </p>
+      <p>
+        <strong>⑤ 回头看那两句黑话，现在字面可读了：</strong>
+        阻抗的<strong>模</strong>是电压与电流的振幅之比（"这元件有多挡电流"），
+        阻抗的<strong>辐角</strong>就是电压与电流的相位差——所以说"相位差就是辐角差"。
+        而 <MathInline tex="Z_L" /> 的辐角是 +90°、<MathInline tex="Z_C" /> 的辐角是 −90°，
+        所以说"电容电感不过是乘 ±i 的元件"：<strong>电阻只缩放，电容电感只旋转</strong>。
+        纯电阻电流电压同相位，功率老老实实变热；纯电容电感差 90°，
+        一个周期里吸收的能量原样吐回去——这就是电工说的"无功功率"。
+      </p>
+      <p>
+        <strong>⑥ 一个记号上的小注</strong>：电工程里虚数单位写作 <strong>j</strong> 而不是 i，
+        因为 i 这个字母早就被<strong>电流</strong>占用了。看到 <MathInline tex="Z = R + jX" />
+        别慌，就是本讲的 <MathInline tex="a + bi" />。
+      </p>
+      <p>
+        所以别被"电工程"三个字唬住：这段东西<strong>不需要先学一学期电路</strong>。
+        它要的只是"复数是有序对"（第肆节）、"乘 i 是转 90°"（第贰节）、"求导"（微积分讲），
+        外加上面那两条元件常识。真正的电路课要处理的是网络拓扑、瞬态、非线性——那些是另一回事，
+        与复数没什么关系。
+      </p>
+    </RevealBox>
+    <ul>
       <li>
         <strong>概率论的伏笔兑现</strong>：中心极限定理讲预告的特征函数 <MathInline tex="E[e^{itX}]" />，
         现在你知道 <MathInline tex="e^{itX}" /> 是什么了——把随机变量卷上单位圆再取平均；
