@@ -172,7 +172,8 @@ import ComplexMulDemo from '../../demos/ComplexMulDemo.vue'
         本讲并没有定义过它是什么意思——此刻你可以把 <MathInline tex="e^{i\theta}" /> 纯粹当作
         <MathInline tex="\cos\theta + i\sin\theta" /> 的<strong>缩写</strong>，本节的结论一个都不受影响。
         凭什么这个缩写偏偏配用 <MathInline tex="e" />、而不是随便一个字母？靠的是级数展开，
-        证据在 <router-link to="/calculus/taylor">微积分 · 泰勒展开</router-link> 那一讲；
+        <router-link to="/calculus/taylor">微积分 · 泰勒展开</router-link>
+        那一讲末尾把逐项整理的全过程摊开了（连"这算推导还是算定义"也一并交代）；
       </li>
       <li>
         <strong>代价要认账</strong>：<MathInline tex="\mathbb{C}" /> 里<strong>没有大小顺序</strong>——
