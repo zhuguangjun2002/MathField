@@ -80,10 +80,15 @@ docs/course-plans.md       各课程蓝图（讲次、动画构想）——六�
 - **正式公式**（view 里独立成行或行内的算式）：用 `<MathBlock>` / `<MathInline tex="..." />`（KaTeX）
 - **`courses.js` 的文案字段**（intro、时间线 title/text、概念 subtitle/question）：写成 `$...$`，
   由 RichText 交给 KaTeX（JS 字符串里反斜杠转义成 `\\`）
-- **渲染给用户看的散文里**（view 的 `<p>`、demo 的 `#note`/`#readout`）：凡出现**带脱字符的指数**
-  （`e^(−n²π²τ)`、`e^{...}`）或**任何根式**（`√n`、`√2`、`√−1`、`√(T/ρ)`）——`^`、括号会原样显示像坏公式，
-  而裸 `√` **没有横线盖住被开方数**（`√n` 看着像"√ 和 n 两个字"）——
-  一律改用 `<MathInline>`；demo 组件如未 import 需补 `import MathInline from '../components/MathInline.vue'`
+- **渲染给用户看的散文里**（view 的 `<p>`、demo 的 `#note`/`#readout`）：出现下面任一，一律改用
+  `<MathInline>`（demo 组件如未 import 需补 `import MathInline from '../components/MathInline.vue'`）：
+  ① **带脱字符的指数**（`e^(−n²π²τ)`、`e^{...}`）——`^`、括号会原样显示，像坏公式；
+  ② **露出下划线的下标**（`u_xx`、`b_m`、`Z_n`、`z_k`）——同上，且常常同一段里紧挨着的
+     `<MathInline tex="u_{xx}" />` 已经排得好好的，对比之下更刺眼；
+  ③ **任何根式**（`√n`、`√2`、`√−1`、`√(T/ρ)`）——裸 `√` **没有横线盖住被开方数**，
+     `√n` 看着像"√ 和 n 两个字"。
+  全站体检：`python3 scripts/scan-math-katex.py`（只扫 `<template>`，已抠掉 Math* 标签与 `{{ }}` 插值；
+  剩下报出来的多是刻意保留的 Unicode 大算符与"讨论符号本身"的句子，逐条看一眼即可）
 - **保留 Unicode 内联**的两种情形：①简单单字符上下标（`x²`、`n²`、`t₀`、`aₙ`）是全站刻意的轻量风格
   ——**但根号不在此列**，见上条（2026-07-25 全站散文里的裸 `√` 已清零，别再引入）；
   ②canvas 的 `drawLabel`/`yLabel`/`xLabel` 字符串——canvas 画不了 KaTeX，Unicode 是唯一写法

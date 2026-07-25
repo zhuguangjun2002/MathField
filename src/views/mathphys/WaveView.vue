@@ -23,7 +23,7 @@ import WaveDemo from '../../demos/WaveDemo.vue'
         于是竖直合力 = 右端拉力竖直分量 − 左端的 =
         <MathInline tex="T\left[u_x(x + \Delta x) - u_x(x)\right]" />。
         牛顿第二定律：合力 = 质量 × 加速度 = <MathInline tex="(\rho \Delta x) \cdot u_{tt}" />。
-        两边除以 Δx、令 Δx → 0（左边正是 u_x 的差商，取极限得 u_xx）：
+        两边除以 Δx、令 Δx → 0（左边正是 <MathInline tex="u_x" /> 的差商，取极限得 <MathInline tex="u_{xx}" />）：
       </p>
       <MathBlock tex="\rho\, u_{tt} = T\, u_{xx} \quad\Longrightarrow\quad u_{tt} = c^2 u_{xx}, \qquad c = \sqrt{T / \rho}" />
       <p>

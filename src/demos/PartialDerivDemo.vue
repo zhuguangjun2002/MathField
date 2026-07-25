@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { usePlot, makeView, drawAxes, plotFn, drawPoint, drawLabel, C, fmt } from './plot.js'
 import DemoFrame from '../components/DemoFrame.vue'
 import ControlSlider from '../components/ControlSlider.vue'
+import MathInline from '../components/MathInline.vue'
 
 // u(x,t) = sin(πx)·cos(πt) + 0.3·sin(2πx)·cos(2πt)：一根两端固定弦的真实振动
 const u = (x, t) => Math.sin(Math.PI * x) * Math.cos(Math.PI * t) + 0.3 * Math.sin(2 * Math.PI * x) * Math.cos(2 * Math.PI * t)
@@ -80,7 +81,7 @@ const utt = computed(() => {
       那一个点上下振动的历史（心电图）。<b>偏导数就是"切片后的普通导数"</b>：∂u/∂x 是照片的斜率，
       ∂u/∂t 是心电图的斜率——没有任何新运算，只是"求导前先约定按哪个变量切、其余全冻结"。
       读数区里那个比值始终在 1 附近（本例波速 c = 1）不是巧合：弯曲度与加速度锁在一起，
-      正是下一讲波动方程 u_tt = c²u_xx 说的事——这两张图已经偷偷在演示它了。
+      正是下一讲波动方程 <MathInline tex="u_{tt} = c^2 u_{xx}" /> 说的事——这两张图已经偷偷在演示它了。
     </template>
   </DemoFrame>
 </template>

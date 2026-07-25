@@ -22,7 +22,7 @@ import RelaxationDemo from '../../demos/RelaxationDemo.vue'
       </li>
       <li>
         <strong>手边</strong>：上一讲的热方程 <MathInline tex="u_t = a^2 \Delta u" />，等到温度不再变化
-        （u_t = 0）时，剩下的正是 <MathInline tex="\Delta u = 0" />——稳态温度分布。
+        （<MathInline tex="u_t = 0" />）时，剩下的正是 <MathInline tex="\Delta u = 0" />——稳态温度分布。
       </li>
     </ul>
     <p>
@@ -33,8 +33,8 @@ import RelaxationDemo from '../../demos/RelaxationDemo.vue'
 
     <h2><span class="sec-no">贰</span>破局：Δu 是"你与邻居平均值的差距"</h2>
     <p>
-      钥匙是给 Δu 一个物理直觉。一维时 u_xx 是弯曲度——"邻居平均比我高还是低"：
-      对 u_xx 用泰勒展开（微积分的老手艺）立刻可验：
+      钥匙是给 Δu 一个物理直觉。一维时 <MathInline tex="u_{xx}" /> 是弯曲度——"邻居平均比我高还是低"：
+      对 <MathInline tex="u_{xx}" /> 用泰勒展开（微积分的老手艺）立刻可验：
     </p>
     <MathBlock tex="\frac{u(x+h) + u(x-h)}{2} - u(x) = \frac{h^2}{2} u_{xx} + O(h^4)" />
     <p>

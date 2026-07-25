@@ -63,7 +63,7 @@ import ResidueDemo from '../../demos/ResidueDemo.vue'
       </p>
       <MathBlock tex="\oint_\Gamma f(z)\, dz = 2\pi i \sum_{k=1}^{n} \operatorname{Res}(f, z_k)" />
       <p>
-        其中 <MathInline tex="\operatorname{Res}(f, z_k)" /> 为 f 在 z₀ = z_k 处洛朗展开的 a₋₁ 系数；对一阶极点可用
+        其中 <MathInline tex="\operatorname{Res}(f, z_k)" /> 为 f 在 <MathInline tex="z_0 = z_k" /> 处洛朗展开的 a₋₁ 系数；对一阶极点可用
         <MathInline tex="\operatorname{Res}(f, z_0) = \lim_{z \to z_0} (z - z_0) f(z)" /> 直接计算。
       </p>
     </div>

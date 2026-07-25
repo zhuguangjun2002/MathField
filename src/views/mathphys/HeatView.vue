@@ -18,7 +18,7 @@ import FourierHeatDemo from '../../demos/FourierHeatDemo.vue'
       <div class="story-title">📜 推导：给一小段铁棒记热账</div>
       <p>
         一根细铁棒，u(x,t) 是位置 x 在时刻 t 的温度。两条实验事实（牛顿与毕奥早已测明）：
-        ① 热量从高温流向低温，流量正比于温度的<strong>斜率</strong>：q = −k·u_x（负号：往低处流）；
+        ① 热量从高温流向低温，流量正比于温度的<strong>斜率</strong>：<MathInline tex="q = -k\, u_x" />（负号：往低处流）；
         ② 一段棒升温多少，正比于它净收到的热量。对 x 到 x+Δx 这一小段记账：
         流入 = 左端进来的 − 右端出去的 = <MathInline tex="k[u_x(x{+}\Delta x) - u_x(x)]" />。
         净流入使温度上升：<MathInline tex="(\text{热容} \cdot \Delta x)\, u_t = k[u_x(x{+}\Delta x) - u_x(x)]" />。
@@ -41,7 +41,7 @@ import FourierHeatDemo from '../../demos/FourierHeatDemo.vue'
     <h2><span class="sec-no">贰</span>破局：系数公式——正交性的第一次胜利</h2>
     <p>
       傅里叶比伯努利多迈出的关键一步：他不空谈"能展开"，他<strong>算出了系数</strong>。
-      设 <MathInline tex="\varphi(x) = \sum b_n \sin\frac{n\pi x}{L}" />，怎么把某个 b_m 单独抠出来？
+      设 <MathInline tex="\varphi(x) = \sum b_n \sin\frac{n\pi x}{L}" />，怎么把某个 <MathInline tex="b_m" /> 单独抠出来？
       傅里叶的招数：两边同乘 <MathInline tex="\sin\frac{m\pi x}{L}" /> 再积分。奇迹发生——
     </p>
     <MathBlock tex="\int_0^L \sin\frac{n\pi x}{L}\, \sin\frac{m\pi x}{L}\, dx = \begin{cases} 0, & n \neq m \\ L/2, & n = m \end{cases}" />
