@@ -26,7 +26,9 @@ src/data/courses.js        课程/概念元数据（单一事实来源，新增�
 src/components/            MathInline, MathBlock（KaTeX）、RichText（把字符串里 $...$ 交给
                            KaTeX，其余当 HTML；courses.js 的文案字段专用）、
                            DemoFrame（动画卡片框架）、
-                           ControlSlider（滑杆）、ConceptPage（概念页统一布局+上下讲导航）
+                           ControlSlider（滑杆）、ConceptPage（概念页统一布局+上下讲导航）、
+                           RevealBox（先思考后揭晓：折叠时只露标题+一句思考提示 hint，
+                           点按钮才展开推导；hint 里要写公式就改用 #hint 具名插槽）
 src/demos/plot.js          Canvas 绘图工具：usePlot(自适应+高分屏+watch重绘)、
                            makeView(坐标映射)、makeSquareView(等比例视图，几何/变换类动画必用)、
                            drawAxes、plotFn、drawPoint、drawLabel、drawArrow、调色板 C

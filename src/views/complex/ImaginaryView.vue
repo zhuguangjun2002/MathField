@@ -2,6 +2,7 @@
 import ConceptPage from '../../components/ConceptPage.vue'
 import MathBlock from '../../components/MathBlock.vue'
 import MathInline from '../../components/MathInline.vue'
+import RevealBox from '../../components/RevealBox.vue'
 import ComplexMulDemo from '../../demos/ComplexMulDemo.vue'
 </script>
 
@@ -34,8 +35,12 @@ import ComplexMulDemo from '../../demos/ComplexMulDemo.vue'
       先给它立好运算规则（照普通代数算，遇到 <MathInline tex="(\sqrt{-1})^2" /> 就换成 −1），然后硬算：
     </p>
     <MathBlock tex="\sqrt[3]{2 + \sqrt{-121}} = 2 + \sqrt{-1}, \qquad \sqrt[3]{2 - \sqrt{-121}} = 2 - \sqrt{-1}" />
-    <div class="insight">
-      <div class="insight-title">🔍 这两个等号是怎么来的？——猜形状，再立方回去对账</div>
+    <RevealBox
+      title="🔍 这两个等号是怎么来的？"
+      hint="先别往下看：邦贝利不可能真去「开」一个不可能的数的立方根，那他凭什么敢写这个等号？给自己一分钟想想——如果两个立方根相加必须得到实数，它们该长什么样子？"
+      label="看邦贝利的三步（猜形状 → 卡住系数 → 立方回去对账）"
+      close-label="收起这段推导"
+    >
       <p>
         它们<strong>不是开立方开出来的</strong>（没人会去开一个"不可能的数"的立方根），
         而是<strong>先猜形状、再验算通过</strong>的。邦贝利的思路分三步：
@@ -67,7 +72,7 @@ import ComplexMulDemo from '../../demos/ComplexMulDemo.vue'
         他只是发现：按普通代数规则摆弄它，账目居然处处合得上。
         （严格说立方根有三支，这里默认取了实部为正的那一支；这件事要等复数搬进平面才说得清——见下一节。）
       </p>
-    </div>
+    </RevealBox>
     <p>
       两个立方根相加，<MathInline tex="\sqrt{-1}" /> 正负抵消，得 x = 4。<strong>幽灵在计算中途登场，
       规规矩矩干完活，又体面地退场，留下一个完全真实的答案。</strong>此后两百年，数学家一直这样用它：
@@ -186,11 +191,19 @@ import ComplexMulDemo from '../../demos/ComplexMulDemo.vue'
         <strong>三角恒等式批发部</strong>：棣莫弗公式 <MathInline tex="(\cos\theta + i\sin\theta)^n = \cos n\theta + i\sin n\theta" />
         就是"转 n 次 = 转 n 倍角"——单位圆上的复数 <MathInline tex="\cos\theta + i\sin\theta" /> 模为 1，
         乘它只转不伸缩，乘 n 次自然转到 <MathInline tex="n\theta" />。
-        这个"批发部"到底怎么出货，值得拆一次（下面这段是整节唯一要动笔算的地方）：
+        这个"批发部"到底怎么出货？下面那个框把它拆开了——<strong>先自己动笔试一分钟再点开</strong>，
+        这是整节唯一要算一算的地方：
       </li>
     </ul>
-    <div class="insight">
-      <div class="insight-title">🎁 拆一次：一条乘法怎么掉出两条三角公式</div>
+    <RevealBox
+      title="🎁 拆一次：一条乘法怎么掉出一堆三角公式"
+      label="对答案 / 看完整拆解（和角 → 倍角 → 三倍角）"
+      close-label="收起这段拆解"
+    >
+      <template #hint>
+        先自己试一分钟：把 <MathInline tex="(\cos\alpha + i\sin\alpha)(\cos\beta + i\sin\beta)" /> 硬乘开，
+        再想想这个乘积按"辐角相加"应该等于什么。两边一对照，和角公式其实已经被你推出来了——而且一次两条。
+      </template>
       <p>
         <strong>关键机制先说破</strong>：一个复数等式<strong>顶两条实数等式</strong>。
         因为复数说到底是有序对 <MathInline tex="(a,b)" />，两个复数相等<strong>当且仅当实部与实部相等、虚部与虚部相等</strong>。
@@ -228,7 +241,7 @@ import ComplexMulDemo from '../../demos/ComplexMulDemo.vue'
         线性代数讲里我们用旋转矩阵连乘变过同一个魔术（<MathInline tex="R(\alpha)R(\beta) = R(\alpha+\beta)" />
         的四个矩阵元就是上面那两条和角公式），复数把那个 2×2 的账本压缩成了一行乘法。
       </p>
-    </div>
+    </RevealBox>
     <ul>
       <li>
         <strong>电工程的母语</strong>：交流电路的阻抗、相位全用复数记账——"相位差"就是辐角差，
