@@ -54,6 +54,10 @@ src/components/            MathInline, MathBlock（KaTeX）、RichText（把字�
                            点按钮才展开推导；hint 里要写公式就改用 #hint 具名插槽）
 src/demos/plot.js          Canvas 绘图工具：usePlot(自适应+高分屏+watch重绘)、
                            makeView(坐标映射)、makeSquareView(等比例视图，几何/变换类动画必用)、
+                           makeFitView(等比例且装下指定数据框；配 pad 可把画布切成"原像/像"双面板，
+                           两边给同样 span 才不会看起来偷偷缩放)、clipView(双面板必用)、
+                           sampleGrid + contourSegments(marching squares 等值线；只发一小段一小段
+                           不连折线，故意的——端点可再过一次映射，同一族线就同时画到了两个平面)、
                            drawAxes、plotFn、drawPoint、drawLabel、drawArrow、调色板 C
 src/demos/*.vue            每个动画一个组件，套 DemoFrame，控件放 #controls，
                            实时数值放 #readout，说明文字放 #note

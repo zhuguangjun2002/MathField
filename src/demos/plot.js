@@ -69,6 +69,26 @@ export function makeSquareView(w, h, halfY = 2.5, { cy = 0, pad } = {}) {
   return makeView(w, h, -halfX, halfX, cy - halfY, cy + halfY, p)
 }
 
+/**
+ * 等比例视图，且保证把以 (cx, cy) 为心、spanX × spanY 大的数据框整个装进内框。
+ * 与 makeSquareView 的区别：可以用 pad 把画布切成左右两半，做"原像 / 像"双面板，
+ * 两个面板给同样的 span 就能拿到同样的像素比例，变形动画才不会看起来偷偷缩放。
+ */
+export function makeFitView(w, h, cx, cy, spanX, spanY, pad = {}) {
+  const p = { l: 12, r: 12, t: 12, b: 12, ...pad }
+  const iw = w - p.l - p.r
+  const ih = h - p.t - p.b
+  const s = Math.min(iw / spanX, ih / spanY) // 像素每单位
+  return makeView(w, h, cx - iw / (2 * s), cx + iw / (2 * s), cy - ih / (2 * s), cy + ih / (2 * s), p)
+}
+
+/** 把后续绘制限制在视图内框里（双面板必用，否则一边的曲线会画到另一边去） */
+export function clipView(ctx, v) {
+  ctx.beginPath()
+  ctx.rect(v.pad.l, v.pad.t, v.iw, v.ih)
+  ctx.clip()
+}
+
 /** 从数学坐标 (x0,y0) 指向 (x1,y1) 的箭头 */
 export function drawArrow(ctx, v, x0, y0, x1, y1, { color = C.accent, width = 2.4, head = 9 } = {}) {
   const px0 = v.X(x0)
@@ -202,6 +222,69 @@ export function drawLabel(ctx, x, y, text, { color = C.ink, align = 'left', size
   ctx.textAlign = align
   ctx.fillText(text, x, y)
   ctx.restore()
+}
+
+// marching squares 的 16 种格点情形：四角按 bit 1/2/4/8（左下、右下、右上、左上）
+// 记"大于等值"，查出等值线穿过哪两条边（边 0=下 1=右 2=上 3=左）
+const MS_CASES = [
+  [], [[0, 3]], [[0, 1]], [[1, 3]], [[1, 2]], [[0, 1], [2, 3]], [[0, 2]], [[2, 3]],
+  [[2, 3]], [[0, 2]], [[0, 3], [1, 2]], [[1, 2]], [[1, 3]], [[0, 1]], [[0, 3]], [],
+]
+
+function msEdge(e, L, va, vb, vc, vd, x, y, dx, dy) {
+  if (e === 0) return [x + (dx * (L - va)) / (vb - va), y]
+  if (e === 1) return [x + dx, y + (dy * (L - vb)) / (vc - vb)]
+  if (e === 2) return [x + (dx * (L - vd)) / (vc - vd), y + dy]
+  return [x, y + (dy * (L - va)) / (vd - va)]
+}
+
+/**
+ * 等值线（marching squares）。g 是 (N+1)×(N+1) 的网格值（行优先，j 为纵向）。
+ * 等值取 base + k·step 的全部层级，逐格把穿越段回调给 emit(ax, ay, bx, by)（数学坐标）。
+ * 只发一小段一小段、不连成折线，是故意的：调用方可以把两个端点再经一次映射，
+ * 于是同一族等值线能同时画在原平面和像平面上（茹科夫斯基 demo 靠这个）。
+ * opts.skip(x, y) 返回 true 的格子跳过（挖掉物体内部或奇点邻域）；
+ * 值在一格内跳变超过 opts.jump 的也跳过（辐角割线、极点）。
+ */
+export function contourSegments(g, N, x0, x1, y0, y1, step, emit, opts = {}) {
+  const { base = 0, skip = null, jump = 6 * step } = opts
+  const n1 = N + 1
+  const dx = (x1 - x0) / N
+  const dy = (y1 - y0) / N
+  for (let j = 0; j < N; j++) {
+    for (let i = 0; i < N; i++) {
+      const va = g[j * n1 + i]
+      const vb = g[j * n1 + i + 1]
+      const vc = g[(j + 1) * n1 + i + 1]
+      const vd = g[(j + 1) * n1 + i]
+      if (!Number.isFinite(va + vb + vc + vd)) continue
+      const lo = Math.min(va, vb, vc, vd)
+      const hi = Math.max(va, vb, vc, vd)
+      if (hi - lo > jump) continue
+      const x = x0 + i * dx
+      const y = y0 + j * dy
+      if (skip && skip(x + dx / 2, y + dy / 2)) continue
+      for (let k = Math.ceil((lo - base) / step); k <= Math.floor((hi - base) / step); k++) {
+        const L = base + k * step
+        const idx = (va > L ? 1 : 0) | (vb > L ? 2 : 0) | (vc > L ? 4 : 0) | (vd > L ? 8 : 0)
+        for (const [p, q] of MS_CASES[idx]) {
+          const A = msEdge(p, L, va, vb, vc, vd, x, y, dx, dy)
+          const B = msEdge(q, L, va, vb, vc, vd, x, y, dx, dy)
+          emit(A[0], A[1], B[0], B[1])
+        }
+      }
+    }
+  }
+}
+
+/** 在视图范围上把 f(x,y) 采成 (N+1)² 网格，喂给 contourSegments */
+export function sampleGrid(f, N, x0, x1, y0, y1) {
+  const g = new Float64Array((N + 1) * (N + 1))
+  for (let j = 0; j <= N; j++) {
+    const y = y0 + ((y1 - y0) * j) / N
+    for (let i = 0; i <= N; i++) g[j * (N + 1) + i] = f(x0 + ((x1 - x0) * i) / N, y)
+  }
+  return g
 }
 
 /** 可复现的伪随机数生成器（mulberry32）：模拟类动画用它，保证同一 seed 重绘结果一致 */
