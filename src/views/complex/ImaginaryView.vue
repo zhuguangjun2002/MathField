@@ -103,28 +103,71 @@ import ComplexMulDemo from '../../demos/ComplexMulDemo.vue'
     <ComplexMulDemo />
 
     <h2><span class="sec-no">肆</span>严格定义</h2>
+    <p>
+      平面图像虽然好用，却还不能算<strong>定义</strong>：它靠的是"你看得见平面上的点"这份直觉，
+      而当年质疑虚数的人恰恰不认这种账。1835 年<strong>哈密顿</strong>换了个思路——
+      <strong>别去"发现"虚数是什么，用手头已经完全放心的东西把它"造"出来。</strong>
+      手头放心的东西只有实数；于是他让一个复数就是<strong>两个实数的搭配</strong>，
+      再给这种搭配规定好加法和乘法。这样一来，谁要是怀疑复数自相矛盾，
+      那就等于在怀疑实数自相矛盾——复数的合法性<strong>寄生</strong>在实数上，不需要任何新的信仰。
+    </p>
     <div class="definition">
       <div class="def-title">📐 定义（复数域，哈密顿 1835 定型）</div>
       <p>
-        <strong>复数</strong>是有序实数对 <MathInline tex="(a, b)" />，记作 <MathInline tex="a + bi" />，按
+        <strong>复数</strong>是有序实数对 <MathInline tex="(a, b)" />，按
       </p>
       <MathBlock tex="(a, b) + (c, d) = (a+c,\ b+d), \qquad (a, b) \cdot (c, d) = (ac - bd,\ ad + bc)" />
       <p>
-        运算。全体复数记为 <MathInline tex="\mathbb{C}" />，构成一个<strong>域</strong>（加减乘除全通，除数非零）。
+        运算。其中把实数 <MathInline tex="a" /> 认同为 <MathInline tex="(a, 0)" />，并记
+        <MathInline tex="i = (0, 1)" />，于是 <MathInline tex="(a,b)" /> 就写成 <MathInline tex="a + bi" />。
+        全体复数记为 <MathInline tex="\mathbb{C}" />，构成一个<strong>域</strong>（加减乘除全通，除数非零）。
         模 <MathInline tex="|z| = \sqrt{a^2+b^2}" />，辐角 <MathInline tex="\arg z" />；极形式
         <MathInline tex="z = |z| e^{i\arg z}" /> 下，乘法即"模相乘、辐角相加"。
       </p>
     </div>
-    <p>拆几个关键处：</p>
+    <p>这段话字字都是有来历的，逐处拆开看：</p>
     <ul>
       <li>
-        <strong>定义里没有 <MathInline tex="\sqrt{-1}" /></strong>：哈密顿的贡献是把"神秘实体"驱逐出定义——复数就是实数对加上两条运算规则，
-        i 只是 (0, 1) 的绰号。你验证 (0,1)·(0,1) = (−1, 0) 即得 i²=−1，全程无鬼；
+        <strong>定义里没有 <MathInline tex="\sqrt{-1}" /></strong>：哈密顿的贡献是把"神秘实体"驱逐出定义——
+        复数就是实数对加上两条运算规则，i 只是 <MathInline tex="(0,1)" /> 的绰号。它凭什么配叫"−1 的平方根"？
+        按乘法规则算一遍即可：<MathInline tex="(0,1)\cdot(0,1) = (0\cdot 0 - 1\cdot 1,\ 0\cdot 1 + 1\cdot 0) = (-1, 0)" />，
+        而 <MathInline tex="(-1,0)" /> 正是实数 −1。<strong>于是 i²=−1 从"必须相信的怪事"变成了"验算得到的结论"，全程无鬼</strong>；
       </li>
       <li>
-        <strong>乘法公式不是拍脑袋</strong>：(ac−bd, ad+bc) 恰好就是"辐角相加、模相乘"的坐标展开——
-        代数规则与几何图像是同一件事的两种记法（和矩阵那讲如出一辙：还记得
-        <MathInline tex="\begin{bmatrix} a & -b \\ b & a \end{bmatrix}" /> 吗？复数乘法就是这种旋转伸缩矩阵）；
+        <strong>"记作 <MathInline tex="a+bi" />"是<em>推</em>出来的，不是<em>规定</em>的</strong>：先看第一横排
+        <MathInline tex="(a,0)" />——按上面两条规则，<MathInline tex="(a,0)+(c,0)=(a+c,0)" />、
+        <MathInline tex="(a,0)\cdot(c,0)=(ac,0)" />，加法乘法都与实数一模一样，
+        所以把 <MathInline tex="(a,0)" /> 直接当成实数 <MathInline tex="a" /> 是安全的（实数被原样嵌进了平面的横轴）。
+        再算一步：
+        <MathBlock tex="(a,0) + (b,0)\cdot(0,1) = (a,0) + (0,b) = (a,b)" />
+        左边照嵌入与绰号翻译过来正是 <MathInline tex="a + bi" />。所以 <MathInline tex="a+bi" /> 不是新约定，
+        <strong>它是这套定义自己长出来的写法</strong>——中学那个"实部虚部"的记号，到这里才算有了出生证；
+      </li>
+      <li>
+        <strong>乘法公式不是拍脑袋，是被逼出来的</strong>：假设你只想保住两件事——分配律照常用、
+        <MathInline tex="i^2 = -1" />，那么把 <MathInline tex="(a+bi)(c+di)" /> 硬展开，你<strong>没有第二种选择</strong>：
+        <MathBlock tex="(a+bi)(c+di) = ac + adi + bci + bd\,i^2 = (ac - bd) + (ad + bc)i" />
+        这正是定义里那条 <MathInline tex="(ac-bd,\ ad+bc)" />。哈密顿只是把这个"被逼出来的结果"
+        提前搬到定义里当规则用——顺序反过来了，内容一字未改。更妙的是，
+        它同时又恰好是"辐角相加、模相乘"的坐标展开：<strong>代数规则与几何图像是同一件事的两种记法</strong>
+        （和矩阵那讲如出一辙：还记得 <MathInline tex="\begin{bmatrix} a & -b \\ b & a \end{bmatrix}" /> 吗？
+        复数乘法就是这种旋转伸缩矩阵）；
+      </li>
+      <li>
+        <strong>"域"这个词兑现在除法上</strong>：加减乘显然封闭，唯一要担心的是除法。给定
+        <MathInline tex="z = a+bi \neq 0" />，注意它与共轭 <MathInline tex="\bar z = a - bi" /> 相乘会把虚部消干净：
+        <MathInline tex="z\bar z = a^2 + b^2" /> 是实数，于是
+        <MathBlock tex="\frac{1}{z} = \frac{\bar z}{z \bar z} = \frac{a - bi}{a^2 + b^2}" />
+        分母要非零，就得 <MathInline tex="a^2+b^2 \neq 0" />——而这一步<strong>用的是实数的性质</strong>
+        （实数平方非负，两个平方和为零必须各自为零，即 <MathInline tex="z=0" />）。
+        看见了吗：复数除法能不能做，最后还是由实数说了算。这就是开头那句"寄生"的现金兑付；
+      </li>
+      <li>
+        <strong>极形式里的 <MathInline tex="e^{i\theta}" /> 这里先欠着</strong>：把虚数放到指数上，
+        本讲并没有定义过它是什么意思——此刻你可以把 <MathInline tex="e^{i\theta}" /> 纯粹当作
+        <MathInline tex="\cos\theta + i\sin\theta" /> 的<strong>缩写</strong>，本节的结论一个都不受影响。
+        凭什么这个缩写偏偏配用 <MathInline tex="e" />、而不是随便一个字母？靠的是级数展开，
+        证据在 <router-link to="/calculus/taylor">微积分 · 泰勒展开</router-link> 那一讲；
       </li>
       <li>
         <strong>代价要认账</strong>：<MathInline tex="\mathbb{C}" /> 里<strong>没有大小顺序</strong>——
