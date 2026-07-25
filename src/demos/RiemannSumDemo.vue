@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { usePlot, makeView, drawAxes, plotFn, C } from './plot.js'
 import DemoFrame from '../components/DemoFrame.vue'
 import ControlSlider from '../components/ControlSlider.vue'
+import MathInline from '../components/MathInline.vue'
 
 const FNS = {
   parabola: {
@@ -106,7 +107,7 @@ usePlot(
     </template>
     <template #note>
       把 n 从 1 拖到 150：无论取样点怎么选，矩形面积之和都收敛到同一个数 ——
-      这个「所有分法共同的极限」就是定积分 ∫f(x)dx 的定义。这正是阿基米德"穷竭法"的现代化身。
+      这个「所有分法共同的极限」就是定积分 <MathInline tex="\int f(x)\, dx" /> 的定义。这正是阿基米德"穷竭法"的现代化身。
       顺带一提：你学过的计算数学里的「矩形公式/中点公式」数值求积分，就是黎曼和直接拿来用。
     </template>
   </DemoFrame>

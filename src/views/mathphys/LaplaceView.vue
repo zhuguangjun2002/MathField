@@ -69,7 +69,7 @@ import RelaxationDemo from '../../demos/RelaxationDemo.vue'
         <MathInline tex="\Delta u = u_{xx} + u_{yy} = 0" />，称 u 在 D 内<strong>调和</strong>。
       </p>
       <p>
-        <strong>狄利克雷问题</strong>：给定边界 ∂D 上的函数 g，求 D 内调和、边界上等于 g 的 u。
+        <strong>狄利克雷问题</strong>：给定边界 <MathInline tex="\partial D" /> 上的函数 g，求 D 内调和、边界上等于 g 的 u。
         （解存在且<strong>唯一</strong>，并连续依赖于边界数据。）
       </p>
     </div>

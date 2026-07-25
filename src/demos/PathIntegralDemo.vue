@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { usePlot, makeSquareView, drawPoint, drawLabel, C, fmt } from './plot.js'
 import DemoFrame from '../components/DemoFrame.vue'
 import ControlSlider from '../components/ControlSlider.vue'
+import MathInline from '../components/MathInline.vue'
 
 const FNS = {
   entire: {
@@ -140,7 +141,7 @@ usePlot(
       <ControlSlider label="路径隆起高度" v-model="bulge" :min="-1.8" :max="1.8" :step="0.05" />
     </template>
     <template #readout>
-      沿红色路径数值积分：∫f(z)dz ≈ <b>{{ fmt(integral[0], 3) }} {{ integral[1] >= 0 ? '+' : '−' }} {{ fmt(Math.abs(integral[1]), 3) }}i</b>
+      沿红色路径数值积分：<MathInline tex="\int f(z)\, dz" /> ≈ <b>{{ fmt(integral[0], 3) }} {{ integral[1] >= 0 ? '+' : '−' }} {{ fmt(Math.abs(integral[1]), 3) }}i</b>
       <template v-if="fnKey === 'entire'">（理论值：z³/3 在端点之差 = 16/3 ≈ 5.333）</template>
       <template v-else>（上方走 = −πi ≈ −3.1416i，下方走 = +πi）</template>
     </template>

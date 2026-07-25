@@ -19,7 +19,7 @@ import WaveDemo from '../../demos/WaveDemo.vue'
       <p>
         取弦上 x 到 x+Δx 的一小段，横向位移 u(x,t)，弦中张力 T（拉紧程度），线密度 ρ（每米质量）。
         小段两端都被张力沿切线方向拉着。<strong>水平方向</strong>两端拉力近似抵消（小振动，弦不横跑）；
-        <strong>竖直方向</strong>，每端拉力的竖直分量 ≈ T × 该端斜率（小角度时 sin ≈ tan = 斜率 = ∂u/∂x）。
+        <strong>竖直方向</strong>，每端拉力的竖直分量 ≈ T × 该端斜率（小角度时 sin ≈ tan = 斜率 = <MathInline tex="\partial u/\partial x" />）。
         于是竖直合力 = 右端拉力竖直分量 − 左端的 =
         <MathInline tex="T\left[u_x(x + \Delta x) - u_x(x)\right]" />。
         牛顿第二定律：合力 = 质量 × 加速度 = <MathInline tex="(\rho \Delta x) \cdot u_{tt}" />。

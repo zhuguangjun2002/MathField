@@ -115,7 +115,7 @@ import ResidueDemo from '../../demos/ResidueDemo.vue'
       <div class="insight-title">🔗 与你学过的课程连一连</div>
       <p>
         <strong>微积分</strong>：泰勒展开的收敛半径在此拿到几何解释；反常积分的"主值"概念在围道法里自然出现；
-        <strong>概率论</strong>：特征函数反演；<strong>计算数学</strong>：数值求积遇到振荡积分（如 ∫sin x/x）时，
+        <strong>概率论</strong>：特征函数反演；<strong>计算数学</strong>：数值求积遇到振荡积分（如 <MathInline tex="\int \sin x / x\, dx" />）时，
         把路径挪进复平面（最速下降法）常常一举驯服——理论出自本讲，技巧用在数值。
       </p>
     </div>

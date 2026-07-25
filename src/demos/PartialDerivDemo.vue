@@ -71,15 +71,15 @@ const utt = computed(() => {
       <ControlSlider label="观察时刻 t₀" v-model="t0" :min="0" :max="2" :step="0.01" />
     </template>
     <template #readout>
-      在 (x₀, t₀) 处沿两个方向各求二阶导：∂²u/∂x² ≈ <b>{{ fmt(uxx, 1) }}</b>（弦形的弯曲度）
-      &nbsp;&nbsp;∂²u/∂t² ≈ <b>{{ fmt(utt, 1) }}</b>（该点的加速度）&nbsp;&nbsp;两者之比 ≈
+      在 (x₀, t₀) 处沿两个方向各求二阶导：<MathInline tex="\partial^2 u/\partial x^2" /> ≈ <b>{{ fmt(uxx, 1) }}</b>（弦形的弯曲度）
+      &nbsp;&nbsp;<MathInline tex="\partial^2 u/\partial t^2" /> ≈ <b>{{ fmt(utt, 1) }}</b>（该点的加速度）&nbsp;&nbsp;两者之比 ≈
       <b>{{ fmt(utt / (uxx || 1e-9), 2) }}</b>
     </template>
     <template #note>
       同一个函数 u(x,t)，切法不同，看到的东西完全不同：<b>固定时刻 t₀ 沿 x 切</b>，
       得到上图——那一瞬间整根弦的形状（照片）；<b>固定位置 x₀ 沿 t 切</b>，得到下图——
-      那一个点上下振动的历史（心电图）。<b>偏导数就是"切片后的普通导数"</b>：∂u/∂x 是照片的斜率，
-      ∂u/∂t 是心电图的斜率——没有任何新运算，只是"求导前先约定按哪个变量切、其余全冻结"。
+      那一个点上下振动的历史（心电图）。<b>偏导数就是"切片后的普通导数"</b>：<MathInline tex="\partial u/\partial x" /> 是照片的斜率，
+      <MathInline tex="\partial u/\partial t" /> 是心电图的斜率——没有任何新运算，只是"求导前先约定按哪个变量切、其余全冻结"。
       读数区里那个比值始终在 1 附近（本例波速 c = 1）不是巧合：弯曲度与加速度锁在一起，
       正是下一讲波动方程 <MathInline tex="u_{tt} = c^2 u_{xx}" /> 说的事——这两张图已经偷偷在演示它了。
     </template>

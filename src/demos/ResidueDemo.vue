@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { usePlot, makeSquareView, drawLabel, C, fmt } from './plot.js'
 import DemoFrame from '../components/DemoFrame.vue'
 import ControlSlider from '../components/ControlSlider.vue'
+import MathInline from '../components/MathInline.vue'
 
 // f(z) = 1/(z−1) + 2/(z+1) − 1/(z−i)：三个一阶极点及其留数
 const POLES = [
@@ -140,7 +141,7 @@ usePlot(
       <ControlSlider label="回路半径 R" v-model="R" :min="0.3" :max="2.2" :step="0.05" />
     </template>
     <template #readout>
-      数值积分 ∮f(z)dz ÷ 2πi ≈ <b>{{ fmt(measured[0], 3) }} {{ measured[1] >= 0 ? '+' : '−' }} {{ fmt(Math.abs(measured[1]), 3) }}i</b>
+      数值积分 <MathInline tex="\oint f(z)\, dz \div 2\pi i" /> ≈ <b>{{ fmt(measured[0], 3) }} {{ measured[1] >= 0 ? '+' : '−' }} {{ fmt(Math.abs(measured[1]), 3) }}i</b>
       &nbsp;&nbsp;圈内留数和 = <b>{{ expected }}</b>
       <template v-if="nearEdge">&nbsp;（回路快擦到极点了，数值误差会变大）</template>
     </template>
