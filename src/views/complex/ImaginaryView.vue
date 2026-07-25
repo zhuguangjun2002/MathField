@@ -34,6 +34,40 @@ import ComplexMulDemo from '../../demos/ComplexMulDemo.vue'
       先给它立好运算规则（照普通代数算，遇到 <MathInline tex="(\sqrt{-1})^2" /> 就换成 −1），然后硬算：
     </p>
     <MathBlock tex="\sqrt[3]{2 + \sqrt{-121}} = 2 + \sqrt{-1}, \qquad \sqrt[3]{2 - \sqrt{-121}} = 2 - \sqrt{-1}" />
+    <div class="insight">
+      <div class="insight-title">🔍 这两个等号是怎么来的？——猜形状，再立方回去对账</div>
+      <p>
+        它们<strong>不是开立方开出来的</strong>（没人会去开一个"不可能的数"的立方根），
+        而是<strong>先猜形状、再验算通过</strong>的。邦贝利的思路分三步：
+      </p>
+      <p>
+        <strong>① 赌一个形状。</strong>两个被开方数只差一个正负号，那两个立方根大概也是一对孪生的
+        <MathInline tex="a + b\sqrt{-1}" /> 与 <MathInline tex="a - b\sqrt{-1}" />（<MathInline tex="a,\,b" /> 是普通实数）。
+      </p>
+      <p>
+        <strong>② 用乘积卡住 a、b。</strong>两个立方根之积 = 两个被开方数之积的立方根，
+        而后者是干净的实数（平方差公式，<MathInline tex="(\sqrt{-121})^2 = -121" />）：
+      </p>
+      <MathBlock tex="\begin{aligned} (2+\sqrt{-121})(2-\sqrt{-121}) &= 4 + 121 = 125 \\ \Longrightarrow\quad (a+b\sqrt{-1})(a-b\sqrt{-1}) = a^2 + b^2 &= \sqrt[3]{125} = 5 \end{aligned}" />
+      <p>
+        <MathInline tex="a^2 + b^2 = 5" /> 的正整数解只剩两种：<MathInline tex="(a,b)=(2,1)" /> 或 <MathInline tex="(1,2)" />。
+      </p>
+      <p>
+        <strong>③ 立方回去对账。</strong>试 <MathInline tex="2+\sqrt{-1}" />，照二项式硬展开，
+        遇到 <MathInline tex="(\sqrt{-1})^2" /> 就换成 −1：
+      </p>
+      <MathBlock tex="\begin{aligned} (2+\sqrt{-1})^3 &= 8 + 12\sqrt{-1} + 6(\sqrt{-1})^2 + (\sqrt{-1})^3 \\ &= (8-6) + (12-1)\sqrt{-1} = 2 + 11\sqrt{-1} \end{aligned}" />
+      <p>
+        而 <MathInline tex="11\sqrt{-1} = \sqrt{-121}" />，<strong>正好就是被开方数，对上了</strong>。
+        （另一个候选 <MathInline tex="1+2\sqrt{-1}" /> 立方后是 <MathInline tex="-11-2\sqrt{-1}" />，对不上，淘汰。）
+      </p>
+      <p>
+        所以那个等号的真正含义是"<strong>我验算过了</strong>"，不是"我解出来了"——这恰恰是全讲的要害：
+        邦贝利<strong>没有</strong>弄懂 <MathInline tex="\sqrt{-1}" /> 是什么，
+        他只是发现：按普通代数规则摆弄它，账目居然处处合得上。
+        （严格说立方根有三支，这里默认取了实部为正的那一支；这件事要等复数搬进平面才说得清——见下一节。）
+      </p>
+    </div>
     <p>
       两个立方根相加，<MathInline tex="\sqrt{-1}" /> 正负抵消，得 x = 4。<strong>幽灵在计算中途登场，
       规规矩矩干完活，又体面地退场，留下一个完全真实的答案。</strong>此后两百年，数学家一直这样用它：
