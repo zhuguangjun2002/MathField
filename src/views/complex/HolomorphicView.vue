@@ -6,6 +6,7 @@ import RevealBox from '../../components/RevealBox.vue'
 import ConformalDemo from '../../demos/ConformalDemo.vue'
 import JoukowskiDemo from '../../demos/JoukowskiDemo.vue'
 import MercatorDemo from '../../demos/MercatorDemo.vue'
+import MercatorVarsDemo from '../../demos/MercatorVarsDemo.vue'
 import PotentialFlowDemo from '../../demos/PotentialFlowDemo.vue'
 </script>
 
@@ -161,6 +162,14 @@ import PotentialFlowDemo from '../../demos/PotentialFlowDemo.vue'
       </ul>
       <p>两个滑杆调出的整族翼型，至今叫<strong>茹科夫斯基翼型</strong>。</p>
     </RevealBox>
+    <p>
+      下面这张图有四个旋钮，别被名字唬住：<strong>厚度、弯度、迎角</strong>是机翼真正的三个参数，
+      前两个就是上面说的"把圆心往左挪、往上挪"（数字是挪动的距离，尺子取成"原点到临界点
+      <MathInline tex="z = 1" /> 为 1"）；<strong>变形进度</strong>则根本不是机翼参数，
+      只是这张图的动画进度条——把 <MathInline tex="w = z + 1/z" /> 里的 1 换成
+      <MathInline tex="t" />，从 0 拖到 1，好让你看清圆是怎么一步步长成机翼的。
+      每个旋钮的确切含义与换算，图下面逐条写了。
+    </p>
     <JoukowskiDemo />
     <p>
       顺带还能白拿一个结果。绕圆柱的解里有一个自由参数——<strong>环量</strong>
@@ -188,6 +197,12 @@ import PotentialFlowDemo from '../../demos/PotentialFlowDemo.vue'
       墨卡托没有微积分（那还要一百年才被发明），他是用航海表凑出纵坐标的；
       但这个投影的真身，正是本讲讲的东西。
     </p>
+    <p>
+      下面的推导会用到四个符号：<MathInline tex="\varphi" />（纬度）、<MathInline tex="\lambda" />（经度）、
+      <MathInline tex="\beta" />（舵向，从正北量起的角）、<MathInline tex="y" />（纸上的纵坐标）。
+      它们分别指着地球和海图上的哪个东西，先在下面这张图里对一遍，再往下看会轻松得多。
+    </p>
+    <MercatorVarsDemo />
     <RevealBox
       title="🔍 墨卡托的纵坐标为什么非得那么怪"
       hint="先自己推一步：地图把所有经线画成等距的竖线，那么在纬度 φ 处，东西方向被放大了几倍？要保角，南北方向该怎么配合？"
@@ -212,7 +227,7 @@ import PotentialFlowDemo from '../../demos/PotentialFlowDemo.vue'
       <p>
         <strong>第三步：恒向线果然成了直线。</strong>设舵向为 <MathInline tex="\beta" />（从正北量起），
         沿航线走一小段，北向位移是 <MathInline tex="R\,d\varphi" />，东向位移是
-        <MathInline tex="R\cos\varphi\,d\lambda" />，于是
+        <MathInline tex="R\cos\varphi\,d\lambda" />（就是上面那张图②的两条直角边），于是
       </p>
       <MathBlock tex="\tan\beta = \frac{\cos\varphi\,d\lambda}{d\varphi} = \frac{d\lambda}{dy} \quad \Longrightarrow \quad \lambda = (\tan\beta)\, y + C" />
       <p>

@@ -45,6 +45,46 @@ function joukowski(x, y) {
   return [x + (t * x) / r2, y - (t * y) / r2]
 }
 
+// 把右图那条轮廓量一遍，换算成航空书上的说法：弦长、最大厚度/弦长、最大拱高/弦长。
+// 沿 x 分箱取上下缘，拱高按"前缘—后缘连线"（弦线）起算。
+// 采样点要远密于箱数，否则会有箱只落到上表面的点，中线被抬高、拱高算虚
+const outline = computed(() => {
+  const N = 3000
+  const pts = []
+  for (let k = 0; k < N; k++) {
+    const th = (2 * Math.PI * k) / N
+    pts.push(joukowski(mux.value + R.value * Math.cos(th), muy.value + R.value * Math.sin(th)))
+  }
+  let iL = 0
+  let iT = 0
+  for (let i = 0; i < N; i++) {
+    if (pts[i][0] < pts[iL][0]) iL = i // 前缘
+    if (pts[i][0] > pts[iT][0]) iT = i // 后缘
+  }
+  const [xL, yL] = pts[iL]
+  const [xT, yT] = pts[iT]
+  const chord = Math.hypot(xT - xL, yT - yL)
+  const span = xT - xL
+  const B = 120
+  const up = new Array(B).fill(-Infinity)
+  const lo = new Array(B).fill(Infinity)
+  for (const [px, py] of pts) {
+    const i = Math.min(B - 1, Math.max(0, Math.floor(((px - xL) / span) * B)))
+    up[i] = Math.max(up[i], py)
+    lo[i] = Math.min(lo[i], py)
+  }
+  let tk = 0
+  let cb = 0
+  for (let i = 0; i < B; i++) {
+    if (up[i] === -Infinity) continue
+    const xm = xL + (span * (i + 0.5)) / B
+    const base = yL + ((yT - yL) * (xm - xL)) / span
+    tk = Math.max(tk, up[i] - lo[i])
+    cb = Math.max(cb, Math.abs((up[i] + lo[i]) / 2 - base))
+  }
+  return { chord, thickPct: (100 * tk) / chord, camberPct: (100 * cb) / chord }
+})
+
 // 圆周上等分的一圈标记点：看着它们被映射拉成什么样
 const MARKS = 12
 const marks = computed(() => {
@@ -161,14 +201,18 @@ usePlot(
   <DemoFrame title="茹科夫斯基变换：把机翼的绕流问题，搬回圆柱上去解">
     <canvas ref="canvas" class="demo-canvas"></canvas>
     <template #controls>
-      <ControlSlider label="厚度 %" v-model="thick" :min="0" :max="30" :step="1" />
-      <ControlSlider label="弯度 %" v-model="camber" :min="-15" :max="20" :step="1" />
-      <ControlSlider label="迎角 °" v-model="alphaDeg" :min="-6" :max="14" :step="0.5" />
-      <ControlSlider label="变形进度 %" v-model="morph" :min="0" :max="100" :step="1" />
+      <ControlSlider label="厚度 %（圆心左移）" v-model="thick" :min="0" :max="30" :step="1" />
+      <ControlSlider label="弯度 %（圆心上移）" v-model="camber" :min="-15" :max="20" :step="1" />
+      <ControlSlider label="迎角 °（来流仰角）" v-model="alphaDeg" :min="-6" :max="14" :step="0.5" />
+      <ControlSlider label="变形进度 %（圆→翼型）" v-model="morph" :min="0" :max="100" :step="1" />
     </template>
     <template #readout>
       圆心 <MathInline tex="\mu" /> = <b>{{ fmt(mux, 2) }} + {{ fmt(muy, 2) }}i</b
       >，半径 R = <b>{{ fmt(R, 3) }}</b>
+      <br />
+      右图 弦长 = <b>{{ fmt(outline.chord, 2) }}</b>，最大厚度 =
+      <b>{{ fmt(outline.thickPct, 1) }}%</b> 弦长，最大拱高 =
+      <b>{{ fmt(outline.camberPct, 1) }}%</b> 弦长
       <br />
       库塔条件定出环量 <MathInline tex="\Gamma" /> = <b>{{ fmt(Gamma, 2) }}</b
       >，升力 <MathInline tex="L = \rho U \Gamma" /> 方向<b>{{
@@ -176,6 +220,29 @@ usePlot(
       }}</b>
     </template>
     <template #note>
+      <p><b>四个旋钮分别是什么</b>（长度尺子统一取"原点到临界点 <MathInline tex="z = 1" /> 的距离 = 1"）：</p>
+      <ul>
+        <li>
+          <b>厚度 %</b>——把圆心 <MathInline tex="\mu" /> 往<b>左</b>挪多远：拖到 12
+          就是挪 0.12。它不是航空书上的厚度比，但两者只差个常数：映出来的翼型弦长约为 4，
+          最大厚度约占弦长的 <b>1.2 倍</b>这个读数（12 → 约 14%，正是真机翼的量级）。
+          换算结果就写在上面读数区，拖着看即可。
+        </li>
+        <li>
+          <b>弯度 %</b>——把圆心往<b>上</b>挪多远，同一把尺子。最大拱高约占弦长的
+          <b>一半</b>这个读数（8 → 约 4%）。取负值就是圆心下移，翼型变成下凸。
+        </li>
+        <li>
+          <b>迎角 °</b>——单位是<b>度</b>，不是百分比：来流方向与翼弦的夹角，
+          也就是飞机抬头的角度。负值 = 低头。
+        </li>
+        <li>
+          <b>变形进度 %</b>——唯一一个<b>不是</b>机翼参数的旋钮，是这张图自己的动画进度：
+          <MathInline tex="w = z + t/z" /> 里的 <MathInline tex="t" />，0 表示还原成那个圆，
+          100 表示 <MathInline tex="t = 1" />、即真正的茹科夫斯基变换。中途每个
+          <MathInline tex="t" /> 也都是解析映射，所以整个变形过程都合法。
+        </li>
+      </ul>
       1902 年茹科夫斯基要算机翼受力，可翼型那个尖后缘的钝头轮廓，方程根本解不动；而<b>绕圆柱的流动</b>是
       课本上的标准例题（均匀流 + 偶极子 + 涡，一行公式）。他的招数是：找一个解析函数
       <MathInline tex="w = z + 1/z" />，把一个<b>偏心的圆</b>整个映成翼型——先把变形进度拖到 0，
