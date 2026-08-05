@@ -82,11 +82,16 @@ src/
 **六门课共 30 讲全部上线。**各课程的详细规划（讲次划分、每讲的困境/动画构想/课程间联系）见
 [`docs/course-plans.md`](docs/course-plans.md)。
 
+上线之后还有一轮**内容复查**：按 CLAUDE.md 的「不许只给结论」清单逐讲补推导、
+兑现跨课链接、给动画旋钮加解释。目前复变函数、微积分、线性代数三门已复查完，
+概率论、数学物理方程、数值分析待复查——进度表同样在
+[`docs/course-plans.md`](docs/course-plans.md)。
+
 ## 其他文档
 
 - [`CLAUDE.md`](CLAUDE.md) —— 开发工作指引：内容五段式风格约定、目录结构、
   新增一讲/新开一门课的流程、样式与动画配色约定、验证方法
-- [`docs/course-plans.md`](docs/course-plans.md) —— 各课程的完整蓝图与上线进度
+- [`docs/course-plans.md`](docs/course-plans.md) —— 各课程的完整蓝图、上线进度与内容复查进度
 
 ## 新增一讲的步骤
 
