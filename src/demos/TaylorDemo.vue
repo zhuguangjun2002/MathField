@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { usePlot, makeView, drawAxes, plotFn, drawPoint, drawLabel, C } from './plot.js'
 import DemoFrame from '../components/DemoFrame.vue'
 import ControlSlider from '../components/ControlSlider.vue'
+import MathInline from '../components/MathInline.vue'
 
 function fact(n) {
   let r = 1
@@ -108,6 +109,13 @@ const polyStr = computed(() => {
   return t.length > 5 ? t.slice(0, 5).join(' ') + ' + …' : t.join(' ')
 })
 
+// 检验点：统一取 x = 2，让"余项"这个正文里的主角在读数区有个具体数字。
+// ln(1+x) 的收敛半径是 1，所以它在这一点上会当场发散——这正是要给读者看的。
+const PROBE = 2
+const probeP = computed(() => cfg.value.poly(PROBE, order.value))
+const probeF = computed(() => cfg.value.f(PROBE))
+const probeErr = computed(() => Math.abs(probeP.value - probeF.value))
+
 usePlot(
   canvas,
   (ctx, w, h) => {
@@ -159,16 +167,50 @@ usePlot(
           <option v-for="(c, k) in FNS" :key="k" :value="k">{{ c.label }}</option>
         </select>
       </label>
-      <ControlSlider label="展开阶数 n" v-model="order" :min="0" :max="15" :step="1" />
+      <ControlSlider label="展开阶数 n（中心固定在 0）" v-model="order" :min="0" :max="15" :step="1" />
     </template>
     <template #readout>
-      P<sub>{{ order }}</sub>(x) = <b>{{ polyStr }}</b>
+      P<sub>{{ order }}</sub>(x) = <b>{{ polyStr }}</b><br />
+      检验点 x = 2：P<sub>{{ order }}</sub>(2) = <b>{{ probeP.toFixed(4) }}</b>，真值
+      <b>{{ probeF.toFixed(4) }}</b>，余项 = {{ probeErr.toExponential(2) }}
     </template>
     <template #note>
-      拖动阶数：0 阶是水平线（只对上函数值），1 阶是切线（再对上斜率），2 阶抱住弯曲方向……
-      每加一阶，多项式就多"模仿"目标函数的一层导数信息，贴合的范围随之扩大。
-      试试 ln(1+x)：无论加多少阶，多项式在 |x| &gt; 1 之外都会失控发散 ——
-      这就是「收敛半径」，它的真正解释要到复变函数里才水落石出。
+      <p><b>两个旋钮分别是什么</b></p>
+      <ul>
+        <li>
+          <b>函数</b>（下拉）：要被冒充的那条曲线（墨色）。红色那条始终是它的泰勒多项式。
+        </li>
+        <li>
+          <b>展开阶数 n</b>：多项式保留到 <MathInline tex="x^n" /> 为止，也就是
+          <strong>对齐了目标函数的前 n 阶导数</strong>。
+          <strong>展开中心固定在 x = 0</strong>（图上那个靛蓝点），没有单独的中心旋钮——
+          所以这里画的都是麦克劳林多项式。注意 sin 只有奇数次项、cos 只有偶数次项，
+          所以拖动阶数时它们<strong>每两格才变一次</strong>。
+        </li>
+      </ul>
+      <p>
+        <b>读数区第二行是干什么的</b>：正文说"余项才是定理的灵魂"，
+        可光看图只能看出"贴得紧不紧"。所以这里固定挑一个<strong>检验点 x = 2</strong>，
+        把多项式在那里的值、真值、以及两者之差（也就是<strong>余项</strong>）当场算出来。
+        第一行的多项式超过 5 项时会省略成"…"，但计算用的是全部项。
+      </p>
+      <p>
+        <b>照着做一遍（一）：余项怎么塌下去。</b>选 <MathInline tex="\sin x" />，
+        把 n 从 0 拖到 15，盯住余项那一栏：
+        <b>9.1e-1 → 2.4e-1（n=3）→ 2.4e-2（n=5）→ 1.4e-3（n=8）→ 3.6e-10（n=15）</b>。
+        每加两阶就掉一两个数量级——<strong>这是阶乘在分母上碾压幂函数的直接后果</strong>。
+        换成 <MathInline tex="e^x" /> 和 <MathInline tex="\cos x" /> 也是同一副样子。
+      </p>
+      <p>
+        <b>照着做一遍（二）：余项怎么爆炸。</b>换成
+        <MathInline tex="\ln(1+x)" />，检验点 x = 2 落在金色虚线（收敛半径边界
+        <MathInline tex="|x| = 1" />）<strong>外面</strong>。同样把 n 拖上去，余项不但不减，
+        反而一路涨：<b>n=3 时 1.6e+0，n=8 时 2.0e+1，n=15 时 1.4e+3</b>
+        （多项式给出 1424，真值只有 1.0986）。<strong>出了收敛半径，加项数是帮倒忙。</strong>
+        再把注意力挪回边界以内看图形，那里红线仍然乖乖贴着黑线——
+        <strong>同一条级数，一线之隔，两种命运</strong>。这条线为什么是"半径"（明明实轴上看是个区间），
+        谜底要到<router-link to="/complex/cauchy-integral">复变函数</router-link>才揭晓。
+      </p>
     </template>
   </DemoFrame>
 </template>
