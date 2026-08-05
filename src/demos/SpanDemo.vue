@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { usePlot, makeSquareView, drawArrow, drawLabel, C, fmt } from './plot.js'
 import DemoFrame from '../components/DemoFrame.vue'
 import ControlSlider from '../components/ControlSlider.vue'
+import MathInline from '../components/MathInline.vue'
 
 const alpha = ref(35) // v2 与 v1 的夹角（度）
 const beta = ref(40) // v3 抬离 xy 平面的角度（度）
@@ -13,10 +14,13 @@ const rad = (deg) => (deg * Math.PI) / 180
 const v1 = computed(() => [2, 0, 0])
 const v2 = computed(() => [2 * Math.cos(rad(alpha.value)), 2 * Math.sin(rad(alpha.value)), 0])
 const v3 = computed(() => {
-  const w = [0.33, 0.94, 0] // v3 的"平面内成分"方向
+  // v3 的"平面内成分"取在 v1 与 v2 之间（夹角 0.8α），这样 α = 0 时三者共线、
+  // 秩真能降到 1；否则 v3 永远指着别的方向，读数最低只到 2，note 里
+  // "拖到 0 看直线"就成了做不到的事。
+  const g = rad(0.8 * alpha.value)
   const cb = Math.cos(rad(beta.value))
   const sb = Math.sin(rad(beta.value))
-  return [2 * (cb * w[0]), 2 * (cb * w[1]), 2 * sb]
+  return [2 * (cb * Math.cos(g)), 2 * (cb * Math.sin(g)), 2 * sb]
 })
 
 const cross = (p, q) => [p[1] * q[2] - p[2] * q[1], p[2] * q[0] - p[0] * q[2], p[0] * q[1] - p[1] * q[0]]
@@ -137,17 +141,57 @@ usePlot(
     <template #controls>
       <ControlSlider label="v₂ 偏离 v₁ 的角度" v-model="alpha" :min="0" :max="90" :step="1" :display="(x) => x + '°'" />
       <ControlSlider label="v₃ 抬离平面的角度" v-model="beta" :min="0" :max="80" :step="1" :display="(x) => x + '°'" />
-      <ControlSlider label="旋转观察视角" v-model="phi" :min="0" :max="360" :step="1" :display="(x) => x + '°'" />
+      <ControlSlider label="旋转观察视角（只是看的角度）" v-model="phi" :min="0" :max="360" :step="1" :display="(x) => x + '°'" />
     </template>
     <template #readout>
       张成空间维数（秩）= <b>{{ rank }}</b> —— {{ rankText[rank] }}
       &nbsp;&nbsp;平行六面体体积 |det[v₁ v₂ v₃]| = <b>{{ fmt(volume) }}</b>
     </template>
     <template #note>
-      把两个角度都拖到 0，再慢慢抬起来：v₂ 离开 v₁ 的瞬间，张成从直线<b>跳变</b>成平面；
-      v₃ 抬离平面的瞬间，平面跳变成全空间。反过来，v₃ 落回平面的那一刻，体积（行列式）恰好归零——
-      <b>"线性相关"不是抽象口诀，就是"有人没贡献新方向"</b>。注意维数只能取 1、2、3，
-      没有中间值：这就是"秩"为什么是个整数。转动视角滑杆可以从各个方向确认这一点。
+      <p><b>三个旋钮分别是什么</b></p>
+      <ul>
+        <li>
+          <b>v₂ 偏离 v₁ 的角度</b>（0–90°）：<MathInline tex="\boldsymbol{v}_1" /> 固定躺在 x 轴上，
+          这个角控制 <MathInline tex="\boldsymbol{v}_2" /> 在<strong>水平面内</strong>转开多少。
+          <MathInline tex="\boldsymbol{v}_3" /> 的水平分量跟着它一起转（取在两者之间），
+          所以这个角为 0 时<strong>三根向量全部重合</strong>。
+        </li>
+        <li>
+          <b>v₃ 抬离平面的角度</b>（0–80°）：把 <MathInline tex="\boldsymbol{v}_3" /> 从水平面里
+          <strong>抬起来</strong>多少。只有它才能带来"第三个方向"。
+        </li>
+        <li>
+          <b>旋转观察视角</b>（0–360°）：<strong>纯粹是摄像机方位，不改变任何向量</strong>。
+          它存在的意义是让你换个角度确认"三根向量真的共面/不共面"——
+          从某些方向看过去，共面的三根会骗人地显得散开。
+        </li>
+      </ul>
+      <p>
+        <b>读数区两个量</b>：<strong>秩</strong>是这三根向量能"够到"的空间维数；
+        <strong>平行六面体体积</strong>就是
+        <router-link to="/linear-algebra/determinant">上一讲</router-link>的
+        <MathInline tex="|\det|" /> 的三维版。体积一旦为零，三根共面，秩必定小于 3。
+      </p>
+      <p>
+        <b>照着做一遍：看两次跳变。</b>把前两个角度<strong>都拖到 0</strong>——
+        三根向量叠成一根，读数是<b>一条直线（1 维）</b>。
+        现在慢慢加大第一个角：<MathInline tex="\boldsymbol{v}_2" /> 一离开
+        <MathInline tex="\boldsymbol{v}_1" />，读数<strong>跳</strong>到<b>一张平面（2 维）</b>，
+        中间没有 1.5 维。接着加大第二个角：<MathInline tex="\boldsymbol{v}_3" /> 一抬离水平面，
+        读数再<strong>跳</strong>到<b>整个空间（3 维）</b>，体积同时从 0 开始长。
+        反过来把第二个角推回 0，体积精确归零，秩掉回 2。
+      </p>
+      <p>
+        <b>"线性相关"不是抽象口诀，就是"有人没贡献新方向"</b>——
+        秩只能取 1、2、3 而没有中间值，正是因为"方向"是数得清的。
+      </p>
+      <p>
+        （<b>一个诚实的小注</b>：程序判定秩时用了 0.12 的容差，所以跳变会比理论上晚一两度——
+        第一个角要拖到约 <b>2°</b> 才从 1 跳到 2，第二个角同样要约 <b>2°</b> 才从 2 跳到 3。
+        这不是数学，是数值判据必须有个阈值：现实中的数据带噪声，
+        "体积是不是零"从来没法用等号去问。<router-link to="/numerical/linear-system">数值分析
+        第五讲</router-link>讲的就是这件事该怎么问才靠谱。）
+      </p>
     </template>
   </DemoFrame>
 </template>
