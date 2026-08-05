@@ -260,28 +260,136 @@ import PotentialFlowDemo from '../../demos/PotentialFlowDemo.vue'
       前两个例子是"用"解析函数。第三个例子性质不同：它说的是二维物理里那些方程，
       <strong>本来就是柯西-黎曼方程</strong>，只是换了套记号写着。
     </p>
+    <p>
+      不过这一段要用到三个词——<strong>场</strong>、<strong>势</strong>、<strong>流函数</strong>。
+      教科书往往默认读者早就会了，这里从零讲一遍；用到的工具只有偏导数一样。
+    </p>
+
+    <p>
+      <strong>场：给平面上每一点挂一个量。</strong>挂一个<strong>数</strong>，叫标量场——
+      房间里每一点的温度、一座山每一点的海拔、每一点的气压；挂一个<strong>箭头</strong>，
+      叫向量场——河面上每一点水流的方向与快慢、每一点的风。本节说的<strong>流场</strong>就是后者。
+      想象一条平缓的河，河心立着一根圆形桥墩，水从左边来、绕过桥墩、在右边合拢。
+      给河面照一张俯视相片，在每一点画上"这里的水往哪个方向、有多快"这个箭头，画满整张相片——
+      这一整张箭头图就叫一个流场。（下面动画里"绕圆柱的流动"那一档，画的正是这根桥墩。）
+    </p>
+    <p>
+      两个限定词也一并说清。<strong>二维</strong>是说只看一个平面就够：河面俯视图、
+      长管道的一个横截面、无限长导线周围的一个切片——沿着第三个方向情形都一样，
+      所以画一张顶一沓。<strong>定常</strong>是说这张图<strong>不随时间变</strong>：
+      水一直在流，但流的样子始终是那个样子（桥墩后面永远是那两道分岔，不会一会儿这样一会儿那样）。
+    </p>
+
+    <p>
+      <strong>势：用一个数的函数，记住整张箭头图。</strong>先看一件你早就见过的事。
+      一座山，每一点有个海拔 <MathInline tex="h(x, y)" />——这是标量场，每点一个数。
+      往山坡上倒一桶水，水往哪儿流？往<strong>最陡的下坡方向</strong>。
+      也就是说：只要给出海拔这<strong>一个数</strong>的函数，"水在每一点往哪流、流多急"
+      那整张<strong>箭头图</strong>就已经被定死了，用不着另外再给一遍。
+      数学上把"最陡上坡的方向、陡度多少"这个箭头记作
+      <MathInline tex="\nabla h = (\partial_x h,\ \partial_y h)" />，叫<strong>梯度</strong>；
+      水流的方向就是 <MathInline tex="-\nabla h" />。
+    </p>
+    <p>
+      这就是<strong>势</strong>的全部含义：<strong>一个标量函数，一求梯度就还原出整个向量场</strong>。
+      名字来自"势能"——重力势能 <MathInline tex="mgh" /> 是每点一个数，
+      而 <MathInline tex="-\nabla(mgh) = (0,\, -mg)" /> 正是重力那个箭头。
+      好处非常实在：平面上一个向量场每点要记两个数，势只要记一个数；
+      两个未知函数压成一个，方程少一半。<strong>电势</strong>就是这么用的——
+      你家插座上标的 220 V 是每点一个数（势），电场才是箭头；
+      没人去背电场的两个分量，因为记住电势就够了。热学里记温度、渗流里记压力、
+      天体力学里记引力势，全是同一个套路。
+    </p>
+    <p>
+      <strong>等势线就是等高线。</strong>地图上的等高线你见过：沿一条等高线走，海拔不变；
+      而水流总是<strong>垂直</strong>穿过等高线往下淌——因为"最陡"的方向必然垂直于"不升不降"的方向。
+      下面动画里靛蓝的<strong>等势线</strong>与朱红的<strong>流线</strong>处处成 90°，
+      物理上就是这一件事（它在数学上还有第二重来历，等会儿说）。
+    </p>
+    <p>
+      <strong>但不是每个向量场都配有势。</strong>想象一个绕着中心打转的场：
+      每点的箭头都沿圆周的切线方向，像浴缸放水时的那个漩涡。
+      假设它有势 <MathInline tex="\varphi" />，那么沿一个圆走整整一圈：
+      每一步都在"顺着箭头走"，<MathInline tex="\varphi" /> 就该一路只增不减；
+      可走完一圈你回到了出发点，<MathInline tex="\varphi" /> 又必须回到原值——矛盾。
+      <strong>所以漩涡场没有全局的势</strong>。有没有势取决于一个条件，物理上叫<strong>无旋</strong>：
+      往流场里丢一个小风车，它可以随波漂走，但自己不转。
+      （这个"绕一圈对不上"的漏洞不是本节的败笔，它正是<router-link
+        to="/complex/cauchy-integral"
+        >下一讲</router-link
+      >的主角。）
+    </p>
+
+    <p>
+      <strong>流函数：势记的是"高度"，它记的是"流量"。</strong>在河面上任取两点 A、B，
+      从 B 到 A 随手拉一条线，数一数<strong>每秒有多少水从这条线上横穿过去</strong>。
+      要紧的是：只要水不凭空冒出来也不凭空消失（这一条叫<strong>无源</strong>），
+      这个流量就<strong>只跟两个端点有关，跟你把线拉成什么形状无关</strong>——
+      否则形状不同的两条线之间就得藏着一个水龙头。既然只跟端点有关，
+      那就可以给每一点记一个数 <MathInline tex="\psi" />，让"横穿 B → A 那条线的流量"恰好等于
+      <MathInline tex="\psi(A) - \psi(B)" />。这个账本就是<strong>流函数</strong>。
+    </p>
+    <p>
+      它立刻送出一个漂亮结论：若 A、B 两点的 <MathInline tex="\psi" /> 相等，
+      那么连接它们的线上<strong>净流量为零</strong>。把 <MathInline tex="\psi" /> 相等的点连成曲线，
+      就得到一条<strong>没有任何水穿过去的线</strong>——水只能沿着它走。
+      这样的线就叫<strong>流线</strong>，也就是你往水里滴一滴墨水，它自己划出来的那道痕。
+      所以 <MathInline tex="\psi" /> 的等值线 = 流线，一个流函数等于一次画出整幅流动图案；
+      桥墩的表面也必然是其中一条（水不可能穿进桥墩里去）。
+    </p>
+    <p>
+      到这里，两个标量函数各就各位：<MathInline tex="\varphi" /> 管"势"，
+      <MathInline tex="\psi" /> 管"流量"。下面这一步是本讲的高潮——
+      它俩其实是<strong>同一个复函数的实部与虚部</strong>。
+    </p>
     <RevealBox
       title="🔍 从「水不打转、水不凭空冒出来」两句话，推出柯西-黎曼方程"
-      hint="先自己想想：一个二维速度场 (V₁, V₂) 满足「无旋」和「无源」，各自写成偏导数是什么样的等式？再把它们和第贰节那两条方程摆在一起比一比。"
+      hint="先自己动笔：在流场里画一个边长 dx、dy 的小方块，数一数四条边上每秒流进流出多少水，「不凭空冒水」写成偏导数是什么等式？再把结果和第贰节那两条方程摆在一起比一比。"
       label="对答案 / 看完整拆解"
     >
       <p>
-        考虑一个定常的二维流场，速度是 <MathInline tex="\vec V = (V_1, V_2)" />。物理上有两句大白话：
+        考虑一个定常的二维流场，速度是 <MathInline tex="\vec V = (V_1, V_2)" />
+        （<MathInline tex="V_1" /> 是往东那一格有多快，<MathInline tex="V_2" /> 是往北）。
+        物理上有两句大白话，先把它们翻译成式子。
       </p>
       <p>
-        <strong>第一句：水不打转（无旋）。</strong>
-        <MathInline tex="\partial_x V_2 - \partial_y V_1 = 0" />。
-        这个条件（在单连通区域上）保证存在一个<strong>速度势</strong> <MathInline tex="\varphi" />，使
+        <strong>第零步：在流场里划一个小方块。</strong>边长取 <MathInline tex="dx" />、
+        <MathInline tex="dy" />，小到里面的速度可以当成线性变化。
+      </p>
+      <p>
+        <strong>水不凭空冒出来（无源）</strong>：左边界每秒流进
+        <MathInline tex="V_1(x)\,dy" />，右边界每秒流出 <MathInline tex="V_1(x+dx)\,dy" />，
+        左右两面的净流出是
+        <MathInline tex="[V_1(x+dx) - V_1(x)]\,dy = (\partial_x V_1)\,dx\,dy" />；
+        上下两面同理给出 <MathInline tex="(\partial_y V_2)\,dx\,dy" />。
+        方块里既然没藏水龙头，进出必须相抵：
+      </p>
+      <MathBlock tex="\partial_x V_1 + \partial_y V_2 = 0" />
+      <p>
+        <strong>水不打转（无旋）</strong>：沿方块的四条边绕一圈，把"速度顺着边走的那个分量"
+        累加起来（这个和叫<strong>环量</strong>，正是"转不转"的度量，也正是小风车转不转）。
+        下边贡献 <MathInline tex="V_1(y)\,dx" />、上边贡献 <MathInline tex="-V_1(y+dy)\,dx" />、
+        右边贡献 <MathInline tex="V_2(x+dx)\,dy" />、左边贡献 <MathInline tex="-V_2(x)\,dy" />，
+        合计 <MathInline tex="(\partial_x V_2 - \partial_y V_1)\,dx\,dy" />。要它不转：
+      </p>
+      <MathBlock tex="\partial_x V_2 - \partial_y V_1 = 0" />
+      <p>
+        <strong>第一句：无旋 ⇒ 速度势存在。</strong>
+        上面第二条式子（在单连通区域上）保证存在一个<strong>速度势</strong>
+        <MathInline tex="\varphi" />，使
         <MathInline tex="\vec V = \nabla\varphi = (\partial_x\varphi,\ \partial_y\varphi)" />——
-        这正是微积分课里"旋度为零的场是某个函数的梯度"。
+        这正是微积分课里那句"旋度为零的场是某个函数的梯度"，
+        也正是前面"山坡与水流"的一般版本：<MathInline tex="\varphi" /> 就是那张地形图。
       </p>
       <p>
-        <strong>第二句：水不凭空冒出来（无源）。</strong>
-        <MathInline tex="\partial_x V_1 + \partial_y V_2 = 0" />。
-        同样的定理换个方向用，保证存在一个<strong>流函数</strong> <MathInline tex="\psi" />，使
+        <strong>第二句：无源 ⇒ 流函数存在。</strong>
+        同一个定理换个方向用在第一条式子上，保证存在<strong>流函数</strong>
+        <MathInline tex="\psi" />，使
         <MathInline tex="\vec V = (\partial_y\psi,\ -\partial_x\psi)" />。
-        （<MathInline tex="\psi" /> 的等值线就是流线：沿 <MathInline tex="\psi" /> 不变的方向走，
-        走的正好是速度的方向。）
+        这个写法看着古怪，其实就是把前面"流量账本"翻译过来：
+        <MathInline tex="\psi" /> 沿某方向的变化率，等于垂直于该方向穿过去的流量。
+        顺带兑现前面那句话——沿 <MathInline tex="\psi" /> 不变的方向走，
+        走的正好是速度方向，所以等值线就是流线。
       </p>
       <p><strong>合起来。</strong>同一个 <MathInline tex="\vec V" /> 的两种写法必须一致：</p>
       <MathBlock tex="\partial_x\varphi = V_1 = \partial_y\psi, \qquad \partial_y\varphi = V_2 = -\partial_x\psi" />
@@ -297,10 +405,47 @@ import PotentialFlowDemo from '../../demos/PotentialFlowDemo.vue'
         横线族与竖线族，而保角映射不改变那个直角。
       </p>
     </RevealBox>
+    <p>
+      下面的动画把这件事变成可以拖的：下拉框里换一个解析函数，图上就换一整个物理场景。
+      五档分别是——
+    </p>
+    <ul>
+      <li>
+        <MathInline tex="f(z) = z" />——<strong>匀速流</strong>：笔直河道里各处一样快的水。
+        换成电学，就是平行板电容器里的匀强电场。
+      </li>
+      <li>
+        <MathInline tex="f(z) = z^2" />——<strong>墙角流</strong>：水撞上一面直角墙拐弯，
+        河岸拐角处的水就是这个样子。
+      </li>
+      <li>
+        <MathInline tex="f(z) = \ln z" />——<strong>点源</strong>：原点插着一根往外冒水的管子，
+        水沿半径向四面八方辐射（朱红的流线就是那些射线，靛蓝的等势线是一圈圈同心圆）。
+        换成电学，就是一个点电荷的电场。
+      </li>
+      <li>
+        <MathInline tex="f(z) = -i\ln z" />——<strong>涡旋</strong>：刚才说的那个"没有全局势"的漩涡，
+        流线是一圈圈同心圆。换成电学，就是一根通电导线周围的磁场。
+      </li>
+      <li>
+        <MathInline tex="f(z) = z + 1/z" />——<strong>绕圆柱的流动</strong>：开头那根桥墩。
+        它也正是本节第 1 个例子里茹科夫斯基整个搬去机翼上的那个课本例题——
+        同一个 <MathInline tex="z + 1/z" />，那边当映射用，这边当流场读。
+      </li>
+    </ul>
+    <p>
+      拖两个探针滑杆在图上走一圈，盯住读数区：<strong>夹角那一栏永远是 90°</strong>
+      （等势线与流线处处垂直，就是"水垂直穿过等高线"那句话）；
+      后面两个拉普拉斯读数<strong>永远是 0</strong>——那是下面要说的"调和"。
+    </p>
     <PotentialFlowDemo />
     <p>
-      同一套方程换个名词，就换了一门学科：<MathInline tex="\varphi" /> 读作电势，流线就是电力线；
-      读作温度，流线就是热流方向；读作重力势、渗流压力，同理。
+      最后一件值得说的事：<strong>同一套方程换个名词，就换了一门学科</strong>。
+      同一张图，<MathInline tex="\varphi" /> 读作<strong>电势</strong>，朱红线就成了电力线，
+      算的是电容器与屏蔽罩；读作<strong>温度</strong>，朱红线就是热量流动的方向，
+      算的是一块金属板上的<router-link to="/mathphys/heat">稳态温度分布</router-link>；
+      读作<strong>地下水的压力</strong>，算的是渗流；读作<strong>引力势</strong>，
+      算的是天体。这几门课里的图看着像四回事，方程一列，是同一条。
       本讲第肆节那份"调和的赠品"（<MathInline tex="\partial_{xx}u + \partial_{yy}u = 0" />）
       在这里现了原形——它就是数学物理方程课里的
       <router-link to="/mathphys/laplace">拉普拉斯方程</router-link>，
