@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { usePlot, makeView, drawAxes, plotFn, drawPoint, drawLabel, C } from './plot.js'
 import DemoFrame from '../components/DemoFrame.vue'
 import ControlSlider from '../components/ControlSlider.vue'
+import MathInline from '../components/MathInline.vue'
 
 // f(t) = sin t + 1.5，面积函数 A(x) = ∫₀ˣ f = 1.5x − cos x + 1
 const f = (t) => Math.sin(t) + 1.5
@@ -92,7 +93,7 @@ usePlot(
     <canvas ref="canvas" class="demo-canvas"></canvas>
     <template #controls>
       <ControlSlider
-        label="扫描位置 x"
+        label="扫描位置 x（面积扫到哪）"
         v-model="x"
         :min="0.15"
         :max="6.28"
@@ -101,14 +102,47 @@ usePlot(
       />
     </template>
     <template #readout>
-      A(x) = <b>{{ A(x).toFixed(4) }}</b>
+      已扫过的面积 A(x) = <b>{{ A(x).toFixed(4) }}</b>
       &nbsp;&nbsp;数值求导 A′(x) ≈ <b>{{ slopeNum.toFixed(4) }}</b>
-      &nbsp;&nbsp;曲线高度 f(x) = <b>{{ f(x).toFixed(4) }}</b> —— 两者完全一致！
+      &nbsp;&nbsp;曲线高度 f(x) = <b>{{ f(x).toFixed(4) }}</b><br />
+      两者之差 = {{ Math.abs(slopeNum - f(x)).toExponential(2) }} —— 只剩数值求导本身的误差
     </template>
     <template #note>
-      拖动 x，观察下图蓝点处的切线斜率：曲线高的地方（f 大），面积涨得快，A 陡；
-      曲线低的地方，面积涨得慢，A 缓。「面积函数的导数 = 原函数」，
-      这就是把求导和求面积焊在一起的微积分基本定理：A′(x) = f(x)。
+      <p><b>唯一的旋钮是什么</b></p>
+      <ul>
+        <li>
+          <b>扫描位置 x</b>：面积从 0 一路扫到哪里为止，范围 0.15 到
+          <MathInline tex="2\pi \approx 6.28" />（正好一个完整周期）。
+          它同时是上图阴影的右边界、下图那个蓝点的横坐标——<strong>两张图共用这一个 x</strong>。
+        </li>
+      </ul>
+      <p>
+        <b>画的是哪条曲线</b>：上图是
+        <MathInline tex="f(t) = \sin t + 1.5" />（整体抬高 1.5 是为了让它全程为正，
+        面积不必分正负），阴影就是 <MathInline tex="A(x) = \int_0^x f(t)\,\mathrm{d}t" />。
+        下图画的正是这个 <MathInline tex="A" /> 本身，
+        闭式是 <MathInline tex="A(x) = 1.5x - \cos x + 1" />（代 x = 0 得 0，对得上）。
+      </p>
+      <p>
+        <b>读数区那个 A′ 是怎么来的</b>：不是解析求导，而是<strong>当场用差商现算</strong>——
+        取 <MathInline tex="\bigl(A(x{+}0.001) - A(x{-}0.001)\bigr)/0.002" />，
+        即左右各挪 0.001 的中心差商。所以它和 <MathInline tex="f(x)" /> 不会<em>字面上</em>
+        一模一样，读数区第二行那个差就是这点数值误差（量级 <MathInline tex="10^{-7}" /> 上下）。
+        <strong>它小到这个地步，本身就是 A′ = f 的证据。</strong>
+      </p>
+      <p>
+        <b>照着做一遍</b>：把 x 拖到 <b>1.57</b>（约 <MathInline tex="\pi/2" />）——
+        上图曲线正在最高点，读数 f = 2.5000，而下图的 A 在这里<strong>爬得最陡</strong>。
+        再拖到 <b>4.71</b>（约 <MathInline tex="3\pi/2" />）——曲线掉到最低点 f = 0.5000，
+        下图的 A 立刻变得最平缓（但仍在上升，因为 f 始终为正）。
+        <strong>曲线的高度，恰好就是面积函数的陡峭程度</strong>——
+        这一句就是微积分基本定理第一部分的全部内容。
+      </p>
+      <p>
+        顺带留意：无论 x 拖到哪，A 都<strong>只增不减</strong>。
+        这不是巧合——f 全程为正，按定理 A′ = f &gt; 0，所以 A 必然单调上升。
+        要是把 1.5 那个抬高去掉，f 会有负的一段，A 就会在那一段掉头往下。
+      </p>
     </template>
   </DemoFrame>
 </template>

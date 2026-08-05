@@ -2,6 +2,7 @@
 import ConceptPage from '../../components/ConceptPage.vue'
 import MathBlock from '../../components/MathBlock.vue'
 import MathInline from '../../components/MathInline.vue'
+import RevealBox from '../../components/RevealBox.vue'
 import FTCDemo from '../../demos/FTCDemo.vue'
 </script>
 
@@ -9,48 +10,228 @@ import FTCDemo from '../../demos/FTCDemo.vue'
   <ConceptPage slug="ftc">
     <h2><span class="sec-no">壹</span>困境：按定义算积分，是英雄行为</h2>
     <p>
-      上一讲的黎曼和定义漂亮而严格，但拿它<em>计算</em>就是灾难：阿基米德算一个抛物线弓形就足以名垂青史，
-      每换一条曲线都得重新发明一套求和技巧。试试按定义算
-      <MathInline tex="\int_0^1 x^2 \mathrm{d}x" />：要写出
-      <MathInline tex="\sum i^2 = \frac{n(n+1)(2n+1)}{6}" /> 再取极限才得到 1/3。
-      要是被积函数换成 <MathInline tex="\sin x" />、<MathInline tex="e^x" /> 呢？
-      <strong>面积问题需要一台通用计算机器。</strong>
+      <router-link to="/calculus/integral">上一讲</router-link>的黎曼和定义漂亮而严格，
+      但拿它<em>计算</em>就是灾难。试试按定义算最简单的
+      <MathInline tex="\int_0^1 x^2\,\mathrm{d}x" />：把 [0,1] 等分成 n 段、取右端点，
+      黎曼和是
+    </p>
+    <MathBlock tex="\sum_{i=1}^{n} \Bigl(\frac{i}{n}\Bigr)^{2}\cdot\frac1n = \frac{1}{n^3}\sum_{i=1}^{n} i^2" />
+    <p>
+      到这一步为止全是机械动作。可接下来你会被卡住：<strong>那个
+      <MathInline tex="\sum i^2" /> 等于多少？</strong>要往下走，
+      你得先变出一条求和公式来——而这正是"按定义算积分"真正难的地方。
+    </p>
+    <RevealBox
+      title="🔍 走完这条英雄之路：先变出求和公式，再取一次极限"
+      label="对答案 / 看完整拆解"
+    >
+      <template #hint>
+        先自己动笔：把 <MathInline tex="(i+1)^3 - i^3" /> 展开（结果是个关于 i 的二次式），
+        然后把 <MathInline tex="i = 1, 2, \ldots, n" /> 全部加起来——左边会大面积对消。
+        由此解出 <MathInline tex="\sum i^2" />。一条公式，推完再点开。
+      </template>
+      <p><strong>第一步：找一个会自己对消的式子。</strong></p>
+      <MathBlock tex="(i+1)^3 - i^3 = 3i^2 + 3i + 1" />
+      <p>
+        <strong>第二步：从 1 加到 n。</strong>左边是一串首尾相接的差，中间全部对消
+        （<MathInline tex="2^3" /> 减完又加回来，如此一路），只剩两头：
+      </p>
+      <MathBlock tex="(n+1)^3 - 1 \;=\; 3\sum_{i=1}^n i^2 \;+\; 3\sum_{i=1}^n i \;+\; n" />
+      <p>
+        <strong>第三步：解出来。</strong>代入已知的
+        <MathInline tex="\sum i = \frac{n(n+1)}{2}" />，整理即得那条著名公式：
+      </p>
+      <MathBlock tex="\sum_{i=1}^{n} i^2 = \frac{n(n+1)(2n+1)}{6}" />
+      <p>
+        代 n = 10 核一下：<MathInline tex="10\cdot11\cdot21/6 = 385" />，
+        与逐个平方相加的结果一致。
+      </p>
+      <p><strong>第四步：这才轮到取极限。</strong>把公式塞回黎曼和：</p>
+      <MathBlock tex="\frac{1}{n^3}\cdot\frac{n(n+1)(2n+1)}{6} = \frac{(n+1)(2n+1)}{6n^2} \;\xrightarrow[\;n \to \infty\;]{}\; \frac{2n^2}{6n^2} = \frac13" />
+      <p>
+        （n = 10 时它是 0.385，n = 1000 时 0.33383——确实在往 1/3 走。）
+      </p>
+      <p>
+        <strong>回味一下：为了算一个 <MathInline tex="x^2" /> 的面积，我们发明了一条求和公式。</strong>
+        那么 <MathInline tex="x^3" /> 呢？得再发明一条 <MathInline tex="\sum i^3" />。
+        <MathInline tex="\sin x" />、<MathInline tex="e^x" /> 呢？连"发明什么"都无从下手。
+        阿基米德算一个抛物线弓形就足以名垂青史，正是因为每换一条曲线，
+        这套技巧就得从头重来一遍。
+      </p>
+    </RevealBox>
+    <p>
+      <strong>面积问题需要的不是更多技巧，而是一台通用机器。</strong>
     </p>
 
-    <h2><span class="sec-no">贰</span>洞见：别盯着一块面积，看面积怎么"生长"</h2>
+    <h2><span class="sec-no">贰</span>破局：别盯着一块面积，看面积怎么"生长"</h2>
     <p>
-      转机来自一个视角切换：不要问"0 到 1 的面积是多少"，而是<strong>把右端点松开变成变量</strong>——
-      设 <MathInline tex="A(x)" /> 是从 0 扫到 x 累积的面积，研究这个<em>面积函数</em>怎么变化。
+      转机来自一个视角切换：不要问"0 到 1 的面积是多少"，而是<strong>把右端点松开变成变量</strong>。
+      这个动作会造出一个新函数，它是本讲从头到尾的主角，所以先把它定义清楚：
+    </p>
+    <div class="definition">
+      <div class="def-title">📐 两个先说好的名词</div>
+      <p>
+        <strong>面积函数</strong>：固定左端 a，让右端 x 自由移动，把扫过的面积记作
+        <MathInline tex="A(x) = \int_a^x f(t)\,\mathrm{d}t" />。
+        注意积分号里的字母换成了 t——因为 x 已经被征用去当上限了，
+        这两个角色必须分开（<MathInline tex="t" /> 只是个哑变量，换成别的字母不影响结果）。
+        由定义立刻有 <MathInline tex="A(a) = 0" />：从 a 扫到 a，还没扫出任何面积。
+      </p>
+      <p>
+        <strong>原函数</strong>：若 <MathInline tex="F' = f" />，就称 F 是 f 的一个原函数。
+        注意是"<em>一个</em>"——把 F 加上任何常数，导数不变，所以原函数从来都是<strong>一整族</strong>。
+        这个"一整族"待会儿会变成关键。
+      </p>
+    </div>
+    <p>
+      有了名字，问题就清楚了：<strong>面积函数 A 长什么样？</strong>
+      直觉上，让 x 向右挪一点点 h，面积就新增一窄条；窄条细得像矩形，宽 h、
+      高约等于当地的曲线高度 f(x)，所以 <MathInline tex="\Delta A \approx f(x)\,h" />，
+      两边除以 h 就得到 <MathInline tex="A'(x) = f(x)" />。
     </p>
     <p>
-      让 x 向右挪一点点 <MathInline tex="\mathrm{d}x" />，面积新增一窄条。窄条近似矩形：
-      宽 <MathInline tex="\mathrm{d}x" />，高恰好是当地曲线高度 <MathInline tex="f(x)" />，所以
-      <MathInline tex="\mathrm{d}A \approx f(x)\,\mathrm{d}x" />，即
-      <MathInline tex="A'(x) = f(x)" />。
-      <strong>面积函数的导数，就是曲线本身。</strong>求面积（积分）与求变化率（求导）竟是互逆的操作！
+      <strong>但请停一下：这段话里有个"约等于"，而结论里是个等号。</strong>
+      窄条并不真是矩形——它的上边是弯的；"高约等于 f(x)"里的"约"到底有多约？
+      <router-link to="/calculus/limit">第一讲</router-link>花了整整一讲建立 ε-δ 语言，
+      为的就是不再靠"约"字过日子。这一步值得老实走一遍。
+    </p>
+    <RevealBox
+      title="🔍 把那个约等号变成等号：用两个矩形把窄条夹住"
+      label="对答案 / 看完整拆解"
+    >
+      <template #hint>
+        先自己想想这个办法：那一窄条的上边是弯的，不好算。但你可以造两个<strong>真正的矩形</strong>——
+        一个矮到肯定装得进去，一个高到肯定罩得住。它们的高该取什么？
+        造出来之后，三者的面积有什么关系？想清楚再点开。
+      </template>
+      <p>
+        <strong>第一步：把"新增的面积"写成积分。</strong>按定义，
+      </p>
+      <MathBlock tex="\Delta A = A(x+h) - A(x) = \int_a^{x+h} f - \int_a^{x} f = \int_x^{x+h} f(t)\,\mathrm{d}t" />
+      <p>就是那一窄条的面积，一点没多也一点没少。</p>
+      <p>
+        <strong>第二步：造两个矩形夹住它。</strong>f 连续，所以它在闭区间
+        <MathInline tex="[x,\,x+h]" /> 上取得到最小值 <MathInline tex="m_h" /> 和最大值
+        <MathInline tex="M_h" />。以 <MathInline tex="m_h" /> 为高的矮矩形整个装在窄条里面，
+        以 <MathInline tex="M_h" /> 为高的高矩形把窄条整个罩住（设 <MathInline tex="h > 0" />）：
+      </p>
+      <MathBlock tex="m_h \cdot h \;\le\; \Delta A \;\le\; M_h \cdot h" />
+      <p>
+        <strong>第三步：除以 h，凑出差商。</strong>
+      </p>
+      <MathBlock tex="m_h \;\le\; \frac{\Delta A}{h} \;\le\; M_h" />
+      <p>
+        中间那一项<strong>正是 A 的差商</strong>——导数定义里要取极限的那个东西。
+      </p>
+      <p>
+        <strong>第四步：让 h 缩小，看两边。</strong>区间
+        <MathInline tex="[x,\,x+h]" /> 塌向单点 x，而 f 在 x 处<strong>连续</strong>，
+        所以区间上的最小值和最大值<em>都</em>被挤向 <MathInline tex="f(x)" />：
+      </p>
+      <MathBlock tex="m_h \to f(x), \qquad M_h \to f(x) \qquad (h \to 0)" />
+      <p>
+        两边都奔向同一个数，中间的差商没有别处可去（这就是<strong>夹逼</strong>）：
+      </p>
+      <MathBlock tex="A'(x) = \lim_{h\to 0}\frac{\Delta A}{h} = f(x)" />
+      <p>
+        （<MathInline tex="h < 0" /> 时窄条在左侧，两个不等号一起掉头，除以负数再掉一次，
+        结论原样成立。）
+      </p>
+      <p>
+        <strong>回味：这条证明真正付费的地方是"f 连续"。</strong>
+        假如 f 在 x 处有个跳跃，那么无论 h 多小，区间上的最大值和最小值都隔着那道坎，
+        <MathInline tex="m_h" /> 与 <MathInline tex="M_h" /> 永远挤不到一起，
+        夹逼就失效了——A 在那一点确实不可导（左右导数分别等于跳跃的两侧值）。
+        所以定理里"f 连续"不是排版好看的装饰，它就是这一步的通行费。
+      </p>
+    </RevealBox>
+    <p>
+      结论值得念一遍：<strong>面积函数的导数，就是曲线本身。</strong>
+      求面积（积分）与求变化率（求导）竟是互逆的操作！
+    </p>
+
+    <h2><span class="sec-no">叁</span>亲手扫一遍面积函数</h2>
+    <p>
+      上面这条 <MathInline tex="A' = f" /> 值不值得信，拖一次就知道。
+      动画把两张图叠在一起：上图是曲线 f 和它被扫过的面积，下图就是面积函数 A 本身。
     </p>
     <FTCDemo />
 
-    <h2><span class="sec-no">叁</span>定理与它带来的计算革命</h2>
+    <h2><span class="sec-no">肆</span>严格定义：定理与它带来的计算革命</h2>
     <div class="definition">
       <div class="def-title">📐 微积分基本定理</div>
       <p>
         <strong>第一部分</strong>：若 f 连续，则面积函数
         <MathInline tex="A(x) = \int_a^x f(t)\,\mathrm{d}t" /> 可导，且
-        <MathInline tex="A'(x) = f(x)" />。
+        <MathInline tex="A'(x) = f(x)" />。（换句话说，<strong>连续函数一定有原函数</strong>，
+        而且现成就有一个——它自己的面积函数。）
       </p>
       <p>
-        <strong>第二部分（牛顿–莱布尼茨公式）</strong>：若 F 是 f 的任意一个原函数（即
+        <strong>第二部分（牛顿–莱布尼茨公式）</strong>：若 F 是 f 的<strong>任意一个</strong>原函数（即
         <MathInline tex="F' = f" />），则
       </p>
       <MathBlock tex="\int_a^b f(x)\,\mathrm{d}x = F(b) - F(a)" />
     </div>
     <p>
+      两部分之间有一道坎，值得当心：<strong>第一部分说的是那个特定的 A，
+      第二部分说的却是随便哪个 F。</strong>凭什么随便找来的原函数，代两个端点一减，
+      就等于那块面积？这道桥不搭上，这一讲的标题问题（"为什么求导的反操作恰好能算出面积"）
+      就还没有被回答。
+    </p>
+    <RevealBox
+      title="🔍 从第一部分到第二部分：那道桥只有三行，但少不得"
+      label="对答案 / 看完整拆解"
+    >
+      <template #hint>
+        先自己想：第一部分已经给了你一个原函数 A。现在手里又有一个别人的原函数 F。
+        <strong>两个原函数之间能差多少？</strong>先算一算
+        <MathInline tex="(F - A)'" /> 是什么，再想想"导数恒为零"能不能推出"函数是常数"
+        ——这一步真的显然吗？想清楚再点开。
+      </template>
+      <p>
+        <strong>第一步：A 也是原函数。</strong>由第一部分，
+        <MathInline tex="A' = f" />。所以 A 和 F 是同一个 f 的两个原函数。
+      </p>
+      <p>
+        <strong>第二步：两者只差一个常数。</strong>令 <MathInline tex="G = F - A" />，则
+      </p>
+      <MathBlock tex="G' = F' - A' = f - f = 0 \qquad \text{（处处为零）}" />
+      <p>
+        "导数恒为零 ⟹ 函数是常数"看着显然，其实<strong>要靠一条定理</strong>——
+        <strong>拉格朗日中值定理</strong>：可导函数在任意两点间的平均变化率，
+        总能被<em>某一点</em>的瞬时变化率取到。对任意 <MathInline tex="x_1 < x_2" />，
+      </p>
+      <MathBlock tex="G(x_2) - G(x_1) = G'(\xi)\,(x_2 - x_1) = 0 \cdot (x_2-x_1) = 0" />
+      <p>
+        任意两点的值都相等，所以 G 是常数。记作
+        <MathInline tex="F(x) = A(x) + C" />。
+        （为什么这一步不显然？因为"导数"只是逐点的局部信息，
+        而"函数是常数"是整体结论——中值定理正是把局部信息搬运到整体的那台机器。）
+      </p>
+      <p>
+        <strong>第三步：定出那个 C。</strong>代 <MathInline tex="x = a" />，用上
+        <MathInline tex="A(a) = 0" />：
+      </p>
+      <MathBlock tex="F(a) = A(a) + C = C" />
+      <p>
+        <strong>第四步：收网。</strong>再代 <MathInline tex="x = b" /> 并相减：
+      </p>
+      <MathBlock tex="F(b) - F(a) = \bigl(A(b) + C\bigr) - C = A(b) = \int_a^b f(x)\,\mathrm{d}x" />
+      <p>
+        <strong>为什么"任意一个"原函数都合法？</strong>答案就在第四步：
+        那个未知的常数 C <strong>在相减时被抵消掉了</strong>。换一个原函数只是换一个 C，
+        而 C 从不出现在最终答案里。这也顺手解释了一个记号上的老困惑——
+        不定积分要写 <MathInline tex="+\,C" />，定积分却完全不用管它，因为它注定要被减掉。
+      </p>
+    </RevealBox>
+    <p>
       第二部分就是那台梦寐以求的通用机器：<strong>算面积不必再切条求和，
-      只需逆向查一张求导表</strong>。想算 <MathInline tex="\int_0^1 x^2\mathrm{d}x" />？
-      谁的导数是 <MathInline tex="x^2" />？—— <MathInline tex="x^3/3" />。代入两端：
-      <MathInline tex="\frac{1}{3} - 0 = \frac{1}{3}" />，两秒钟完成阿基米德级别的工作。
-      这就是"积分表"“不定积分技巧"存在的意义：它们都是在<strong>反查求导表</strong>。
+      只需逆向查一张求导表</strong>。回头看壹节那道题——想算
+      <MathInline tex="\int_0^1 x^2\,\mathrm{d}x" />？谁的导数是
+      <MathInline tex="x^2" />？—— <MathInline tex="x^3/3" />。代入两端：
+      <MathInline tex="\frac{1}{3} - 0 = \frac{1}{3}" />。
+      <strong>刚才那条求和公式加取极限的全部工作，被两秒钟取代了。</strong>
+      这就是"积分表""不定积分技巧"存在的意义：它们都是在<strong>反查求导表</strong>。
     </p>
     <div class="story">
       <div class="story-title">📜 为什么说牛顿和莱布尼茨"发明"了微积分？</div>
@@ -63,7 +244,7 @@ import FTCDemo from '../../demos/FTCDemo.vue'
       </p>
     </div>
 
-    <h2><span class="sec-no">肆</span>更深远的馈赠</h2>
+    <h2><span class="sec-no">伍</span>买到了什么：更深远的馈赠</h2>
     <ul>
       <li>
         <strong>不定积分与定积分的和解</strong>：教科书先讲"不定积分 = 原函数族"，
@@ -71,21 +252,53 @@ import FTCDemo from '../../demos/FTCDemo.vue'
         所以才共用一个 ∫ 记号；
       </li>
       <li>
-        <strong>制造新函数的工厂</strong>：有些函数的原函数不是初等函数，但基本定理第一部分保证
-        "面积函数"总是存在且可导——于是数学家直接用积分<em>定义</em>新函数：
-        <MathInline tex="\ln x = \int_1^x \frac{1}{t}\mathrm{d}t" />、
-        正态分布的分布函数 <MathInline tex="\Phi(x) = \frac{1}{\sqrt{2\pi}}\int_{-\infty}^x e^{-t^2/2}\mathrm{d}t" />
-        （概率论查表查的就是它）；
+        <strong>制造新函数的工厂</strong>：有些函数的原函数不是初等函数，
+        但基本定理第一部分保证"面积函数"总是存在且可导——于是数学家干脆用积分<em>定义</em>新函数。
+        最经典的是对数：<MathInline tex="\ln x := \int_1^x \frac{1}{t}\,\mathrm{d}t" />。
+        凭什么这样定出来的东西就是你认识的那个 ln？<strong>验一次它的看家本领即可</strong>——
+        在 <MathInline tex="\int_1^{ab}" /> 的后半段 <MathInline tex="\int_a^{ab}" /> 里换元
+        <MathInline tex="t = a u" />（于是 <MathInline tex="\mathrm{d}t = a\,\mathrm{d}u" />，
+        <MathInline tex="\mathrm{d}t/t = \mathrm{d}u/u" />，上下限变成 1 到 b），立刻得到
+        <MathInline tex="\ln(ab) = \ln a + \ln b" />。"把乘法变成加法"这条对数的灵魂，
+        就这样从一个积分里长了出来；
+      </li>
+      <li>
+        <strong>查表查的就是它</strong>：正态分布的分布函数
+        <MathInline tex="\Phi(x) = \frac{1}{\sqrt{2\pi}}\int_{-\infty}^x e^{-t^2/2}\,\mathrm{d}t" />
+        同样没有初等原函数，所以只能靠数值方法造表——
+        <router-link to="/probability/distribution">概率论那一讲</router-link>翻的表，
+        本质上是本讲第一部分开的工厂生产的；
       </li>
       <li>
         <strong>微分方程的总开关</strong>：知道变化率求原量，是"解微分方程"的最简形式。
-        牛顿力学、电路方程、人口模型……整个用微分方程描述世界的范式，都从这里出发；
+        牛顿力学、电路方程、人口模型……整个用
+        <router-link to="/mathphys/pde-intro">微分方程</router-link>描述世界的范式，
+        都从这里出发（<b>本站那一讲从零讲起，不需要先修</b>）；
       </li>
       <li>
         <strong>它还会长大</strong>：格林公式、斯托克斯公式、高斯散度定理（多元微积分），
-        本质都是基本定理的高维推广——"区域内部的累积 = 边界上的取值"。
-        复变函数里的柯西积分定理也是这个家族的成员。
+        本质都是基本定理的高维推广——一句话概括就是
+        <strong>"区域内部的累积 = 边界上的取值"</strong>。牛顿-莱布尼茨是一维版
+        （内部导数的累积 = 两个端点之差），格林公式是二维版
+        （内部旋转的累积 = 绕边界一圈）。
+        <router-link to="/complex/cauchy-integral">复变函数的柯西积分定理</router-link>
+        也是这个家族的成员——那一讲把格林公式的直觉讲得最细，
+        而它的结论"解析函数绕回路积分为零"，正是这个家族在复平面上的分支。
       </li>
     </ul>
+    <div class="insight">
+      <div class="insight-title">🔗 与你学过的课程连一连</div>
+      <p>
+        <strong>数值分析</strong>：本定理只在"能找到原函数"时才省力，
+        而绝大多数被积函数找不到——于是又得退回
+        <router-link to="/calculus/integral">上一讲</router-link>的定义去逼近，
+        这就是<router-link to="/numerical/quadrature">数值积分</router-link>那一讲的全部动机；
+        <strong>下一讲</strong>：<router-link to="/calculus/taylor">泰勒展开</router-link>
+        会给出另一条出路——既然多项式好积分，那就先把函数换成多项式；
+        <strong>复变函数</strong>：把这里的"两个端点之差"换成"绕一圈的回路"，
+        就得到<router-link to="/complex/cauchy-integral">柯西积分定理</router-link>，
+        再往前一步就是"数几个点就出答案"的<router-link to="/complex/residue">留数定理</router-link>。
+      </p>
+    </div>
   </ConceptPage>
 </template>
