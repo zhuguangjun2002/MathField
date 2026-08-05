@@ -91,14 +91,14 @@ usePlot(
         </select>
       </label>
       <label class="ctrl">
-        <span class="ctrl-label">取样点</span>
+        <span class="ctrl-label">取样点（矩形的高取在哪）</span>
         <select v-model="method" class="ctrl-select">
-          <option value="left">左端点（偏小/偏大）</option>
-          <option value="mid">中点（最准）</option>
+          <option value="left">左端点</option>
+          <option value="mid">中点</option>
           <option value="right">右端点</option>
         </select>
       </label>
-      <ControlSlider label="矩形个数 n" v-model="n" :min="1" :max="150" :step="1" />
+      <ControlSlider label="矩形个数 n（区间等分数）" v-model="n" :min="1" :max="150" :step="1" />
     </template>
     <template #readout>
       {{ n }} 个矩形的面积和 = <b>{{ sum.toFixed(5) }}</b>
@@ -106,9 +106,43 @@ usePlot(
       &nbsp;&nbsp;误差 = {{ Math.abs(sum - cfg.exact).toExponential(2) }}
     </template>
     <template #note>
-      把 n 从 1 拖到 150：无论取样点怎么选，矩形面积之和都收敛到同一个数 ——
-      这个「所有分法共同的极限」就是定积分 <MathInline tex="\int f(x)\, dx" /> 的定义。这正是阿基米德"穷竭法"的现代化身。
-      顺带一提：你学过的计算数学里的「矩形公式/中点公式」数值求积分，就是黎曼和直接拿来用。
+      <p><b>三个旋钮分别是什么</b></p>
+      <ul>
+        <li>
+          <b>函数</b>（下拉）：切哪条曲线。<strong>区间是随函数一起定死的</strong>——
+          <MathInline tex="x^2" /> 配 <MathInline tex="[0,2]" />，
+          <MathInline tex="\sin x" /> 配 <MathInline tex="[0,\pi]" />，没有单独的区间旋钮。
+        </li>
+        <li>
+          <b>取样点</b>（下拉）：每个细条的矩形，<strong>高度取在条内的哪个位置</strong>——
+          左端、中点还是右端。这是定义里那个"任取一点 <MathInline tex="\xi_i" />"的三种具体选法。
+        </li>
+        <li>
+          <b>矩形个数 n</b>：把区间<strong>等分</strong>成多少条，所以每条宽
+          <MathInline tex="(b-a)/n" />。定义里说的"最宽一段趋于 0"，在等分的情形就是 n 趋于无穷。
+        </li>
+      </ul>
+      <p>
+        <b>读数区的"真实面积"从哪来</b>：不是算出来的，是<strong>事先手算好写死在代码里的定值</strong>
+        （<MathInline tex="\int_0^2 x^2 dx = 8/3" />、<MathInline tex="\int_0^\pi \sin x\,dx = 2" />，
+        两条都能用<router-link to="/calculus/ftc">下一讲</router-link>的公式两秒算出）。
+        它在这里只当标尺用，好让你看清误差怎么随 n 缩小。
+      </p>
+      <p>
+        <b>照着做一遍</b>：选 <MathInline tex="x^2" />，把 n 固定在 8，然后在三种取样点之间来回切——
+        左端点给 <b>2.18750</b>、中点给 <b>2.65625</b>、右端点给 <b>3.18750</b>，
+        彼此差着十几个百分点。再把 n 拖到 150：三个数变成 <b>2.64006</b>、<b>2.66664</b>、
+        <b>2.69339</b>，全都挤向 8/3。<strong>这就是"所有取法共同的极限"，也就是定积分的定义。</strong>
+      </p>
+      <p>
+        <b>两处值得多看一眼</b>：① 这条曲线单调上升，所以左端点<strong>必定偏小</strong>、
+        右端点<strong>必定偏大</strong>（矩形分别整个缩在曲线下方、探出曲线上方）——
+        但这是这条曲线的性质，换成先升后降的 <MathInline tex="\sin x" /> 就不成立了：
+        那时左和与右和因为对称<strong>恒等</strong>（n = 8 时都是 1.97423）。
+        ② 中点法始终准得多，n = 150 时它的误差只有左右端点的千分之一——
+        它多出来的那点精度不是运气，而是<router-link to="/numerical/quadrature">数值积分</router-link>
+        整门学问的起点。
+      </p>
     </template>
   </DemoFrame>
 </template>
