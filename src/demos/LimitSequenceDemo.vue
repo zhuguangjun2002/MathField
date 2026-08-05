@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { usePlot, makeView, drawAxes, drawLabel, C, fmt } from './plot.js'
 import DemoFrame from '../components/DemoFrame.vue'
 import ControlSlider from '../components/ControlSlider.vue'
+import MathInline from '../components/MathInline.vue'
 
 const canvas = ref(null)
 const eps = ref(0.15)
@@ -42,6 +43,13 @@ const bigN = computed(() => {
   }
   return last + 1
 })
+
+// 第 N 项与第 N−1 项的实际误差：前者已进带、后者还在带外，
+// 正好说明读数区给出的 N 是能应答的最小值
+const errAtN = computed(() => Math.abs(seq.value.a(bigN.value) - seq.value.L))
+const errBeforeN = computed(() =>
+  bigN.value > 1 ? Math.abs(seq.value.a(bigN.value - 1) - seq.value.L) : null,
+)
 
 usePlot(
   canvas,
@@ -113,7 +121,7 @@ usePlot(
         </select>
       </label>
       <ControlSlider
-        label="挑战精度 ε"
+        label="挑战精度 ε（允许的误差）"
         v-model="eps"
         :min="0.01"
         :max="0.5"
@@ -122,12 +130,40 @@ usePlot(
       />
     </template>
     <template #readout>
-      挑战：让所有项离 L 不到 ε = {{ eps.toFixed(3) }} &nbsp;→&nbsp; 应答：取
-      <b>N = {{ bigN }}</b>，从第 N 项起全部落入蓝色带内（绿点）。
+      对手出招 ε = {{ eps.toFixed(3) }} &nbsp;→&nbsp; 我方应答 <b>N = {{ bigN }}</b>（从第 N 项起全在蓝带内）<br />
+      对账：<MathInline
+        tex="|a_N - L|"
+      /> = <b>{{ errAtN.toFixed(4) }}</b>（已进带·绿）<template
+        v-if="errBeforeN !== null"
+      >，前一项 = <b>{{ errBeforeN.toFixed(4) }}</b>（还在带外·红）—— 所以这个 N 已经最小</template>
     </template>
     <template #note>
-      红点是还没进入 ε 带的项，绿点是已经进入的项。把 ε 调得再小，我也总能给出一个 N ——
-      这个「你出 ε、我答 N」的攻防游戏，就是极限严格定义的全部内容。
+      <p><b>两个旋钮分别是什么</b></p>
+      <ul>
+        <li>
+          <b>数列</b>（下拉）：换一个 <MathInline tex="a_n" /> 来挑战。三档的极限 L 都是算出来的定值——
+          阿基里斯那档是 <MathInline tex="a_n = 2 - 2^{\,1-n}" />，<MathInline tex="L = 2" />；
+          复利那档 <MathInline tex="L = e = 2.718\ldots" />；振荡那档
+          <MathInline tex="a_n = 1 + (-1)^n/n" />，<MathInline tex="L = 1" />（它从两侧交替逼近）。
+        </li>
+        <li>
+          <b>挑战精度 ε</b>：对手要求的<strong>误差上限</strong>，单位就是纵轴的单位。
+          蓝色带正是 <MathInline tex="L \pm \varepsilon" /> 这条横带，ε 越小带子越窄。
+        </li>
+      </ul>
+      <p>
+        <b>读数区的 N 是怎么来的</b>：程序从头扫到第 400 项，记下<strong>最后一个</strong>还在带外的项，
+        再加 1——这是能应答的最小的 N。它不是滑杆，是被 ε 逼出来的答案。
+        红点是还没进带的项，绿点是已经进带的项；N 那条红色竖线就是红绿分界。
+      </p>
+      <p>
+        <b>照着做一遍</b>：选阿基里斯那档，把 ε 从 0.5 拖到 0.01，N 只从 3 涨到 8——
+        ε 每砍一半 N 才加 1（误差按 <MathInline tex="2^{\,1-n}" /> 衰减）。
+        再换成振荡那档做同一件事：同样从 0.5 拖到 0.01，N 却从 3 涨到 101
+        （误差只按 <MathInline tex="1/n" /> 衰减，要压到 ε 就得 <MathInline tex="n > 1/\varepsilon" />）。
+        <strong>两档都答得出 N，这就是"极限存在"；答得快慢差了两个数量级，那叫收敛速度</strong>——
+        后者正是数值分析里"收敛阶"要量的东西。
+      </p>
     </template>
   </DemoFrame>
 </template>

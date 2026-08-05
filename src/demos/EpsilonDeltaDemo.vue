@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { usePlot, makeView, drawAxes, plotFn, drawPoint, drawLabel, C } from './plot.js'
 import DemoFrame from '../components/DemoFrame.vue'
 import ControlSlider from '../components/ControlSlider.vue'
+import MathInline from '../components/MathInline.vue'
 
 // f(x) = (x² − 1)/(x − 1)：在 x = 1 处无定义，但极限是 2
 const f = (x) => (x * x - 1) / (x - 1)
@@ -68,7 +69,7 @@ usePlot(
     <canvas ref="canvas" class="demo-canvas"></canvas>
     <template #controls>
       <ControlSlider
-        label="对手出招 ε"
+        label="对手出招 ε（纵向容差）"
         v-model="eps"
         :min="0.1"
         :max="1.4"
@@ -76,7 +77,7 @@ usePlot(
         :display="(x) => x.toFixed(2)"
       />
       <ControlSlider
-        label="你的应答 δ"
+        label="你的应答 δ（横向半径）"
         v-model="delta"
         :min="0.05"
         :max="1.5"
@@ -93,9 +94,36 @@ usePlot(
       </template>
     </template>
     <template #note>
-      函数 f(x) = (x²−1)/(x−1) 在 x = 1 处根本没有定义（分母为零），但这不妨碍我们谈论
-      「x 无限接近 1 时 f(x) 无限接近 2」。对手任意给一个苛刻的 ε，你都能找到应答的
-      δ（这里只要 δ ≤ ε 就行）—— 所以极限存在且等于 2。
+      <p><b>两个旋钮分别是什么</b></p>
+      <ul>
+        <li>
+          <b>对手出招 ε</b>：函数值<strong>允许偏离 2 多少</strong>，量在纵轴上。
+          蓝色横带就是 <MathInline tex="2 \pm \varepsilon" />，ε 越小带子越扁。
+        </li>
+        <li>
+          <b>你的应答 δ</b>：x <strong>允许偏离 1 多少</strong>，量在横轴上。
+          红色竖带就是 <MathInline tex="1 \pm \delta" />，它是你交的答卷。
+        </li>
+      </ul>
+      <p>
+        两个都是普通正数，没有一个是"无穷小"。判定规则：竖带内的那段曲线（加粗）
+        <strong>整段落在蓝带里就算达标</strong>，探出去一点就变红判负。
+      </p>
+      <p>
+        <b>画的是哪条曲线</b>：<MathInline tex="f(x) = \dfrac{x^2-1}{x-1}" />，它在
+        <MathInline tex="x = 1" /> 处分母为零、<strong>根本没有定义</strong>（图上那个空心圈）。
+        但 <MathInline tex="x \neq 1" /> 时约分就是 <MathInline tex="x+1" />，所以
+        <MathInline tex="|f(x)-2| = |x-1|" />——<strong>这就是本例只要
+        <MathInline tex="\delta \le \varepsilon" /> 就一定达标的全部原因</strong>
+        （正文那个"δ 到底怎么找"的折叠框里连非平凡的例子一起算过）。
+      </p>
+      <p>
+        <b>照着做一遍</b>：把 ε 拖到 0.10，再把 δ 从 1.50 慢慢往下拖——δ 一跨过 0.10
+        曲线就由红转绿。反过来固定 δ = 0.90 再把 ε 从 1.40 往下拖，ε 跌破 0.90 时判负。
+        <strong>始终是"δ ≤ ε 才达标"这一条线在起作用，而它是算出来的，不是调出来的。</strong>
+        顺带注意：无论怎么拖，<MathInline tex="x = 1" /> 那个空心点从来没被用到过——
+        极限只问"接近时的趋势"，不问该点本身。
+      </p>
     </template>
   </DemoFrame>
 </template>
