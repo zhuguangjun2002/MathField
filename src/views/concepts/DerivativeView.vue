@@ -2,6 +2,7 @@
 import ConceptPage from '../../components/ConceptPage.vue'
 import MathBlock from '../../components/MathBlock.vue'
 import MathInline from '../../components/MathInline.vue'
+import RevealBox from '../../components/RevealBox.vue'
 import SecantTangentDemo from '../../demos/SecantTangentDemo.vue'
 </script>
 
@@ -34,18 +35,67 @@ import SecantTangentDemo from '../../demos/SecantTangentDemo.vue'
     <h2><span class="sec-no">贰</span>破局：不问"瞬间"，问"逼近的目标"</h2>
     <p>
       解决方案漂亮地绕开了 0/0：<strong>不直接算瞬时速度，而是用一串越来越短的时间段的平均速度去围剿它</strong>。
-      [1, 1.1] 秒的平均速度、[1, 1.01] 的、[1, 1.001] 的……这串数肉眼可见地逼近 10 m/s。
-      于是干脆<strong>把这个逼近的目标值定义为瞬时速度</strong>。0/0 从未发生——h 一直不是零，
-      我们要的只是 h 缩小时差商的极限（这正是上一讲的工具）。
+      算一下 [1, 1.1] 秒的平均速度、[1, 1.01] 的、[1, 1.001] 的……这串数会稳稳地停在 10 m/s 上：
     </p>
-    <SecantTangentDemo />
+    <MathBlock tex="\begin{aligned} h = 1: &\ 15 \qquad & h = 0.1: &\ 10.5 \\ h = 0.01: &\ 10.05 \qquad & h = 0.001: &\ 10.005 \end{aligned}" />
     <p>
-      几何上看同一件事：连接曲线上两点的<strong>割线</strong>，当第二个点滑向第一个点时，
+      而且这串数<strong>不是试出来的，是算出来的</strong>——把区间 <MathInline tex="[1,\,1+h]" />
+      的平均速度化简一次，规律就全在脸上了。
+    </p>
+    <RevealBox
+      title="🔍 把那串数真的算一次：平均速度恰好是 10 + 5h"
+      label="对答案 / 看完整拆解"
+    >
+      <template #hint>
+        先自己动笔：用 <MathInline tex="s(t) = 5t^2" /> 写出区间
+        <MathInline tex="[1,\,1+h]" /> 上的平均速度 <MathInline tex="\frac{s(1+h)-s(1)}{h}" />，
+        把分子展开、约掉 h。你会得到一个<strong>关于 h 的一次式</strong>——
+        写出它，再想想为什么这一步里 h 绝不能等于 0。
+      </template>
+      <p><strong>第一步：照定义写出来，分子展开。</strong></p>
+      <MathBlock tex="\frac{s(1+h) - s(1)}{h} = \frac{5(1+h)^2 - 5}{h} = \frac{5 + 10h + 5h^2 - 5}{h} = \frac{10h + 5h^2}{h}" />
+      <p>
+        <strong>第二步：约掉 h。</strong>这一步<strong>要求 <MathInline tex="h \neq 0" /></strong>——
+        而这个要求完全合理，因为我们从头到尾谈的都是一段<em>有长度</em>的时间：
+      </p>
+      <MathBlock tex="\frac{10h + 5h^2}{h} = 10 + 5h \qquad (h \neq 0)" />
+      <p>
+        <strong>第三步：读这个式子。</strong>代 h = 0.1 得 10.5、h = 0.01 得 10.05、
+        h = 0.001 得 10.005——上面那串数一个不差。更要紧的是，
+        <strong>平均速度与 10 的差<em>正好</em>是 5h</strong>：
+        你要误差小于 0.001，我就把 h 取到 0.0002 以下。这句话的形状，
+        跟<router-link to="/calculus/limit">上一讲</router-link>那场"你出 ε、我答 δ"的攻防一模一样。
+      </p>
+      <p>
+        <strong>第四步：换个时刻再算一遍。</strong>把 1 换成任意 <MathInline tex="t_0" />：
+      </p>
+      <MathBlock tex="\frac{5(t_0+h)^2 - 5t_0^2}{h} = \frac{10t_0h + 5h^2}{h} = 10\,t_0 + 5h \qquad (h \neq 0)" />
+      <p>
+        所以逼近的目标是 <MathInline tex="10\,t_0" />——这正是中学物理里
+        <MathInline tex="v = gt" /> 那条公式，现在它是被推出来的，不是被背下来的。
+      </p>
+      <p>
+        <strong>回味一下：整个过程里 <MathInline tex="h" /> 一次都没有等于 0</strong>，
+        所以 0/0 从未发生。我们只是问了"h 缩小时这串数停在哪里"，
+        而这个问句上一讲已经有了严格的写法。<strong>把这个"停在哪里"定义成瞬时速度</strong>，
+        病句就治好了。
+      </p>
+    </RevealBox>
+    <p>
+      于是干脆<strong>把这个逼近的目标值定义为瞬时速度</strong>。几何上看是同一件事：
+      连接曲线上两点的<strong>割线</strong>，当第二个点滑向第一个点时，
       割线转动着趋于一个极限位置——这个极限位置就是<strong>切线</strong>，它的斜率就是导数。
       "瞬时速度"和"切线斜率"原来是同一个数学对象。
     </p>
 
-    <h2><span class="sec-no">叁</span>严格定义</h2>
+    <h2><span class="sec-no">叁</span>亲手把割线压成切线</h2>
+    <p>
+      上面那条 <MathInline tex="10 + 5h" /> 值不值得信，自己拖一次最清楚。
+      （折叠框里那四步是这一讲的地基，跳过了也能玩，但回头补上更划算。）
+    </p>
+    <SecantTangentDemo />
+
+    <h2><span class="sec-no">肆</span>严格定义</h2>
     <div class="definition">
       <div class="def-title">📐 定义（导数）</div>
       <p>设 f 在 a 的邻域内有定义。若极限</p>
@@ -54,54 +104,142 @@ import SecantTangentDemo from '../../demos/SecantTangentDemo.vue'
         存在，则称 f 在 a 处<strong>可导</strong>，该极限称为 f 在 a 处的<strong>导数</strong>。
       </p>
     </div>
+    <p>
+      定义里那个 <MathInline tex="\lim_{h \to 0}" /> 用的就是上一讲的函数极限，
+      连"排除 h = 0 这一点"都是现成的（那里的条件正是 <MathInline tex="0 < |h| < \delta" />）。
+      刚才那个例子代进来：差商是 <MathInline tex="10t_0 + 5h" />，与 <MathInline tex="10t_0" />
+      的差是 <MathInline tex="5|h|" />，对手给 ε 我取 <MathInline tex="\delta = \varepsilon/5" /> 即可，
+      所以 <MathInline tex="s'(t_0) = 10\,t_0" />。
+    </p>
     <p>几个当年让人（现在让你）困惑的点，其实定义里都写清楚了：</p>
     <ul>
-      <li>
-        <strong><MathInline tex="\mathrm{d}y/\mathrm{d}x" /> 不是分数，却长得像分数</strong>——
-        它是差商 <MathInline tex="\Delta y / \Delta x" /> 取极限后的整体记号。莱布尼茨故意设计成分数的样子，
-        因为它在链式法则、换元积分里"约分"起来太顺手了。好记号是生产力；
-      </li>
       <li>
         <strong>导数本身又是函数</strong>：每一点 a 都对应一个数 f′(a)，于是 f′ 是个新函数，
         还可以继续求导得 f″ —— 加速度就是位置的二阶导数；
       </li>
       <li>
-        <strong>可导比连续更苛刻</strong>：|x| 在 0 处连续但左右差商极限不等（±1），切线定不下来。
-        尖点、竖直切线处都不可导。
+        <strong>可导比连续更苛刻</strong>：<MathInline tex="|x|" /> 在 0 处连续，差商却是
+        <MathInline tex="\frac{|0+h| - 0}{h} = \frac{|h|}{h}" />——
+        h 从右边来（h &gt; 0）它恒等于 <strong>+1</strong>，h 从左边来（h &lt; 0）
+        <MathInline tex="|h| = -h" /> 它恒等于 <strong>−1</strong>。
+        两侧各自稳稳地停在不同的数上，<strong>没有共同的"逼近目标"</strong>，
+        所以极限不存在、切线定不下来。尖点、竖直切线处都是这么不可导的。
       </li>
     </ul>
+    <p>
+      还有一个记号问题值得单独说，因为它是全微积分最容易被误解的一处：
+      <MathInline tex="\mathrm{d}y/\mathrm{d}x" /> <strong>不是分数，却长得像分数</strong>——
+      它是差商 <MathInline tex="\Delta y / \Delta x" /> 取极限后的<em>整体</em>记号，
+      分子分母各自并不代表某个数。既然如此，为什么莱布尼茨偏要设计成这副样子？
+    </p>
+    <MathBlock tex="\frac{\mathrm{d}y}{\mathrm{d}x} = \frac{\mathrm{d}y}{\mathrm{d}u}\cdot\frac{\mathrm{d}u}{\mathrm{d}x}" />
+    <p>
+      这就是<strong>链式法则</strong>。盯着它看：右边两个"分数"相乘，中间的
+      <MathInline tex="\mathrm{d}u" /> 像是被约掉了，于是法则本身<strong>不必记，看一眼就能写对</strong>。
+      但请当心——<strong>这不是真的约分</strong>，因为 <MathInline tex="\mathrm{d}u" />
+      在这里根本不是一个数；法则的证明要老老实实拆成两个差商相乘再取极限，
+      记号只是把结论摆成了容易记住的形状。<strong>好记号是生产力，前提是知道它在替你记住什么。</strong>
+    </p>
     <div class="insight">
       <div class="insight-title">💡 更现代的读法：导数 = 最佳线性近似</div>
       <p>
-        把定义变形：<MathInline tex="f(a+h) \approx f(a) + f'(a)\,h" />（误差比 h 更高阶地趋于零）。
-        意思是：<strong>在显微镜下，任何可导函数局部都是直线</strong>，f′(a) 就是那条直线的斜率。
-        "微分 <MathInline tex="\mathrm{d}y = f'(x)\mathrm{d}x" />"说的就是这个线性近似。
-        这个观点比"切线斜率"走得更远——多元函数的全微分、雅可比矩阵（线性代数登场！），
-        都是"局部用线性函数冒充自己"这一思想的推广。
+        把定义变形一下，导数会露出另一副面孔：<MathInline tex="f(a+h) \approx f(a) + f'(a)\,h" />。
+        意思是<strong>在显微镜下，任何可导函数局部都是直线</strong>，f′(a) 就是那条直线的斜率。
+        不过这个 <MathInline tex="\approx" /> 有多准，得说清楚才算数——下面这个折叠框把它化成等号。
       </p>
     </div>
+    <RevealBox
+      title="🔍 把那个约等号变成等号：误差到底小到什么程度"
+      label="对答案 / 看完整拆解"
+    >
+      <template #hint>
+        先自己动笔：把误差记作 <MathInline tex="r(h) = f(a+h) - f(a) - f'(a)h" />，
+        然后计算 <MathInline tex="r(h)/h" /> 当 <MathInline tex="h \to 0" /> 时的极限。
+        提示：整理一下你会发现它就是"差商减去导数"。一个极限，算完再点开。
+      </template>
+      <p>
+        <strong>第一步：给误差起个名字。</strong>近似式两边一减，把差额单独拎出来：
+      </p>
+      <MathBlock tex="r(h) \;=\; f(a+h) - f(a) - f'(a)\,h" />
+      <p>
+        <strong>第二步：除以 h 看看它多大。</strong>
+      </p>
+      <MathBlock tex="\frac{r(h)}{h} = \frac{f(a+h)-f(a)}{h} - f'(a) \;\xrightarrow[\;h \to 0\;]{}\; f'(a) - f'(a) = 0" />
+      <p>
+        最后那一步用的正是导数的定义本身——<strong>可导这个假设，此处一次付清</strong>。
+      </p>
+      <p>
+        <strong>第三步：读懂这个 0 的分量。</strong>它说的不只是"误差趋于零"（那太廉价了，
+        h 趋于零时几乎什么都趋于零），而是<strong>误差除以 h 之后<em>还是</em>趋于零</strong>——
+        误差比 h 本身小一个数量级。这种量记作 <MathInline tex="o(h)" />，读作"h 的高阶无穷小"，
+        它是一句<em>缩写</em>，展开就是刚才那个极限等于 0。于是约等号可以升级成等号：
+      </p>
+      <MathBlock tex="f(a+h) = f(a) + f'(a)\,h + o(h)" />
+      <p>
+        <strong>第四步：微分是什么。</strong>右边的 <MathInline tex="f'(a)h" /> 这一项——
+        近似式里<em>唯一</em>随 h 线性变化的部分——就叫 <strong>f 在 a 处的微分</strong>，记作
+        <MathInline tex="\mathrm{d}y = f'(x)\,\mathrm{d}x" />（这里 <MathInline tex="\mathrm{d}x" />
+        就是我们自己挑的那个增量 h）。所以 <MathInline tex="\mathrm{d}y" /> 不是什么"无穷小的一小段"，
+        它是<strong>一个正大光明的线性函数</strong>：给它一个增量，它还你一个近似的高度变化。
+        而 <MathInline tex="\mathrm{d}y/\mathrm{d}x" /> 之所以敢写成分数样，
+        正是因为在这个层面上它确实是两个量的比。
+      </p>
+      <p>
+        这个观点比"切线斜率"走得远得多：多元函数的全微分、
+        <router-link to="/linear-algebra/linear-map">雅可比矩阵</router-link>，
+        都是把这里的"乘以一个数"换成"乘以一个矩阵"——
+        <strong>局部用线性函数冒充自己</strong>，一句话贯穿此后所有的微积分。
+      </p>
+    </RevealBox>
 
-    <h2><span class="sec-no">肆</span>应用：只要有"变化率"，就有导数</h2>
+    <h2><span class="sec-no">伍</span>买到了什么：只要有"变化率"，就有导数</h2>
     <ul>
       <li>
         <strong>物理</strong>：速度是位置对时间的导数，加速度是速度的导数，电流是电荷量的导数，
-        功率是做功的导数——物理定律天然用导数写成（牛顿第二定律
-        <MathInline tex="F = m\ddot{x}" /> 就是个微分方程）；
+        功率是做功的导数——物理定律天然用导数写成。牛顿第二定律
+        <MathInline tex="F = m\ddot{x}" /> 就是个<router-link to="/mathphys/pde-intro">微分方程</router-link>
+        （<b>本站那一讲从零讲起，不需要先修</b>）；
       </li>
       <li>
         <strong>求极值（费马 1629，比牛顿还早）</strong>：山顶处切线必水平，所以极值点满足
-        <MathInline tex="f'(x) = 0" />。今天所有优化问题——从利润最大化到机器学习的梯度下降——
+        <MathInline tex="f'(x) = 0" />。这句话不必靠图说服——设 a 是内部的极大值点，
+        那么 <MathInline tex="f(a+h) \le f(a)" /> 对两侧都成立，于是差商
+        <MathInline tex="\frac{f(a+h)-f(a)}{h}" /> 在 h &gt; 0 时分子非正、分母正，<strong>恒 ≤ 0</strong>；
+        在 h &lt; 0 时分母也变号，<strong>恒 ≥ 0</strong>。可导意味着两侧奔向<em>同一个</em>数，
+        一个 ≤ 0 一个 ≥ 0，那就只能是 0。今天所有优化问题——从利润最大化到机器学习的梯度下降——
         都从这一句出发；
       </li>
       <li>
-        <strong>牛顿迭代法（你计算数学的老朋友）</strong>：解方程 f(x)=0 时，
-        在猜测点处用切线冒充曲线，切线与 x 轴的交点就是更好的猜测：
-        <MathInline tex="x_{n+1} = x_n - f(x_n)/f'(x_n)" /> —— 这正是"局部线性近似"思想的直接兑现；
+        <strong>牛顿迭代法</strong>：解方程 f(x) = 0 时，在猜测点 <MathInline tex="x_n" />
+        处用切线冒充曲线。切线方程就是上面那条最佳线性近似
+        <MathInline tex="y = f(x_n) + f'(x_n)(x - x_n)" />，令 <MathInline tex="y = 0" />
+        解出 x，就是下一个更好的猜测：
+        <MathInline tex="x_{n+1} = x_n - f(x_n)/f'(x_n)" />。
+        拿它算 <MathInline tex="\sqrt{2}" />（即解 <MathInline tex="x^2 - 2 = 0" />），
+        从 1.5 出发只要三步就精确到小数点后 11 位——
+        <router-link to="/numerical/root-finding">数值分析第二讲</router-link>专门算这笔账；
       </li>
       <li>
         <strong>经济学</strong>：边际成本、边际收益，就是成本函数、收益函数的导数——
         "边际"是"导数"的经济学方言。
       </li>
     </ul>
+    <div class="insight">
+      <div class="insight-title">🔗 与你学过的课程连一连</div>
+      <p>
+        <strong>极限</strong>：导数从头到尾就是一个极限，<router-link to="/calculus/limit">第一讲</router-link>
+        那套 ε-δ 语言在这里第一次真正派上用场；
+        <strong>积分</strong>：<router-link to="/calculus/integral">第三讲</router-link>会从完全相反的方向
+        （细分求和）造出另一个概念，而<router-link to="/calculus/ftc">第四讲</router-link>会证明两者互逆；
+        <strong>线性代数</strong>：把"乘以 f′(a)"换成"乘以一个矩阵"，导数就升级成
+        <router-link to="/linear-algebra/linear-map">线性映射</router-link>——多元微积分的全部技术内容；
+        <strong>数值分析</strong>：<router-link to="/numerical/root-finding">牛顿法</router-link>用切线找根，
+        而差商本身又是<router-link to="/numerical/float-error">数值求导</router-link>的公式，
+        那里会看到 h 取得太小反而更不准（舍入误差反扑）——
+        <strong>本讲说"h 越小越好"，那是在实数里；到了浮点数里，这句话会被打脸</strong>；
+        <strong>复变函数</strong>：把 h 换成复数，同一个定义会苛刻到令人吃惊，
+        <router-link to="/complex/holomorphic">复可导</router-link>因此成了一张至尊会员卡。
+      </p>
+    </div>
   </ConceptPage>
 </template>

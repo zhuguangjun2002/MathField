@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { usePlot, makeView, drawAxes, plotFn, drawPoint, drawLabel, C, fmt } from './plot.js'
 import DemoFrame from '../components/DemoFrame.vue'
 import ControlSlider from '../components/ControlSlider.vue'
+import MathInline from '../components/MathInline.vue'
 
 // 自由落体：s(t) = 5t²（取 g ≈ 10 m/s²）
 const s = (t) => 5 * t * t
@@ -77,7 +78,7 @@ usePlot(
     <canvas ref="canvas" class="demo-canvas"></canvas>
     <template #controls>
       <ControlSlider
-        label="时刻 t₀"
+        label="时刻 t₀（秒·真参数）"
         v-model="t0"
         :min="0.4"
         :max="2.2"
@@ -85,7 +86,7 @@ usePlot(
         :display="(x) => x.toFixed(2) + ' s'"
       />
       <ControlSlider
-        label="时间间隔 h（对数刻度）"
+        label="时间间隔 h（秒·对数刻度）"
         v-model="logH"
         :min="-3"
         :max="0"
@@ -99,9 +100,41 @@ usePlot(
       &nbsp;（差距 {{ Math.abs(avgV - instV).toExponential(2) }}）
     </template>
     <template #note>
-      石头下落的距离是 s(t) = 5t²。把 h 从 1 秒一路缩小到 0.001 秒：割线（红）越来越贴近切线（蓝），
-      平均速度稳稳地逼近 10·t₀ —— 这个「逼近的目标值」就是导数。注意 h 永远不等于 0
-      （否则 0/0 没有意义），但目标值却清清楚楚。
+      <p><b>两个旋钮分别是什么</b></p>
+      <ul>
+        <li>
+          <b>时刻 t₀</b>：想问哪一瞬间的速度，单位秒。这是<strong>真物理参数</strong>——
+          换一个 t₀，答案跟着变（自由落体越落越快）。
+        </li>
+        <li>
+          <b>时间间隔 h</b>：拿来求平均速度的那段时间有多长，单位也是秒，
+          量的是从 t₀ 往右延伸多远。滑杆走的是<strong>对数刻度</strong>——
+          它拖的其实是 <MathInline tex="\lg h" />，从 −3 到 0，所以 h 在
+          <strong>0.001 秒到 1 秒</strong>之间跑；这么设是因为 h 要缩小好几个数量级才看得出门道，
+          线性刻度全挤在左端。读数区旁边显示的始终是 h 本身，不是滑杆值。
+        </li>
+      </ul>
+      <p>
+        <b>图上三条线</b>：黑色是路程曲线 <MathInline tex="s(t) = 5t^2" />（米）；
+        红色是<strong>割线</strong>，连接 <MathInline tex="t_0" /> 与
+        <MathInline tex="t_0 + h" /> 两点，它的斜率就是这段的平均速度；
+        蓝色虚线是<strong>切线</strong>，也就是要逼近的目标。金色的两条直角边标出
+        <MathInline tex="\Delta t = h" /> 与 <MathInline tex="\Delta s" />，
+        平均速度就是这两条边之比。
+      </p>
+      <p>
+        <b>照着做一遍</b>：把 t₀ 停在 1.00，然后把 h 从 1 一路拖到 0.001，
+        盯着读数区的三个数——平均速度从 <b>15</b> 依次经过 <b>10.5</b>、<b>10.05</b> 落到
+        <b>10.005</b>，而差距那一栏从 5.00e+0 一路掉到 5.00e−3：
+        <strong>h 每缩小 10 倍，差距也正好缩小 10 倍</strong>。
+        这不是巧合——正文算过，平均速度恒等于 <MathInline tex="10\,t_0 + 5h" />，
+        差距就是 <MathInline tex="5h" />。
+      </p>
+      <p>
+        再把 t₀ 拖到 2.00 重来一次：目标值换成了 20，但"差距 = 5h"这条规律纹丝不动。
+        <strong>注意 h 永远不等于 0</strong>（滑杆最左端也只是 0.001），所以 0/0 从未发生，
+        可那个"逼近的目标"却清清楚楚——这就是导数。
+      </p>
     </template>
   </DemoFrame>
 </template>
