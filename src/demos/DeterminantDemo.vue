@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { usePlot, makeSquareView, drawArrow, drawLabel, C, fmt } from './plot.js'
 import DemoFrame from '../components/DemoFrame.vue'
+import MathInline from '../components/MathInline.vue'
 
 // 列向量 u = (a, c)，v = (b, d)；矩阵 [a b; c d]
 const ux = ref(2)
@@ -141,16 +142,55 @@ onBeforeUnmount(() => {
     <canvas ref="canvas" class="demo-canvas"></canvas>
     <template #readout>
       矩阵
-      <code>［{{ fmt(ux, 1) }} {{ fmt(vx, 1) }}；{{ fmt(uy, 1) }} {{ fmt(vy, 1) }}］</code>
-      &nbsp;det = {{ fmt(ux, 1) }}×{{ fmt(vy, 1) }} − {{ fmt(uy, 1) }}×{{ fmt(vx, 1) }} =
+      <code>［{{ fmt(ux, 1) }} {{ fmt(vx, 1) }}；{{ fmt(uy, 1) }} {{ fmt(vy, 1) }}］</code><br />
+      det = {{ fmt(ux, 1) }}×{{ fmt(vy, 1) }} − {{ fmt(uy, 1) }}×{{ fmt(vx, 1) }} =
       <b :style="{ color: det > 0.08 ? '#b23a2f' : det < -0.08 ? '#33518f' : '#8b8494' }">{{ fmt(det) }}</b>
       &nbsp;&nbsp;平行四边形面积 = |det| = <b>{{ fmt(Math.abs(det)) }}</b>
     </template>
     <template #note>
-      抓住箭头尖拖一拖：det 的绝对值始终等于两个列向量张成的平行四边形面积。
-      把 v 拖过 u 的另一侧，颜色由红变蓝——det 变负了，这是"定向翻转"（左手系/右手系）的信号。
-      再把两个向量拖到<b>共线</b>：平行四边形被压扁，det = 0——这正是上一讲"两条方程平行、消元露馅"的几何真相，
-      也是"奇异矩阵"一词的含义。行列式从来不是那个展开式，展开式只是这块面积的计算方法。
+      <p><b>这个动画没有滑杆，两个箭头本身就是控件</b></p>
+      <ul>
+        <li>
+          <b>红箭头 u</b>：矩阵的<strong>第一列</strong>
+          <MathInline tex="(a, c)" />。用鼠标抓住箭头尖拖动。
+        </li>
+        <li>
+          <b>蓝箭头 v</b>：矩阵的<strong>第二列</strong>
+          <MathInline tex="(b, d)" />，同样直接拖。
+        </li>
+      </ul>
+      <p>
+        两个箭头张成的平行四边形就是那块"有向面积"。读数区把
+        <MathInline tex="ad - bc" /> 的两个乘积逐项写了出来，
+        <strong>数字的颜色是有含义的</strong>：红色表示 det 为正、蓝色表示为负、
+        灰色表示已经贴近 0（阈值 0.08，用来提示"快压扁了"）。
+      </p>
+      <p>
+        <b>照着做一遍（一）：面积就是 det。</b>初始位置是
+        <MathInline tex="\boldsymbol{u}=(2,\ 0.4)" />、<MathInline tex="\boldsymbol{v}=(0.6,\ 1.6)" />，
+        读数 <MathInline tex="2\times 1.6 - 0.4\times 0.6 = 2.96" />。
+        把 <MathInline tex="\boldsymbol{v}" /> 往上拉长一倍，平行四边形高度翻倍，det 也跟着翻倍——
+        <strong>这就是公理里"多重线性"的手感</strong>。
+      </p>
+      <p>
+        <b>照着做一遍（二）：压扁。</b>把 <MathInline tex="\boldsymbol{v}" /> 慢慢拖向
+        <MathInline tex="\boldsymbol{u}" /> 所在的那条直线（同向或反向都行）。
+        平行四边形越来越扁，det 的数字一路掉向 0，颜色也由红转灰。
+        <strong>det = 0 的那一刻，两列共线</strong>——
+        <router-link to="/linear-algebra/elimination">上一讲</router-link>"两条方程平行、消元露馅"
+        的几何真相就是这个，"奇异矩阵"一词也指这场压扁事故。
+      </p>
+      <p>
+        <b>照着做一遍（三）：负面积。</b>别停在共线处，<strong>继续拖过去</strong>，
+        让 <MathInline tex="\boldsymbol{v}" /> 转到 <MathInline tex="\boldsymbol{u}" /> 的另一侧。
+        det 穿过 0 变成负数，数字由灰转蓝。面积当然不会是负的——变的是<strong>定向</strong>：
+        原来从 u 转到 v 是逆时针，现在成了顺时针。<strong>符号记录的是"翻面"，不是大小。</strong>
+        （三维里这就是左手系与右手系之分。）
+      </p>
+      <p>
+        行列式从来不是那个展开式。展开式只是这块面积的<em>计算方法</em>，
+        而你刚刚拖的这块面积，才是它本人。
+      </p>
     </template>
   </DemoFrame>
 </template>

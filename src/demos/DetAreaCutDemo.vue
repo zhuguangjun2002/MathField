@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { usePlot, makeView, drawArrow, drawLabel, C, fmt } from './plot.js'
 import DemoFrame from '../components/DemoFrame.vue'
 import ControlSlider from '../components/ControlSlider.vue'
+import MathInline from '../components/MathInline.vue'
 
 // 固定一组好看的列向量：u = (a, c)、v = (b, d)
 const a = 3
@@ -154,7 +155,7 @@ usePlot(
     <canvas ref="canvas" class="demo-canvas"></canvas>
     <template #controls>
       <ControlSlider
-        label="拆开程度"
+        label="拆开程度（只是动画进度）"
         v-model="explode"
         :min="0"
         :max="1"
@@ -170,11 +171,42 @@ usePlot(
       &nbsp;=&nbsp; <b :style="{ color: '#b23a2f' }">ad − bc = {{ det }}</b>
     </template>
     <template #note>
-      拖「拆开程度」：把大矩形四周的 6 块边角料整体推出去，中间原地不动的<b>红色平行四边形</b>就是
-      u = (a, c)、v = (b, d) 张成的那块。合上时六块正好严丝合缝铺满大矩形；拆开后一目了然——
-      <b>平行四边形 = 大矩形 − 边角料</b>。把面积逐项相减：
-      (a+b)(c+d) − ac − bd − 2bc，展开抵消后只剩 <b>ad − bc</b>。这就是行列式那个"交叉相乘再相减"的几何真身。
-      （若把 v 拖到 u 的另一侧，同样割补会得到 bc − ad，即负号——那是"有向面积"，见下方演示。）
+      <p><b>唯一的旋钮是什么</b></p>
+      <ul>
+        <li>
+          <b>拆开程度</b>：把六块边角料从大矩形里整体推出去多远。
+          <strong>它不是任何数学参数，纯粹是动画进度</strong>——
+          拖到哪一档，面积都一分不变，读数区那一行数字自始至终不动。
+          它存在的唯一目的是让你看清"哪六块"。
+        </li>
+      </ul>
+      <p>
+        <b>这张图的 a、b、c、d 是写死的</b>：取
+        <MathInline tex="\boldsymbol{u} = (a,c) = (3,1)" />、
+        <MathInline tex="\boldsymbol{v} = (b,d) = (1,2)" />（图上没有改它们的旋钮，
+        想自己换数请用下一个动画，那个可以直接拖箭头）。于是大矩形是
+        <MathInline tex="4\times 3 = 12" />，而
+        <MathInline tex="\det = ad - bc = 3\cdot 2 - 1\cdot 1 = 5" />。
+      </p>
+      <p>
+        <b>六块分别是</b>：两个金色直角三角形（直角边 a 与 c，各
+        <MathInline tex="\tfrac12 ac = 1.5" />）、两个靛蓝直角三角形（直角边 b 与 d，各
+        <MathInline tex="\tfrac12 bd = 1" />）、两个绿色长方形（<MathInline tex="b\times c = 1" />）。
+        合计 <MathInline tex="1.5\times 2 + 1\times 2 + 1\times 2 = 7" />，
+        而 <MathInline tex="12 - 7 = 5" />——正是中间那块红色平行四边形。
+      </p>
+      <p>
+        <b>照着做一遍</b>：先停在"合上"，确认六块加红色平行四边形<strong>严丝合缝铺满</strong>大矩形，
+        没有重叠也没有空隙；再拖到"完全拆开"，六块飞出去，中间那块<strong>原地不动</strong>。
+        <strong>平行四边形 = 大矩形 − 边角料</strong>，逐项相减
+        <MathInline tex="(a+b)(c+d) - ac - bd - 2bc" />，展开抵消后只剩
+        <MathInline tex="ad - bc" />。这就是行列式那个"交叉相乘再相减"的几何真身。
+      </p>
+      <p>
+        （若把 <MathInline tex="\boldsymbol{v}" /> 拖到 <MathInline tex="\boldsymbol{u}" /> 的另一侧，
+        同样的割补会得到 <MathInline tex="bc - ad" />，即负号——那是"有向面积"，
+        下一个动画可以亲手试。）
+      </p>
     </template>
   </DemoFrame>
 </template>
