@@ -21,10 +21,14 @@ npm run preview # 预览构建产物
 服务器只需返回 `/index.html`，**无需 SPA 回退规则**；Pages 在 `*.pages.dev` 根路径提供服务，
 Vite 的 `base` 保持默认 `/` 即可。配置见 `wrangler.jsonc`（项目名 `mathfield`，产物目录 `dist`）。
 
-> 已部署：Cloudflare Pages 项目 `mathfield`，生产地址 <https://mathfield-a4l.pages.dev>。
-> 当前用「命令行直传」方式上线（`npm run deploy`）；若想改为推送即自动部署，按下方方式一在控制台接上 GitHub 仓库即可。
+> 已部署：Cloudflare Pages 项目 `mathfield`，生产地址 <https://mathfield-a4l.pages.dev>，
+> 自定义域名 <https://mathfield.bigcow.net>。
+>
+> **当前采用下面的「方式一」：仓库已接上 Git 集成，`git push origin master` 之后 CF 自动构建上线，
+> 不需要再手动跑 `npm run deploy`。** 想确认某次 push 是否已上线：
+> `npx wrangler pages deployment list --project-name=mathfield`，看 Source 列的 commit。
 
-**方式一：Git 集成（推荐，推送即自动部署）**
+**方式一：Git 集成（本项目正在用，推送即自动部署）**
 在 Cloudflare 控制台 → Workers & Pages → Create → Pages → 连接 GitHub 仓库 `MathField`，构建设置：
 
 | 项 | 值 |
@@ -36,7 +40,7 @@ Vite 的 `base` 保持默认 `/` 即可。配置见 `wrangler.jsonc`（项目名
 
 之后每次 `git push` 到 `master` 都会自动构建并上线。
 
-**方式二：Wrangler CLI 手动部署**
+**方式二：Wrangler CLI 手动部署**（应急用，绕过 CI；平时不需要）
 ```bash
 npx wrangler login       # 首次，浏览器授权
 npm run deploy           # = vite build && wrangler pages deploy（读取 wrangler.jsonc）
