@@ -2,6 +2,7 @@
 import ConceptPage from '../../components/ConceptPage.vue'
 import MathBlock from '../../components/MathBlock.vue'
 import MathInline from '../../components/MathInline.vue'
+import RevealBox from '../../components/RevealBox.vue'
 import PathIntegralDemo from '../../demos/PathIntegralDemo.vue'
 </script>
 
@@ -9,11 +10,91 @@ import PathIntegralDemo from '../../demos/PathIntegralDemo.vue'
   <ConceptPage slug="cauchy-integral">
     <h2><span class="sec-no">壹</span>困境：路径千万条，积分值听谁的</h2>
     <p>
-      实数轴上的定积分 <MathInline tex="\int_a^b" /> 没有歧义：从 a 到 b 只有一条路。
-      复平面上麻烦来了：从 A 到 B 有<strong>无穷多条路径</strong>，积分
-      <MathInline tex="\int_\Gamma f(z)\,dz" /> 得沿着指定的曲线 Γ 算。
-      于是一个尴尬的问题横在所有人面前：<strong>换条路径，积分值变不变？</strong>
+      开讲之前先说清楚一件事：<MathInline tex="\int_\Gamma f(z)\,dz" /> 到底在算什么。
+      这个记号长得跟实数积分一模一样，含义却换了人。
     </p>
+    <p>
+      <strong>实数积分是把区间切碎。</strong><MathInline tex="\int_a^b f(x)\,dx" /> 的做法是：
+      把 <MathInline tex="[a, b]" /> 切成许多小段，每段取一个样点，算
+      <MathInline tex="\sum f(x_k)\,\Delta x_k" />，再让段数趋于无穷。
+      这里 <MathInline tex="\Delta x_k" /> 是一个正的小数（段长），乘上去等于"把高度按宽度摊开"，
+      所以结果读作面积。
+    </p>
+    <p>
+      <strong>复积分是把曲线切碎。</strong>做法一模一样：在复平面上指定一条曲线 Γ，
+      把它切成许多小段，每段取一个样点 <MathInline tex="z_k" />，算
+      <MathInline tex="\sum f(z_k)\,\Delta z_k" />，再让段数趋于无穷。
+      变的只有一处，但这一处改变了一切：<strong><MathInline tex="\Delta z_k" /> 是个复数</strong>——
+      它是"从这一小段的头指向尾"的那个箭头，既有长度也有<strong>方向</strong>。
+      于是 <MathInline tex="f(z_k)\,\Delta z_k" /> 是一次<strong>复数乘法</strong>，
+      而<router-link to="/complex/imaginary">第 1 讲</router-link>讲过，
+      复数乘法 = 旋转 + 伸缩。所以复积分不是在摊面积，它是在把一串"转一下、缩一下"的小箭头首尾接起来，
+      看最后落到哪儿。结果自然也是个复数。
+    </p>
+    <p>
+      <strong>实际怎么算？把曲线参数化。</strong>给 Γ 写一个参数方程
+      <MathInline tex="z(t)" />（<MathInline tex="t" /> 从 <MathInline tex="\alpha" /> 走到
+      <MathInline tex="\beta" />），那么 <MathInline tex="\Delta z \approx z'(t)\,\Delta t" />，
+      求和的极限就变成一个普通的、对实变量 <MathInline tex="t" /> 的积分：
+    </p>
+    <MathBlock tex="\int_\Gamma f(z)\,dz = \int_\alpha^\beta f\bigl(z(t)\bigr)\, z'(t)\, dt" />
+    <p>
+      这就是复积分的全部操作说明：<strong>选一条路，把路写成参数方程，代进去积</strong>。
+      注意"选一条路"这四个字——它正是麻烦的开端。
+    </p>
+    <p>
+      实数轴上的定积分 <MathInline tex="\int_a^b" /> 没有歧义：从 a 到 b 只有一条路。
+      复平面上麻烦来了：从 A 到 B 有<strong>无穷多条路径</strong>，
+      每条路径都给出一个积分值。于是一个尴尬的问题横在所有人面前：
+      <strong>换条路径，积分值变不变？</strong>
+    </p>
+    <p>
+      这个问题不能靠猜，得真算一次。下面这个例子同时给出了两种答案——
+      而分水岭恰好是<router-link to="/complex/holomorphic">上一讲</router-link>的解析性。
+    </p>
+    <RevealBox
+      title="🔍 同样两条路径，一个函数给同一个答案，另一个给两个答案"
+      label="对答案 / 看完整拆解"
+    >
+      <template #hint>
+        先自己动笔：从 0 走到 1+i，走两条路——① 直线；② 先沿实轴到 1，再竖直上到 1+i。
+        分别算 <MathInline tex="\int z\,dz" /> 与 <MathInline tex="\int \bar z\,dz" /> 这两个积分
+        （<MathInline tex="\bar z" /> 是共轭，把 <MathInline tex="a+bi" /> 变
+        <MathInline tex="a-bi" />）。四个数，算完再点开。
+      </template>
+      <p>
+        <strong>先算 <MathInline tex="f(z) = z" />。</strong>
+        路径①：<MathInline tex="z(t) = t(1+i)" />，<MathInline tex="t \in [0,1]" />，
+        于是 <MathInline tex="z'(t) = 1+i" />，
+      </p>
+      <MathBlock tex="\int_0^1 t(1+i)\cdot(1+i)\,dt = (1+i)^2\int_0^1 t\,dt = 2i \cdot \tfrac12 = i" />
+      <p>
+        路径②分两段。实轴那段 <MathInline tex="z = t" />、<MathInline tex="dz = dt" />，
+        给出 <MathInline tex="\int_0^1 t\,dt = \tfrac12" />；竖直那段
+        <MathInline tex="z = 1 + it" />、<MathInline tex="dz = i\,dt" />，给出
+      </p>
+      <MathBlock tex="\int_0^1 (1+it)\, i\,dt = i + i^2\!\int_0^1 t\,dt = i - \tfrac12" />
+      <p>两段相加：<MathInline tex="\tfrac12 + (i - \tfrac12) = i" />。<strong>两条路同一个答案。</strong></p>
+      <p>
+        <strong>再算 <MathInline tex="f(z) = \bar z" />。</strong>路径①上
+        <MathInline tex="\bar z = t(1-i)" />，
+      </p>
+      <MathBlock tex="\int_0^1 t(1-i)\cdot(1+i)\,dt = (1-i)(1+i)\int_0^1 t\,dt = 2\cdot\tfrac12 = 1" />
+      <p>
+        路径②：实轴那段 <MathInline tex="\bar z = t" />，仍给 <MathInline tex="\tfrac12" />；
+        竖直那段 <MathInline tex="\bar z = 1 - it" />、<MathInline tex="dz = i\,dt" />，给出
+      </p>
+      <MathBlock tex="\int_0^1 (1-it)\, i\,dt = i - i^2\!\int_0^1 t\,dt = i + \tfrac12" />
+      <p>
+        两段相加：<MathInline tex="\tfrac12 + (i + \tfrac12) = 1 + i" />。
+        <strong>两条路两个答案</strong>：<MathInline tex="1" /> 和 <MathInline tex="1+i" />。
+      </p>
+      <p>
+        差别在哪？<MathInline tex="z" /> 处处解析，而 <MathInline tex="\bar z" /> 正是上一讲开篇那个
+        <strong>处处不可导</strong>的反例。所以"路径无关"不是复积分的通性，
+        它是<strong>解析函数独有的特权</strong>——这一讲要做的，就是把这句话变成定理。
+      </p>
+    </RevealBox>
     <p>
       若积分值依赖路径，复积分就是一门"曲线簿记学"，每条路各记各账，理论价值有限；
       若不依赖路径，那"从 A 积到 B"就是良定义的——整套微积分基本定理的框架才搬得过来。
@@ -32,33 +113,139 @@ import PathIntegralDemo from '../../demos/PathIntegralDemo.vue'
     </div>
 
     <h2><span class="sec-no">贰</span>破局：回路积分为零 ⟺ 路径无关</h2>
-    <p>先看两句话怎么等价：两条同起终点的路径 Γ₁、Γ₂，正走 Γ₁ 再倒走 Γ₂ 就拼成一条闭合回路。所以</p>
+    <p>
+      先看两句话怎么等价。取两条同起点同终点的路径 <MathInline tex="\Gamma_1" />、
+      <MathInline tex="\Gamma_2" />：正着走完 <MathInline tex="\Gamma_1" />，
+      再<strong>倒着</strong>走 <MathInline tex="\Gamma_2" /> 回来，就拼成了一条闭合回路。
+      而倒着走一条路径，每一小段的 <MathInline tex="\Delta z" /> 都掉头，积分整体变号，所以这条回路的积分是
+      <MathInline tex="\int_{\Gamma_1} f\,dz - \int_{\Gamma_2} f\,dz" />。
+      它为零，正好就是两条路径同值。反过来也一样（任一回路都能从中间切成两条同端点的路径）。于是
+    </p>
     <MathBlock tex="\oint f\,dz = 0 \ \text{（一切回路）} \quad\Longleftrightarrow\quad \int_{\Gamma_1} f\,dz = \int_{\Gamma_2} f\,dz \ \text{（同端点的一切路径）}" />
     <p>
-      为什么解析函数的回路积分是零？把 <MathInline tex="f\,dz" /> 拆开写成两个实线积分，
-      套格林公式（微积分的老朋友：回路积分 = 内部旋度的面积分），被积项恰好是柯西-黎曼方程的左右两边之差——
-      <strong>逐点为零</strong>。上一讲的"局部旋转伸缩"约束，在积分层面兑现为"整体无账可记"。
+      为什么解析函数的回路积分是零？只要一把工具：<strong>格林公式</strong>。
+      它是多元微积分里那条"把回路积分换成面积分"的定理，说的是对平面上一条闭回路 Γ 与它围住的区域 D，
     </p>
+    <MathBlock tex="\oint_\Gamma \bigl(P\,dx + Q\,dy\bigr) = \iint_D \Bigl(\frac{\partial Q}{\partial x} - \frac{\partial P}{\partial y}\Bigr)\, dA" />
+    <p>
+      直觉是这样的：把 D 切成无数小方块，每个小方块自己绕一圈（这一圈的值就是右边那个被积式，
+      正是<router-link to="/complex/holomorphic">上一讲</router-link>算过的<strong>环量</strong>），
+      再把所有小方块的圈加起来——相邻两块共用的边被走了两遍、方向相反，<strong>全部抵消</strong>，
+      只剩最外圈那条没人配对的边界。所以"内部所有微元的旋转之和 = 边界上绕一圈"。
+      牛顿-莱布尼茨也是这个套路（内部导数的累积 = 两端点之差），只是升了一维。
+    </p>
+    <p>
+      有了它，柯西定理的证明只有四行——而且两条柯西-黎曼方程各消掉一半，干净得不像话：
+    </p>
+    <RevealBox
+      title="🔍 四行：把 f dz 拆开，格林公式一套，两条 C-R 方程各消一半"
+      label="对答案 / 看完整拆解"
+    >
+      <template #hint>
+        先自己动笔：写 <MathInline tex="f = u + iv" />、<MathInline tex="dz = dx + i\,dy" />，
+        把 <MathInline tex="f\,dz" /> 乘开，分成实部与虚部两个
+        <MathInline tex="P\,dx + Q\,dy" /> 形式的线积分。再对每个套一次格林公式，
+        看看被积式能不能被 <MathInline tex="u_x = v_y,\ u_y = -v_x" /> 打成零。
+      </template>
+      <p><strong>第一步：乘开。</strong></p>
+      <MathBlock tex="f\,dz = (u + iv)(dx + i\,dy) = \underbrace{(u\,dx - v\,dy)}_{\text{实部}} + \; i\underbrace{(v\,dx + u\,dy)}_{\text{虚部}}" />
+      <p>
+        <strong>第二步：实部套格林公式。</strong>这里
+        <MathInline tex="P = u" />、<MathInline tex="Q = -v" />，所以被积式是
+        <MathInline tex="\partial_x(-v) - \partial_y u = -v_x - u_y" />。
+        代入柯西-黎曼的第二条 <MathInline tex="u_y = -v_x" />：
+      </p>
+      <MathBlock tex="-v_x - u_y = -v_x - (-v_x) = 0" />
+      <p>
+        <strong>第三步：虚部套格林公式。</strong>这里
+        <MathInline tex="P = v" />、<MathInline tex="Q = u" />，被积式是
+        <MathInline tex="\partial_x u - \partial_y v = u_x - v_y" />。
+        代入第一条 <MathInline tex="u_x = v_y" />：
+      </p>
+      <MathBlock tex="u_x - v_y = v_y - v_y = 0" />
+      <p>
+        <strong>第四步：收工。</strong>两个面积分的被积式<strong>逐点</strong>为零，
+        面积分自然为零，于是 <MathInline tex="\oint_\Gamma f\,dz = 0 + i\cdot 0 = 0" />。
+      </p>
+      <p>
+        值得回味的是分工：柯西-黎曼有两条方程，这里<strong>一条管实部、一条管虚部</strong>，
+        一条不多一条不少。上一讲那个"各方向导数必须一致"的苛刻要求，在积分层面兑现成了
+        "整体无账可记"。（严格地说这套证明还借用了"导数连续"，古萨 1900 年用另一条路把这个多余假设去掉了，
+        结论不变。）
+      </p>
+    </RevealBox>
     <div class="insight">
       <div class="insight-title">💡 核心直觉：无源的场，绕一圈白绕</div>
       <p>
-        把解析函数想成一种"无源无旋的流"：柯西-黎曼方程保证它在每一点既不冒水也不打旋。
-        沿闭合回路积分，就是沿途"收集流量"——场里没有源头，<strong>绕一圈收支必然平衡</strong>。
-        这与重力场做功只看高度差是同一个逻辑。而一旦回路里包进一个<strong>奇点</strong>（函数失去解析性的点），
-        它就是场里的一眼泉——绕它一圈收集到的账不再是零。奇点是复平面上唯一"存账"的地方。
+        <router-link to="/complex/holomorphic">上一讲</router-link>说过，
+        一个解析函数就是一整个<strong>无源无旋的流场</strong>：
+        柯西-黎曼方程保证它每一点既不冒水（无源）也不打旋（无旋）。
+        沿闭合回路积分，就是沿途把这个流场的账收一遍——场里没有源头也没有旋涡，
+        <strong>绕一圈收支必然平衡</strong>。这跟重力场做功只看高度差是同一个逻辑。
+      </p>
+      <p>
+        而且这里不止是比喻，是<strong>等号</strong>。把上面拆开的两半读一遍就看见了。
+        写 <MathInline tex="f = u + iv" />，取向量场 <MathInline tex="\vec V = (u,\, -v)" />——
+        也就是把 <MathInline tex="f" /> 的共轭直接当速度场读（上一讲是另一种读法：把
+        <MathInline tex="f" /> 当复势，速度藏在 <MathInline tex="f'" /> 里；两种读法算的是同一件事，
+        因为上一讲那个速度场正是 <MathInline tex="f'" /> 的共轭）。此时
+        <MathInline tex="\oint(u\,dx - v\,dy)" /> 正是 <MathInline tex="\vec V" /> 沿 Γ 的
+        <strong>环量</strong>（转了多少），<MathInline tex="\oint(v\,dx + u\,dy)" /> 正是它穿过 Γ 的
+        <strong>净流量</strong>（漏出去多少）。而
+        <MathInline tex="\vec V" /> 无旋无源这两条，展开正好就是柯西-黎曼那两条方程。于是
+      </p>
+      <MathBlock tex="\oint_\Gamma f(z)\,dz = \underbrace{(\text{环量})}_{\text{实部}} + \; i\underbrace{(\text{净流量})}_{\text{虚部}}" />
+      <p>
+        柯西定理于是有了一句物理翻译：<strong>无旋 ⇒ 实部为零，无源 ⇒ 虚部为零</strong>。
+        一个复数等式，装的是两条物理守恒。
+      </p>
+      <p>
+        反过来，一旦回路里包进一个<strong>奇点</strong>（函数在那里不再解析的点，
+        比如 <MathInline tex="1/z" /> 的 <MathInline tex="z=0" />、
+        <MathInline tex="1/(z-2)^3" /> 的 <MathInline tex="z=2" />），
+        它就是场里的一眼泉眼或一个旋涡芯——绕它一圈收集到的账不再是零。
+        <strong>奇点是复平面上唯一"存账"的地方</strong>。
       </p>
     </div>
     <p>
-      奇点存的账能精确算出。最重要的样本是 <MathInline tex="f(z) = 1/z" />，绕原点一圈（用
-      <MathInline tex="z = e^{i\theta}" /> 参数化）：
+      奇点存的账能精确算出来，而且只用刚才那条"参数化再积"的操作说明。
+      最重要的样本是 <MathInline tex="f(z) = 1/z" />，回路取绕原点的单位圆。
+      <strong>先约定方向</strong>：回路一律按<strong>逆时针</strong>走算正方向
+      （倒着走一遍，每个 <MathInline tex="\Delta z" /> 都反向，积分整体变号——所以方向必须先说定）。
+      逆时针的单位圆写成参数方程就是 <MathInline tex="z(\theta) = e^{i\theta}" />，
+      <MathInline tex="\theta" /> 从 0 走到 <MathInline tex="2\pi" />。
     </p>
-    <MathBlock tex="\oint \frac{dz}{z} = \int_0^{2\pi} \frac{i e^{i\theta}}{e^{i\theta}}\, d\theta = 2\pi i" />
     <p>
-      不管圆多大、甚至不管什么形状，答案永远是 <strong>2πi</strong>——回路可以在不跨奇点的前提下随意变形而不改积分值
-      （变形扫过的区域里 f 解析，两条回路之差是零）。这个"变形不变性"，就是下面动画让你亲手玩的东西。
+      于是 <MathInline tex="z'(\theta) = i\,e^{i\theta}" />（<MathInline tex="e^{i\theta}" /> 对
+      <MathInline tex="\theta" /> 求导多掉一个 <MathInline tex="i" /> 出来，
+      这是<router-link to="/complex/imaginary">第 1 讲</router-link>欧拉公式那条），代进公式：
+    </p>
+    <MathBlock tex="\oint \frac{dz}{z} = \int_0^{2\pi} \frac{1}{e^{i\theta}}\cdot i\,e^{i\theta}\, d\theta = \int_0^{2\pi} i\, d\theta = 2\pi i" />
+    <p>
+      分子分母那个 <MathInline tex="e^{i\theta}" /> 抵消得如此干脆，值得停一秒：
+      被积式化成了常数 <MathInline tex="i" />，剩下的只是"<MathInline tex="\theta" /> 走了多长"。
+      也就是说这个 <MathInline tex="2\pi" /> 不是算出来的长度或面积，
+      <strong>它就是绕原点转过的角度</strong>——转一圈是 <MathInline tex="2\pi" />，
+      转两圈就是 <MathInline tex="4\pi" />。积分值在数<strong>圈数</strong>。
+    </p>
+    <p>
+      更值得注意的是：不管圆多大、甚至不管什么形状，答案永远是 <strong>2πi</strong>。
+      理由就是上面那条定理——把两条不同的回路正走一条、倒走一条拼起来，
+      得到的闭合回路<strong>把奇点夹在了外面</strong>，它围住的区域里 f 处处解析，
+      所以这个拼出来的回路积分为零，两条回路的积分因此相等。换句话说：
+      <strong>回路可以随意拉扯变形，只要变形过程中不跨过奇点，积分值一动不动</strong>。
+      这个"变形不变性"就是下面动画让你亲手玩的东西，也是整个复分析最常用的一招。
     </p>
 
     <h2><span class="sec-no">叁</span>亲手变形一条积分路径</h2>
+    <p>
+      动画里两个端点 <MathInline tex="A = -2" />、<MathInline tex="B = 2" /> 钉死不动，
+      中间那条红色路径可以鼓起来：滑杆<strong>路径隆起高度</strong>给的是路径中点被抬高多少
+      （单位就是复平面上的长度，即路径最高处的虚部；取负值就是往下鼓）。
+      路径的方程是 <MathInline tex="z(s) = (-2 + 4s) + i\,h\sin(\pi s)" />，
+      <MathInline tex="s" /> 从 0 到 1、<MathInline tex="h" /> 就是那根滑杆。
+      读数区里的积分值是<strong>当场数值算的</strong>（把路径切成 2000 段求和），不是查表来的。
+    </p>
     <PathIntegralDemo />
 
     <h2><span class="sec-no">肆</span>严格定义</h2>
@@ -69,11 +256,63 @@ import PathIntegralDemo from '../../demos/PathIntegralDemo.vue'
       </p>
       <MathBlock tex="\oint_\Gamma f(z)\, dz = 0" />
     </div>
+    <p>
+      定理里那句"<strong>分段光滑</strong>"只是把病态曲线挡在门外：
+      曲线可以有几个拐角（比如一个长方形回路），但每一段都要有切线、能写出参数方程，
+      否则前面那条"<MathInline tex="\int f(z(t))z'(t)dt" />"根本没法写。日常见到的回路都合格。
+    </p>
     <div class="definition">
       <div class="def-title">📐 定理（柯西积分公式，1831）</div>
       <p>设 f 在闭回路 Γ 及其内部解析，z₀ 为 Γ 内任一点，则</p>
       <MathBlock tex="f(z_0) = \frac{1}{2\pi i} \oint_\Gamma \frac{f(z)}{z - z_0}\, dz" />
     </div>
+    <p>
+      第二个框比第一个更该问一句"凭什么"：为什么偏要除以
+      <MathInline tex="z - z_0" />？那个 <MathInline tex="1/2\pi i" /> 又是从哪冒出来的？
+      其实它不是猜出来的公式，是<strong>前面两个结论一撞就掉下来的</strong>——
+      用的正是刚才那招"回路随便变形"，加上 <MathInline tex="\oint dz/z = 2\pi i" />。
+    </p>
+    <RevealBox
+      title="🔍 把回路缩到奇点身上，积分公式自己掉出来"
+      label="对答案 / 看完整拆解"
+    >
+      <template #hint>
+        先自己想一步：<MathInline tex="g(z) = f(z)/(z - z_0)" /> 在 Γ 内部只有一个地方不解析，
+        是哪儿？既然回路可以随意变形而不改积分值，那把 Γ 缩成一个<strong>紧贴
+        <MathInline tex="z_0" /> 的小圆</strong>会发生什么——小圆上的 <MathInline tex="f(z)" />
+        大约等于多少？
+      </template>
+      <p>
+        <strong>第一步：找出唯一的奇点。</strong>被积函数
+        <MathInline tex="g(z) = \dfrac{f(z)}{z - z_0}" /> 里，分子 <MathInline tex="f" /> 按假设处处解析，
+        唯一出问题的地方是分母为零处，即 <MathInline tex="z = z_0" /> 这一个点。
+      </p>
+      <p>
+        <strong>第二步：把回路缩成小圆。</strong>Γ 与"圆心 <MathInline tex="z_0" />、
+        半径 <MathInline tex="\varepsilon" /> 的小圆 <MathInline tex="C_\varepsilon" />"之间的那圈区域里，
+        <MathInline tex="g" /> 处处解析（奇点被挖在小圆里面了）。按变形不变性，
+        两条回路的积分相等——而且 <MathInline tex="\varepsilon" /> 要多小有多小：
+      </p>
+      <MathBlock tex="\oint_\Gamma \frac{f(z)}{z - z_0}\, dz = \oint_{C_\varepsilon} \frac{f(z)}{z - z_0}\, dz" />
+      <p>
+        <strong>第三步：小圆上把 f 当常数提出去。</strong>
+        <MathInline tex="f" /> 解析当然也连续，小圆缩得够小时圆周上的
+        <MathInline tex="f(z)" /> 与 <MathInline tex="f(z_0)" /> 要多接近有多接近，于是
+      </p>
+      <MathBlock tex="\oint_{C_\varepsilon} \frac{f(z)}{z - z_0}\, dz \;\longrightarrow\; f(z_0) \oint_{C_\varepsilon} \frac{dz}{z - z_0}" />
+      <p>
+        <strong>第四步：剩下那个积分我们刚算过。</strong>把变量挪一下
+        （<MathInline tex="w = z - z_0" />，小圆就变回绕原点的圆），它就是
+        <MathInline tex="\oint dw/w = 2\pi i" />。所以整个积分等于
+        <MathInline tex="2\pi i\, f(z_0)" />，两边除以 <MathInline tex="2\pi i" /> 就是公式。
+      </p>
+      <p>
+        回头看那两个"凭什么"：除以 <MathInline tex="z - z_0" /> 是为了<strong>在
+        <MathInline tex="z_0" /> 处人为制造一个奇点</strong>，好让回路能缩到它身上把
+        <MathInline tex="f(z_0)" /> 逼出来；<MathInline tex="1/2\pi i" /> 则纯粹是
+        <strong>除掉转一圈那个 <MathInline tex="2\pi i" /></strong> 的归一化因子，没有别的深意。
+      </p>
+    </RevealBox>
     <p>逐词拆解：</p>
     <ul>
       <li>
@@ -86,36 +325,111 @@ import PathIntegralDemo from '../../demos/PathIntegralDemo.vue'
         解析函数没有隐私——边界数据决定内部一切。对比实函数：边界值对内部毫无约束力；
       </li>
       <li>
-        <strong>上一讲的奇迹在此结案</strong>：对积分公式里的 z₀ 求导，导数全落在被积函数上——
-        <MathInline tex="f^{(n)}(z_0) = \frac{n!}{2\pi i}\oint \frac{f(z)}{(z-z_0)^{n+1}}dz" />，
-        想求几阶导就求几阶。<strong>"可导一次就无穷可导"的魔法，机关是导数可以写成积分</strong>；
+        <strong>上一讲的奇迹在此结案</strong>：积分公式的右边，<MathInline tex="z_0" /> 只出现在
+        分母 <MathInline tex="z - z_0" /> 里，而积分是对 <MathInline tex="z" /> 做的、
+        跟 <MathInline tex="z_0" /> 无关。所以要对 <MathInline tex="z_0" /> 求导，
+        <strong>只需对那个分母求导</strong>——积分号照抄不误。
+        <MathInline tex="\partial_{z_0}(z-z_0)^{-1} = (z-z_0)^{-2}" />，再求一次得
+        <MathInline tex="2(z-z_0)^{-3} " />，如此下去：
+        <MathInline tex="f^{(n)}(z_0) = \frac{n!}{2\pi i}\oint \frac{f(z)}{(z-z_0)^{n+1}}dz" />。
+        右边对任意 <MathInline tex="n" /> 都写得出来、都收敛，所以左边对任意 <MathInline tex="n" />
+        都存在。<strong>"可导一次就无穷可导"这个魔法，机关就是导数可以写成积分</strong>——
+        求导本来是"作差取极限"的危险动作，改写成积分之后，麻烦全被推给了那个规规矩矩的分母；
       </li>
       <li>
-        <strong>泰勒级数免费到货</strong>：把公式里的 1/(z−z₀) 按几何级数展开逐项积分，
-        就得到 f 的幂级数展开——且收敛半径顶到最近的奇点为止。微积分泰勒讲的"收敛半径之谜"至此拿到完整解释。
+        <strong>泰勒级数免费到货</strong>：把被积式里的 <MathInline tex="\frac{1}{z - z_0}" /> 改写成
+        <MathInline tex="\frac{1}{(z-a) - (z_0-a)}" />，再提出 <MathInline tex="\frac{1}{z-a}" />，
+        剩下的正是中学那个等比数列求和公式
+        <MathInline tex="\frac{1}{1-q} = 1 + q + q^2 + \cdots" />（这里
+        <MathInline tex="q = \frac{z_0-a}{z-a}" />）。逐项积分，就得到 f 在 a 附近的幂级数展开。
+        而这一步要成立必须 <MathInline tex="|q| < 1" />，也就是
+        <strong><MathInline tex="z_0" /> 到 a 的距离小于 a 到回路的距离</strong>——
+        回路又能撑到最近的奇点为止。<strong>收敛半径 = 到最近奇点的距离</strong>，
+        <router-link to="/calculus/taylor">微积分泰勒讲</router-link>那个"收敛半径之谜"，
+        谜底就是这一行不等式。
       </li>
     </ul>
 
     <h2><span class="sec-no">伍</span>买到了什么：从"全息"到刘维尔</h2>
     <ul>
       <li>
-        <strong>平均值性质</strong>：积分公式取 Γ 为圆、参数化后即知——解析函数在圆心的值等于圆周上值的平均。
-        实部虚部都如此，这正是调和函数"每点 = 邻域平均"的来源（数理方程课拉普拉斯方程的核心直觉，提前到账）；
+        <strong>平均值性质</strong>：把积分公式的 Γ 取成"圆心 <MathInline tex="z_0" />、半径 R"的圆，
+        参数化 <MathInline tex="z = z_0 + Re^{i\theta}" />，则
+        <MathInline tex="dz = iRe^{i\theta}d\theta" />、
+        <MathInline tex="z - z_0 = Re^{i\theta}" />，两者一约，
+        <MathInline tex="R" /> 和 <MathInline tex="e^{i\theta}" /> 全部消光，只剩
+        <MathInline tex="f(z_0) = \frac{1}{2\pi}\int_0^{2\pi} f(z_0 + Re^{i\theta})\,d\theta" />——
+        右边正是"绕圆一圈取平均"。<strong>解析函数在圆心的值 = 圆周上值的平均</strong>，
+        而且对任意半径都成立。实部虚部各自也如此，这正是调和函数"每点 = 邻域平均"的来源
+        （<router-link to="/mathphys/laplace">数理方程拉普拉斯讲</router-link>的核心直觉，提前到账）；
       </li>
       <li>
-        <strong>刘维尔定理，一行推出代数基本定理</strong>：全平面解析且有界的函数必是常数
-        （用积分公式估计导数，半径推到无穷）。若多项式 p 无根，则 1/p 全平面解析有界 → 常数 → 矛盾——
-        上上讲许诺的"n 次方程 n 个根"，被一个积分不等式轻松兑现；
+        <strong>刘维尔定理，几行推出代数基本定理</strong>：全平面解析且有界的函数必是常数。
+        由它可以推出"n 次方程必有根"——上上讲许诺过的事，被一个积分不等式兑现。
+        推法见下面的折叠框；
       </li>
       <li>
-        <strong>数值反差萌</strong>：理论上积分"只看端点"，数值上沿不同路径算的稳定性可以天差地别——
-        计算数学里选积分围道是一门手艺（鞍点法、最速下降路径都靠变形回路）；
+        <strong>数值反差萌</strong>：理论上积分"只看端点"，数值上沿不同路径算出来的稳定性却天差地别。
+        道理不难想：被积函数在某些路径上剧烈振荡（正负项互相抵消，浮点数一减就
+        <router-link to="/numerical/float-error">灾难性抵消</router-link>），
+        换一条路径却可能一路平缓、只在很短一段里贡献主要的值。
+        既然变形不改结果，那就<strong>专挑好算的那条路走</strong>——
+        这是计算数学里一门实打实的手艺；
       </li>
       <li>
         <strong>唯一的悬念</strong>：回路里有奇点时积分不为零——那到底等于多少？
         1/z 给出 2πi，一般的奇点呢？答案是一套惊人好用的演算，下一讲。
       </li>
     </ul>
+    <RevealBox
+      title="🔍 刘维尔怎么推出「n 次方程必有 n 个根」"
+      label="对答案 / 看完整拆解"
+    >
+      <template #hint>
+        先自己想两步：① 用上面那个高阶导数公式（<MathInline tex="n=1" />），
+        把 <MathInline tex="|f'(z_0)|" /> 用"<MathInline tex="f" /> 的上界 M"和"圆的半径 R"估一估，
+        R 推到无穷会怎样？② 假设多项式 <MathInline tex="p" /> 一个根都没有，
+        那 <MathInline tex="1/p" /> 有什么好性质？
+      </template>
+      <p>
+        <strong>第一步：估计导数。</strong>设 <MathInline tex="f" /> 全平面解析、
+        且处处满足 <MathInline tex="|f| \le M" />。取以 <MathInline tex="z_0" /> 为心、
+        半径 R 的圆，用 <MathInline tex="n = 1" /> 的导数公式。圆周上被积式的大小不超过
+        <MathInline tex="M/R^2" />，而圆周总长是 <MathInline tex="2\pi R" />，于是
+      </p>
+      <MathBlock tex="|f'(z_0)| \;\le\; \frac{1}{2\pi}\cdot\frac{M}{R^2}\cdot 2\pi R \;=\; \frac{M}{R}" />
+      <p>
+        <strong>第二步：把 R 推到无穷。</strong><MathInline tex="f" /> 在全平面解析，
+        所以 R 想取多大取多大，而 <MathInline tex="M" /> 是固定的。
+        右边 <MathInline tex="M/R \to 0" />，于是 <MathInline tex="f'(z_0) = 0" />。
+        <MathInline tex="z_0" /> 是随便挑的，所以 <MathInline tex="f' \equiv 0" />，
+        <MathInline tex="f" /> 是常数。这就是<strong>刘维尔定理</strong>。
+      </p>
+      <p>
+        <strong>第三步：反证多项式必有根。</strong>设
+        <MathInline tex="p(z) = a_n z^n + \cdots + a_0" />（<MathInline tex="n \ge 1" />，
+        <MathInline tex="a_n \ne 0" />），假设它一个根都没有。那么
+        <MathInline tex="1/p" /> 分母永不为零，<strong>全平面解析</strong>。
+      </p>
+      <p>
+        它还<strong>有界</strong>：<MathInline tex="|z|" /> 很大时最高次项压倒一切，
+        <MathInline tex="|p(z)| \to \infty" />，所以 <MathInline tex="|1/p| \to 0" />——
+        在某个大圆之外它小于 1；而大圆之内是个闭区域，连续函数在上面本来就有界。
+        内外一合，<MathInline tex="1/p" /> 全平面有界。
+      </p>
+      <p>
+        刘维尔于是判它是<strong>常数</strong>，那 <MathInline tex="p" /> 也是常数——
+        与 <MathInline tex="n \ge 1" /> 矛盾。所以 <MathInline tex="p" /> 至少有一个根
+        <MathInline tex="z_1" />。把 <MathInline tex="(z - z_1)" /> 除掉，
+        剩下 <MathInline tex="n-1" /> 次多项式，再来一遍……<strong>n 次方程恰好 n 个根</strong>，
+        <router-link to="/complex/imaginary">第 1 讲</router-link>为了解三次方程才请出虚数，
+        绕了两讲，账在这里结清。
+      </p>
+      <p>
+        值得留意这条证明的气质：它<strong>没有解出任何一个根</strong>，
+        只是证明"无根"会导致矛盾。代数折腾了三百年的问题，被一个关于积分大小的不等式解决了。
+      </p>
+    </RevealBox>
     <div class="insight">
       <div class="insight-title">🔗 与你学过的课程连一连</div>
       <p>

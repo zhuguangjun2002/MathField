@@ -138,7 +138,13 @@ usePlot(
           <option v-for="(c, k) in FNS" :key="k" :value="k">{{ c.label }}</option>
         </select>
       </label>
-      <ControlSlider label="路径隆起高度" v-model="bulge" :min="-1.8" :max="1.8" :step="0.05" />
+      <ControlSlider
+        label="路径隆起高度（中点虚部）"
+        v-model="bulge"
+        :min="-1.8"
+        :max="1.8"
+        :step="0.05"
+      />
     </template>
     <template #readout>
       沿红色路径数值积分：<MathInline tex="\int f(z)\, dz" /> ≈ <b>{{ fmt(integral[0], 3) }} {{ integral[1] >= 0 ? '+' : '−' }} {{ fmt(Math.abs(integral[1]), 3) }}i</b>
@@ -146,6 +152,15 @@ usePlot(
       <template v-else>（上方走 = −πi ≈ −3.1416i，下方走 = +πi）</template>
     </template>
     <template #note>
+      <p>
+        <b>两个旋钮</b>：<b>被积函数</b>选 <MathInline tex="f(z) = z^2" />（处处解析，没有奇点）
+        或 <MathInline tex="f(z) = 1/z" />（<MathInline tex="z = 0" /> 处分母为零，那里是奇点，
+        图上打了个蓝叉）。<b>路径隆起高度</b> <MathInline tex="h" /> 是红色路径中点被抬高多少，
+        单位就是复平面上的长度——路径是
+        <MathInline tex="z(s) = (-2+4s) + i\,h\sin(\pi s)" />，两端 <MathInline tex="A = -2" />、
+        <MathInline tex="B = 2" /> 钉死，<MathInline tex="h > 0" /> 从奇点上方绕、
+        <MathInline tex="h < 0" /> 从下方绕。读数是把路径切成 2000 段当场求和算的。
+      </p>
       先看 z²：把隆起从 −1.8 拖到 1.8，路径的形状千变万化，<b>积分值一位小数都不动</b>——
       处处解析时，积分只认两个端点，像重力做功只认高度差。这就是柯西定理的日常表述。
       再切到 1/z：只要不越过奇点，上方的各条路径彼此仍然同值——但把隆起从正拖到负、
