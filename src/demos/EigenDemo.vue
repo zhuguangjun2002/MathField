@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { usePlot, makeSquareView, drawArrow, drawLabel, C, fmt } from './plot.js'
 import DemoFrame from '../components/DemoFrame.vue'
 import ControlSlider from '../components/ControlSlider.vue'
+import MathInline from '../components/MathInline.vue'
 
 const MATRICES = {
   symmetric: {
@@ -156,11 +157,57 @@ usePlot(
       <template v-else>&nbsp;（{{ MATRICES[mKey].hint }}）</template>
     </template>
     <template #note>
-      慢慢转动 θ，让红色的 v 扫一整圈，盯着蓝色的 Av：大多数方向上 Av 都被"拽歪"了，
-      但在某几个特殊方向（绿色闪现处），<b>Av 与 v 恰好落在同一条直线上</b>——只伸缩、不偏转。
-      这些方向就是特征向量，伸缩倍数就是特征值。换成"剪切"矩阵试试，只剩一个方向；
-      换成"旋转"矩阵，扫一整圈也等不到绿色——它没有实特征方向。金色虚线椭圆是单位圆被
-      A 变换后的像：特征方向正是椭圆与原方向"对齐"的地方。
+      <p><b>两个旋钮分别是什么</b></p>
+      <ul>
+        <li>
+          <b>矩阵</b>（下拉）：三档不是随便选的，它们<strong>恰好演出特征值的三种结局</strong>——
+          两个实特征方向、只有一个、一个也没有。正文第肆节把这三个矩阵都算过。
+        </li>
+        <li>
+          <b>v 的方向角 θ</b>（0–360°）：红箭头 <MathInline tex="\boldsymbol{v}" /> 指向哪。
+          <strong>长度是固定的（1.4），只有方向在变</strong>——因为特征方向只关心方向，
+          把 v 拉长缩短不影响它是不是特征向量。
+        </li>
+      </ul>
+      <p>
+        <b>图上画的是什么</b>：红箭头是你转动的 <MathInline tex="\boldsymbol{v}" />，
+        蓝箭头是它被矩阵作用后的像 <MathInline tex="A\boldsymbol{v}" />；
+        金色虚线椭圆是<strong>整个单位圆</strong>被 A 变换后的像。
+        读数区那个"夹角偏差 sin"就是两根箭头夹角的正弦——
+        <strong>它等于 0 就意味着两根共线</strong>，此时读数变绿并报出特征值。
+      </p>
+      <p>
+        <b>照着做一遍（一）：两个方向。</b>选第一档
+        <MathInline tex="A=\begin{pmatrix}2&1\\1&2\end{pmatrix}" />，
+        把 θ 从 0 慢慢转起来。偏差 sin 先变大再变小，到 <b>45°</b> 时归零变绿，
+        报出 <MathInline tex="\lambda \approx 3" />；继续转到 <b>135°</b> 再绿一次，
+        <MathInline tex="\lambda \approx 1" />。（再转下去 225° 和 315° 还会绿——
+        那是同两条直线的反方向，<strong>不算新的特征方向</strong>。）
+        注意这两条线<strong>互相垂直</strong>，因为这是个对称矩阵。
+      </p>
+      <p>
+        <b>照着做一遍（二）：只剩一个方向。</b>换成剪切
+        <MathInline tex="\begin{pmatrix}1&1\\0&1\end{pmatrix}" />。
+        扫一整圈，只在 <b>0°</b> 和 <b>180°</b> 附近变绿，正中心处
+        <MathInline tex="\lambda = 1" />——<strong>而这两处是同一条直线</strong>。
+        特征方程有两个根（都是 1），方向却只凑出一条，
+        所以这个矩阵<strong>不可对角化</strong>。
+        （这一档的绿色区间比第一档宽出不少，两边各有七八度：
+        因为共线判据留了 0.035 的容差，而剪切让 Av 偏离 v 的速度很慢。
+        区间边缘报出的 λ 会漂到 1.1 上下，<strong>只有正中心那个 1 才是真的</strong>。）
+      </p>
+      <p>
+        <b>照着做一遍（三）：一整圈都等不到绿色。</b>换成旋转
+        <MathInline tex="\begin{pmatrix}0&-1\\1&\ \ 0\end{pmatrix}" />。
+        θ 转满 360°，偏差 sin <strong>始终恒等于 1</strong>（夹角永远是 90°），
+        一次都不变绿。它把每个方向都硬转 90°，谁也保不住。
+        <strong>它不是没有特征值，是特征值 <MathInline tex="\pm i" /> 不住在实平面上</strong>。
+      </p>
+      <p>
+        金色椭圆还有个额外的读法：<strong>特征方向正是"椭圆的半径与原方向对齐"的地方</strong>。
+        第一档里椭圆的长轴短轴就落在 45°/135° 上，长短半轴恰好是两个特征值 3 和 1；
+        第三档里"椭圆"根本还是个圆（旋转不改变任何长度），处处一样长，也就处处谈不上对齐。
+      </p>
     </template>
   </DemoFrame>
 </template>
