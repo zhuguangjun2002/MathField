@@ -2,6 +2,7 @@
 import ConceptPage from '../../components/ConceptPage.vue'
 import MathBlock from '../../components/MathBlock.vue'
 import MathInline from '../../components/MathInline.vue'
+import RevealBox from '../../components/RevealBox.vue'
 import RungeDemo from '../../demos/RungeDemo.vue'
 </script>
 
@@ -44,6 +45,83 @@ import RungeDemo from '../../demos/RungeDemo.vue'
       </p>
     </div>
     <p>
+      "振幅发散到无穷"是句大话，得有数字撑着。而且顺着<strong>余项公式</strong>能看清
+      切比雪夫点凭什么管用——它不是试出来的经验，是一道<strong>最优化问题的解</strong>：
+    </p>
+    <RevealBox
+      title="🔍 把龙格现象量出来，再看清切比雪夫点为什么是最优的那一组"
+      label="对答案 / 看完整拆解"
+    >
+      <template #hint>
+        先看第肆节那条余项公式
+        <MathInline tex="f - p = \frac{f^{(n+1)}(\xi)}{(n+1)!}\prod(x - x_i)" />。
+        右边两个因子里，<strong>只有一个是你能控制的</strong>——
+        <MathInline tex="f^{(n+1)}" /> 由函数自己决定，你改不了；
+        可 <MathInline tex="\prod(x-x_i)" /> 完全由<strong>节点位置</strong>决定。
+        那么"怎么取点最好"就变成了一道明确的题：<strong>选一组 <MathInline tex="x_i" />，
+        让 <MathInline tex="\max|\prod(x-x_i)|" /> 尽可能小</strong>。先自己想想，
+        等距取点时这个乘积在哪儿最大？
+      </template>
+      <p>
+        <strong>第一步：先把灾难量出来。</strong>
+        对龙格函数 <MathInline tex="1/(1+25x^2)" /> 在 <MathInline tex="[-1,1]" /> 上插值，
+        全区间最大误差实测：
+      </p>
+      <MathBlock tex="\begin{array}{c|cc} \text{节点数} & \text{等距} & \text{切比雪夫} \\ \hline 11 & 1.92 & 0.132 \\ 21 & 59.8 & 0.0177 \\ 31 & \mathbf{2388} & \mathbf{0.00243} \end{array}" />
+      <p>
+        <strong>同一个函数、同样的节点数，一边误差涨到两千多，一边掉到千分之二。</strong>
+        （注意函数本身的取值范围只有 0 到 1——误差 2388 意味着插值曲线在两端飞出了三个数量级。）
+        <strong>"点越多越准"错得不能再错：等距情形下点越多越糟，而且是指数级地糟。</strong>
+      </p>
+      <p>
+        <strong>第二步：责任在 <MathInline tex="\prod(x-x_i)" /> 这一项。</strong>
+        等距节点时，取 x 落在最靠边的两个节点中间，那里到<strong>其余每一个</strong>节点的距离都很大，
+        乘积自然大；而 x 落在区间正中时，两侧的因子有大有小，互相调和。
+        <strong>于是这个乘积在两端鼓成大包、在中间被压平</strong>——
+        这正是动画里大浪只在两端翻的原因。实测同样 21 个节点：
+      </p>
+      <MathBlock tex="\max\Bigl|\prod (x-x_i)\Bigr| : \quad \text{等距 } 2.34\times10^{-4}, \qquad \text{切比雪夫 } 1.90\times10^{-6}" />
+      <p>
+        <strong>第三步：那什么样的一组点能让这个最大值最小？</strong>
+        这是切比雪夫 1854 年就解决的问题。答案是：把
+        <MathInline tex="[-1,1]" /> 上的节点取成
+      </p>
+      <MathBlock tex="x_i = \cos\frac{(2i+1)\pi}{2n}, \qquad i = 0, 1, \dots, n-1" />
+      <p>
+        也就是<strong>把半圆周上的等分点投影到直径上</strong>——
+        圆周上等距，投影下来自然两端密、中间疏。此时
+      </p>
+      <MathBlock tex="\max\Bigl|\prod(x-x_i)\Bigr| = 2^{\,1-n}" />
+      <p>
+        而且可以证明<strong>没有任何一组 n 个点能做得更小</strong>。
+        实测验证：<MathInline tex="n = 11" /> 时算出
+        <MathInline tex="9.77\times10^{-4}" />，而 <MathInline tex="2^{-10} = 9.77\times10^{-4}" />；
+        <MathInline tex="n = 21" /> 时算出 <MathInline tex="9.54\times10^{-7}" />，
+        <MathInline tex="2^{-20} = 9.54\times10^{-7}" />——<strong>一位不差地压在理论下界上</strong>。
+        对比等距的 <MathInline tex="2.34\times10^{-4}" />，差了两百多倍。
+      </p>
+      <p>
+        <strong>一个容易混淆的小字：切比雪夫点有两套。</strong>
+        上面那组是切比雪夫多项式的<strong>零点</strong>，它精确达到最优
+        <MathInline tex="2^{1-n}" />，但<strong>不含区间端点</strong>。
+        实用上常改用<strong>极值点</strong>
+        <MathInline tex="x_i = \cos(i\pi/(n-1))" />（含两个端点，本讲动画用的就是它），
+        它的 <MathInline tex="\max|\prod|" /> 约为最优值的两倍
+        （<MathInline tex="n=21" /> 时 <MathInline tex="1.90\times10^{-6}" /> 对
+        <MathInline tex="9.54\times10^{-7}" />）。
+        <strong>差两倍，但比等距好两百倍</strong>——所以工程上无所谓，含端点更方便。
+      </p>
+      <p>
+        <strong>回味：这一节真正的教训不是"换一组点"。</strong>
+        余项公式把误差拆成两个因子，<strong>一个你管不着（函数的高阶导数），
+        一个完全由你决定（节点位置）</strong>。
+        整整一个世纪里，大家只顾着把第一个因子往小里想（"多项式次数高了总该更准吧"），
+        没人意识到自己一直在<strong>随手糟蹋</strong>第二个因子。
+        <strong>数值分析的许多进步都是这个形状：不是找到更强的定理，
+        而是认出了公式里那个一直没人碰的自由度。</strong>
+      </p>
+    </RevealBox>
+    <p>
       既然病根是"奇点太近 + 节点摆错位置"，解药就有两条：其一，<strong>别再等距取点</strong>，
       改用<strong>切比雪夫点</strong>（两端加密、中间稀疏），它恰好抵消了收敛半径的限制，误差随次数稳稳下降；
       其二，干脆<strong>放弃一根高次多项式</strong>，改用<strong>分段低次</strong>的样条——这才是工程界的主流选择。
@@ -75,19 +153,90 @@ import RungeDemo from '../../demos/RungeDemo.vue'
     </div>
 
     <h2><span class="sec-no">伍</span>买到了什么：一条贯穿数字世界的曲线</h2>
+
+    <h3>过拟合：机器学习的第一课，其实是 1901 年那个巴掌</h3>
+    <p>
+      本讲最值钱的东西不是插值技术，是那个被打碎的直觉：
+      <strong>"模型越复杂、越贴合已知数据，就越接近真相"</strong>。
+      一百年后，同一个巴掌在机器学习课的第一周又打了一次，
+      名字换成了<strong>过拟合</strong>。而龙格现象是它<strong>最干净的数学原型</strong>——
+      干净到可以当场把两条曲线算出来。
+    </p>
+    <p>
+      <strong>做个实验。</strong>真相是一条正弦曲线
+      <MathInline tex="y = \sin 2\pi x" />，但你拿不到它，
+      只有 <strong>12 个带噪声的观测点</strong>（噪声 ±0.2）。
+      用不同次数的多项式去最小二乘拟合，同时记两个数：
+      <strong>训练误差</strong>（拟合曲线离那 12 个点多远）和
+      <strong>测试误差</strong>（拟合曲线离<strong>真相</strong>多远）：
+    </p>
+    <MathBlock tex="\begin{array}{c|cc} \text{多项式次数} & \text{训练误差} & \text{测试误差} \\ \hline 1 & 0.522 & 0.472 \\ 3 & 0.124 & 0.095 \\ 5 & 0.104 & \mathbf{0.067} \\ 7 & 0.095 & 0.084 \\ 9 & 0.055 & 0.174 \\ 11 & \mathbf{0.043} & \mathbf{0.385} \end{array}" />
+    <p>
+      <strong>请把最后一行的两个粗体数放在一起看：训练误差最小的那个模型，
+      测试误差是全场最大的——差了将近九倍。</strong>
+      而它们是同一个模型。如果你只看训练误差（也就是"它把已知的点拟合得多好"），
+      你会毫不犹豫地选中最差的那一个。
+    </p>
+    <p>
+      <strong>而 11 次那一档正是本讲的插值。</strong>12 个点、11 次多项式——
+      未知系数的个数恰好等于方程个数，多项式被<strong>精确地钉在每一个点上</strong>，
+      训练误差理论上应当为零（这里 0.043 只是最小二乘求解时的数值残差）。
+      <strong>换句话说：过拟合的极端，字面上就是插值。</strong>
+      龙格 1901 年在一个<strong>没有噪声</strong>的完美函数上都做不到"点越多越准"，
+      而真实数据还带着噪声——高次多项式会一丝不苟地去追那些噪声，
+      把它们当成信号，于是在点与点之间放飞自我。
+    </p>
+    <div class="insight">
+      <div class="insight-title">💡 三条解药，一一对应</div>
+      <p>
+        更有意思的是：本讲给出的两条解药，在机器学习里都能找到<strong>同一个东西的另一个名字</strong>。
+      </p>
+      <p>
+        <strong>① 换节点位置（切比雪夫点）↔ 决定"去哪儿采数据"。</strong>
+        上面那个折叠框的结论是：误差里有一项<strong>完全由采样位置决定</strong>，
+        而大多数人从不去动它。机器学习里对应的是<strong>主动学习</strong>与实验设计——
+        与其盲目多标一万条数据，不如挑那些最能减少不确定性的样本去标。
+        <strong>"数据在哪儿"往往比"数据有多少"更值钱</strong>，这两门课给出的是同一句话。
+      </p>
+      <p>
+        <strong>② 分段低次（样条）↔ 分段建模。</strong>
+        与其用一根高次曲线全场通吃，不如在每个小区间上用简单模型再拼起来。
+        决策树、随机森林、梯度提升树全是这个思路的变体；
+        神经网络里的 ReLU 网络<strong>字面上就是一个分段线性函数</strong>——
+        它之所以稳，理由和样条之所以不震荡是同一条。
+      </p>
+      <p>
+        <strong>③ 而机器学习还多出一条本讲没有的：正则化。</strong>
+        既然祸根是系数被逼得又大又互相抵消（高次插值多项式的系数常常大到
+        <MathInline tex="10^3" /> 以上，再靠正负抵消凑出一条温和的曲线），
+        那就<strong>在目标函数里直接惩罚系数的大小</strong>。
+        岭回归加的那一项 <MathInline tex="\lambda\|w\|^2" /> 干的就是这件事，
+        而它在数值上还有第二重作用——
+        <router-link to="/numerical/linear-system">第 5 讲</router-link>会看到，
+        它同时把那个病态的方程组拉回良态。
+      </p>
+      <p>
+        <strong>最后一句留给那个百年直觉。</strong>它错在哪儿？
+        错在把"穿过已知点"当成了"接近真相"。
+        <strong>已知点只是真相的有限证据，而模型越复杂，
+        它能在证据之间胡说八道的自由度就越大。</strong>
+        龙格用一个连噪声都没有的函数证明了这件事，
+        所以它不是"数据不够好"能推脱的——<strong>这是逼近本身的性质。</strong>
+      </p>
+    </div>
+
+    <h3>还买到了什么</h3>
     <ul>
       <li>
-        <strong>屏幕上每一个字母</strong>：字体轮廓用的是贝塞尔曲线（样条的近亲），CAD、动画的关键帧插值、
-        字体渲染，本质都是"给几个控制点、要一条光滑曲线"；
+        <strong>屏幕上每一个字母</strong>：字体轮廓用的是贝塞尔曲线（样条的近亲）——
+        你现在看到的每一个汉字，都是若干段三次曲线的控制点被存进字库、再由渲染器现算出来的。
+        CAD、动画的关键帧插值、UI 动效的缓动曲线，本质都是"给几个控制点、要一条光滑曲线"。
+        <strong>注意它们无一例外都是分段低次的</strong>——没有任何字体格式会用一根 50 次多项式
+        去描一个字的轮廓，理由就是本讲第贰节那张脸；
       </li>
       <li>
         <strong>造船与工业设计</strong>：样条从船体放样起家，如今是所有曲面建模的基石——你的手机外壳、汽车车身，
         都是样条曲面拼出来的；
-      </li>
-      <li>
-        <strong>一条价值千金的教训</strong>：<strong>"用更复杂的模型去拟合更多的点"未必更好</strong>。
-        龙格现象是数值分析版的"过拟合"——机器学习里高次多项式回归的剧烈震荡，与这里是同一个幽灵，
-        正则化、样条基、分段建模都是它的解药；
       </li>
     </ul>
     <div class="insight">
