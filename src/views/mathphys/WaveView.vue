@@ -301,7 +301,9 @@ import WaveDemo from '../../demos/WaveDemo.vue'
         于是音色里就缺了这一档。上面动画的读数区已经把这件事演了一半——
         鼓包打在正中央，2、4 号模式的系数是 0，因为正中央正是它们的节点。
         古典吉他靠近琴桥拨（亮、泛音多）还是靠近音孔拨（暖、泛音少），
-        调的就是这张配比表。<router-link to="/mathphys/separation">第 5 讲</router-link>会把系数算出来；
+        调的就是这张配比表。<router-link to="/mathphys/separation">第 5 讲</router-link>把系数算了出来——
+        结论是 <MathInline tex="b_n \\propto \\sin(n\\pi p)/n^2" />，在 <MathInline tex="x = 1/k" /> 处拨，
+        第 k、2k、3k… 号泛音全部缺席；
       </li>
       <li>
         <strong>同一方程满宇宙</strong>：声波（空气密度的 u）、水波、电磁波。
