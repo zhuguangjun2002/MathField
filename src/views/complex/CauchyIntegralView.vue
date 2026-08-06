@@ -123,7 +123,7 @@ import PathIntegralDemo from '../../demos/PathIntegralDemo.vue'
     </p>
     <MathBlock tex="\oint f\,dz = 0 \ \text{（一切回路）} \quad\Longleftrightarrow\quad \int_{\Gamma_1} f\,dz = \int_{\Gamma_2} f\,dz \ \text{（同端点的一切路径）}" />
     <p>
-      为什么解析函数的回路积分是零？只要一把工具：<strong>格林公式</strong>。
+      为什么解析函数的回路积分是零？只要两把工具，先请出第一把：<strong>格林公式</strong>。
       它是多元微积分里那条"把回路积分换成面积分"的定理，说的是对平面上一条闭回路 Γ 与它围住的区域 D，
     </p>
     <MathBlock tex="\oint_\Gamma \bigl(P\,dx + Q\,dy\bigr) = \iint_D \Bigl(\frac{\partial Q}{\partial x} - \frac{\partial P}{\partial y}\Bigr)\, dA" />
@@ -135,7 +135,42 @@ import PathIntegralDemo from '../../demos/PathIntegralDemo.vue'
       牛顿-莱布尼茨也是这个套路（内部导数的累积 = 两端点之差），只是升了一维。
     </p>
     <p>
-      有了它，柯西定理的证明只有四行——而且两条柯西-黎曼方程各消掉一半，干净得不像话：
+      第二把工具是<router-link to="/complex/holomorphic">上一讲</router-link>那两条方程。
+      它待会儿要被反复代入，这里先原地请回来一次，不必翻回去。
+      把 <MathInline tex="f" /> 按实部虚部拆开写成
+      <MathInline tex="f(x + iy) = u(x, y) + i\,v(x, y)" />（<MathInline tex="u" />、
+      <MathInline tex="v" /> 是两个普通的二元实函数），"复可导"要求差商
+      <MathInline tex="\bigl(f(z+\Delta z) - f(z)\bigr)/\Delta z" /> 沿<strong>任何</strong>方向趋近，
+      都收敛到同一个复数。只挑最省事的两个方向比一比，就已经很致命了：
+    </p>
+    <ul>
+      <li>
+        沿实轴走（<MathInline tex="\Delta z = \Delta x" />，分母是个实数）：
+        差商极限是 <MathInline tex="u_x + i\,v_x" />；
+      </li>
+      <li>
+        沿虚轴走（<MathInline tex="\Delta z = i\,\Delta y" />）：分母多出一个
+        <MathInline tex="i" />，而 <MathInline tex="1/i = -i" />，
+        它把实虚部对调并带一个负号，于是极限是 <MathInline tex="v_y - i\,u_y" />。
+      </li>
+    </ul>
+    <p>
+      （这里 <MathInline tex="u_x" /> 是偏导数 <MathInline tex="\partial u/\partial x" /> 的简写，
+      其余同理。）两个结果必须是同一个复数，实部对实部、虚部对虚部，就逼出两条等式：
+    </p>
+    <MathBlock tex="\underbrace{u_x = v_y}_{\text{第一条}} \qquad\qquad \underbrace{u_y = -v_x}_{\text{第二条}}" />
+    <p>
+      这就是<strong>柯西-黎曼方程</strong>（常简称 C-R 方程）。要紧的是它的身份：
+      它<strong>不是额外添的假设，而是"f 解析"这句话的逐点翻译</strong>——
+      说 f 在区域 D 内解析，就等于说 <MathInline tex="u" />、<MathInline tex="v" /> 在 D 的
+      每一点都满足这两条。上一讲还给了它一个几何读法：这两条等式说的是
+      <MathInline tex="(u, v)" /> 的雅可比矩阵必须长成
+      <MathInline tex="\begin{bmatrix} a & -b \\ b & a \end{bmatrix}" /> 的形状，
+      而那正是"乘一个复数"的矩阵——局部只许旋转加伸缩，不许剪切。
+      下面的证明只用到这两条等式本身，把它们当成两句随时可代入的换算规则就够了。
+    </p>
+    <p>
+      两把工具凑齐，柯西定理的证明只有四行——而且两条柯西-黎曼方程各消掉一半，干净得不像话：
     </p>
     <RevealBox
       title="🔍 四行：把 f dz 拆开，格林公式一套，两条 C-R 方程各消一半"
