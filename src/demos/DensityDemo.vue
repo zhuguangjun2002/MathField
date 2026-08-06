@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { usePlot, makeView, drawAxes, plotFn, drawLabel, C, fmt, rng } from './plot.js'
 import DemoFrame from '../components/DemoFrame.vue'
 import ControlSlider from '../components/ControlSlider.vue'
+import MathInline from '../components/MathInline.vue'
 
 // 目标分布：截断在 [0,4] 的指数分布（刻意选个不对称的，别让"钟形"抢戏）
 const Z = 1 - Math.exp(-4)
@@ -87,17 +88,33 @@ usePlot(
       <ControlSlider label="区间右端 b" v-model="b" :min="0" :max="4" :step="0.05" />
     </template>
     <template #readout>
-      绿色阴影面积（理论值）F(b) = <b>{{ fmt(cdf(b), 4) }}</b>
+      绿色阴影面积 F(b) = <b>{{ fmt(cdf(b), 4) }}</b>
       &nbsp;&nbsp;样本中 X ≤ b 的频率 = <b>{{ fmt(freqLeB, 4) }}</b>
       &nbsp;&nbsp;全部柱子的面积之和恒为 <b>1</b>
     </template>
     <template #note>
+      <b>两个旋钮。</b><b>直方图组数</b>不是数据的性质，是<b>你看数据的粗细</b>——
+      把同一批样本切成几档来数；<b>区间右端 b</b> 是查账的位置，
+      绿色阴影画的是 <MathInline tex="P(X \le b)" />，读数区同时给出理论值 F(b) 与样本频率，
+      两者该贴得很近（4000 个样本，全程最大差 0.008，出现在 b ≈ 0.95）。
+      样本是<b>固定的一批</b>（固定种子生成，可复现），拖组数不会换数据。
+      <br /><br />
       这是 4000 次观测（比如"等公交的耗时"）。柱子的<b>高度不是概率</b>——
       它是"频数 ÷ (总数 × 组距)"，为的是让<b>面积</b>等于频率。把组数从 4 拖到 100：
       柱子越来越细，轮廓越来越贴近蓝色的密度曲线 f(x)——直方图的极限就是密度。
       于是"X 落在某区间的概率"= 该区间下的<b>面积</b>（拖动 b 看绿色阴影与 F(b) 同步变化）。
       单点概率为 0 一点也不吓人：一条竖线段的面积本来就是 0。这正是积分讲"面积由累积函数掌管"的重演：
       F 是本体，密度 f 只是它的导数。
+      <br /><br />
+      <b>两处值得亲手对照的地方。</b>① 把组数拖到最小的 4：柱子粗得看不出形状，
+      可<b>所有柱子的面积之和仍然是 1</b>，读数区的样本频率也仍然贴着 F(b)——
+      <b>直方图画得粗不粗，不影响它记的账</b>，只影响你能看出多少细节。
+      ② 把组数拖到 100：轮廓开始发毛、上下抖动——这不是密度真的在抖，
+      而是每根柱子里只剩四十来个样本，随机涨落显了形。
+      <b>组数太少看不出形状、太多被噪声淹没</b>，中间那一段才是能看的。
+      <br /><br />
+      顺带一提：这 4000 个样本是怎么造出来的？用的正是伍节那条
+      <MathInline tex="X = F^{-1}(U)" />——对均匀随机数取一次对数，一行代码。
     </template>
   </DemoFrame>
 </template>
