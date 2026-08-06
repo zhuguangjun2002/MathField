@@ -2,6 +2,7 @@
 import ConceptPage from '../../components/ConceptPage.vue'
 import MathBlock from '../../components/MathBlock.vue'
 import MathInline from '../../components/MathInline.vue'
+import RevealBox from '../../components/RevealBox.vue'
 import NewtonMethodDemo from '../../demos/NewtonMethodDemo.vue'
 </script>
 
@@ -44,6 +45,71 @@ import NewtonMethodDemo from '../../demos/NewtonMethodDemo.vue'
       <MathInline tex="0.1 \to 0.01 \to 0.0001 \to 10^{-8} \to 10^{-16}" />，四五步就顶到机器精度。这叫<strong>二次收敛</strong>，
       和二分法的"逐位挪"是两个物种。
     </p>
+    <p>
+      "误差平方级缩小"这句话是本讲的全部卖点，它<strong>只用三行泰勒就能证出来</strong>——
+      而且证完你会看到那个平方是<strong>从哪儿冒出来的</strong>，
+      以及它凭什么在重根面前失效：
+    </p>
+    <RevealBox
+      title="🔍 三行推出二次收敛，并看清那个平方的来历"
+      label="对答案 / 看完整拆解"
+    >
+      <template #hint>
+        先自己动笔：设真根是 <MathInline tex="x^*" />，误差
+        <MathInline tex="e_n = x_n - x^*" />。
+        把 <MathInline tex="f(x^*)" /> 在 <MathInline tex="x_n" /> 处泰勒展开到二阶
+        （注意 <MathInline tex="f(x^*) = 0" />，这是唯一用到"它是根"的地方）。
+        再把展开式代进牛顿迭代式，看 <MathInline tex="e_{n+1}" /> 剩下什么。
+      </template>
+      <p>
+        <strong>第一行：在 <MathInline tex="x_n" /> 处展开，代入 <MathInline tex="x = x^*" />。</strong>
+      </p>
+      <MathBlock tex="0 = f(x^*) = f(x_n) + f'(x_n)(x^* - x_n) + \tfrac12 f''(\xi)(x^* - x_n)^2" />
+      <p>
+        （<MathInline tex="\xi" /> 在 <MathInline tex="x_n" /> 与 <MathInline tex="x^*" /> 之间，
+        拉格朗日余项。）注意 <MathInline tex="x^* - x_n = -e_n" />，整理一下：
+      </p>
+      <MathBlock tex="0 = f(x_n) - f'(x_n)\,e_n + \tfrac12 f''(\xi)\,e_n^2" />
+      <p>
+        <strong>第二行：两边除以 <MathInline tex="f'(x_n)" />。</strong>
+        （这一步就是牛顿法要求 <MathInline tex="f'(x^*)\ne0" /> 的原因——除数不能是零。）
+      </p>
+      <MathBlock tex="\frac{f(x_n)}{f'(x_n)} - e_n + \frac{f''(\xi)}{2f'(x_n)}e_n^2 = 0" />
+      <p>
+        <strong>第三行：认出牛顿迭代式。</strong>
+        <MathInline tex="x_{n+1} = x_n - f(x_n)/f'(x_n)" />，两边减 <MathInline tex="x^*" /> 得
+        <MathInline tex="e_{n+1} = e_n - f(x_n)/f'(x_n)" />。
+        把它代进上式：
+      </p>
+      <MathBlock tex="\boxed{\;e_{n+1} = \frac{f''(\xi)}{2f'(x_n)}\; e_n^2\;}" />
+      <p>
+        <strong>那个平方是这么来的：一阶项被牛顿迭代式整个吃掉了，剩下的最低阶就是二阶。</strong>
+        换句话说，<strong>牛顿法之所以快，正因为它精确地对消掉了泰勒展开的一阶项</strong>——
+        它不是"猜得准"，是"把能算准的部分全算了，只留下算不了的二阶尾巴"。
+      </p>
+      <p>
+        <strong>顺带读出两条实战规矩，都写在那个系数里。</strong>
+        分母是 <MathInline tex="f'(x_n)" />：<strong>导数越接近 0，这个常数越大，收敛越糟</strong>——
+        动画里把 <MathInline tex="x_0" /> 拖到 0.1 就是在把分母往小里逼。
+        而如果 <MathInline tex="x^*" /> 是<strong>重根</strong>（<MathInline tex="f'(x^*) = 0" />），
+        整个推导垮掉，牛顿法<strong>退化成线性收敛</strong>，
+        每步误差只减半左右——快不起来了。
+        （补救办法也很直接：改用 <MathInline tex="x_{n+1} = x_n - m\,f/f'" />，
+        m 是重根的重数，二次收敛就回来了。）
+      </p>
+      <p>
+        <strong>再顺手把巴比伦那条化简出来。</strong>取
+        <MathInline tex="f(x) = x^2 - a" />，则 <MathInline tex="f' = 2x" />：
+      </p>
+      <MathBlock tex="x_{n+1} = x_n - \frac{x_n^2 - a}{2x_n} = \frac{2x_n^2 - x_n^2 + a}{2x_n} = \frac{1}{2}\Bigl(x_n + \frac{a}{x_n}\Bigr)" />
+      <p>
+        <strong>"猜一个数，和 <MathInline tex="a" /> 除以它的商取平均"</strong>——
+        泥板上那条四千年前的口诀，就是这么一行代数化简的结果。
+        实测从 <MathInline tex="x_0 = 1.5" /> 求 <MathInline tex="\sqrt2" />，
+        正确位数走成 <strong>2.8 → 5.8 → 11.9 → 15.8</strong>，
+        <strong>确实每步翻倍，四步顶到机器精度</strong>。
+      </p>
+    </RevealBox>
     <div class="insight">
       <div class="insight-title">💡 一个惊喜：四千年前的巴比伦人早就在用牛顿法</div>
       <p>
@@ -80,13 +146,142 @@ import NewtonMethodDemo from '../../demos/NewtonMethodDemo.vue'
       </p>
     </div>
 
+    <p>
+      定义里有个悄悄的前提：牛顿法每步都要 <MathInline tex="f'(x_n)" />。
+      <strong>可现实中的 f 常常是一段没人能求导的代码</strong>（一次仿真、一次查表、一次数值积分），
+      导数写不出来，只能用差商去<strong>近似</strong>。这一近似，
+      就正面撞上了<router-link to="/numerical/float-error">第 1 讲</router-link>那个坑——
+      而且这次能算出<strong>最优步长该取多少</strong>：
+    </p>
+    <RevealBox
+      title="🔍 用差商代替导数：为什么 h 不能太大，也不能太小"
+      label="对答案 / 看完整拆解"
+    >
+      <template #hint>
+        先自己想两头：<MathInline tex="f'(x) \approx \dfrac{f(x+h)-f(x)}{h}" />。
+        <strong>h 太大</strong>时，这个近似离真导数有多远？（用泰勒展开估一下。）
+        <strong>h 太小</strong>时，分子上两个几乎相等的数相减会发生什么？
+        （这正是上一讲的灾难性抵消。）两种坏处一个随 h 涨、一个随 h 跌——
+        那么最好的 h 应该在哪儿？
+      </template>
+      <p>
+        <strong>第一头：截断误差，随 h 变大而变大。</strong>泰勒展开：
+      </p>
+      <MathBlock tex="\frac{f(x+h)-f(x)}{h} = f'(x) + \frac{h}{2}f''(\xi) \quad\Longrightarrow\quad \text{截断误差} \sim \tfrac{h}{2}|f''|" />
+      <p>它正比于 <MathInline tex="h" />——想减小它，h 越小越好。</p>
+      <p>
+        <strong>第二头：舍入误差，随 h 变小而变大。</strong>
+        <MathInline tex="f(x+h)" /> 与 <MathInline tex="f(x)" /> 各自带着约
+        <MathInline tex="\varepsilon|f|" /> 的表示误差，两者一减，
+        误差不抵消反而叠加；再除以一个很小的 h，就被放大：
+      </p>
+      <MathBlock tex="\text{舍入误差} \sim \frac{2\varepsilon |f|}{h}" />
+      <p>它正比于 <MathInline tex="1/h" />——想减小它，h 越大越好。<strong>两头打架。</strong></p>
+      <p>
+        <strong>第三步：把两项加起来求最小。</strong>
+        总误差 <MathInline tex="E(h) \approx \tfrac{h}{2}|f''| + 2\varepsilon|f|/h" />，
+        对 h 求导令其为零：
+      </p>
+      <MathBlock tex="h_{\text{opt}} \sim \sqrt{\varepsilon} \approx \sqrt{2.2\times10^{-16}} \approx 1.5\times10^{-8}" />
+      <p>
+        <strong>而此时的总误差也只有 <MathInline tex="\sqrt{\varepsilon} \approx 10^{-8}" /> 量级</strong>——
+        <strong>你手上明明有 16 位有效数字的机器，算一次导数却只能拿到 8 位。
+        一半的精度就这么没了</strong>，而且这不是编程水平问题，是这个做法的天花板。
+      </p>
+      <p>
+        <strong>实测对一下。</strong>取 <MathInline tex="f = \sin x" />、
+        <MathInline tex="x = 1" />（真值 <MathInline tex="\cos 1" />），用 float64 逐档扫 h：
+      </p>
+      <MathBlock tex="\begin{array}{c|cc} h & \text{前向差商误差} & \text{中心差商误差} \\ \hline 10^{-4} & 4.2\times10^{-5} & 9.0\times10^{-10} \\ 10^{-6} & 4.2\times10^{-7} & 2.8\times10^{-11} \\ 10^{-8} & \mathbf{3.0\times10^{-9}} & 2.6\times10^{-9} \\ 10^{-10} & 5.9\times10^{-8} & 5.9\times10^{-8} \\ 10^{-14} & 3.7\times10^{-3} & 3.7\times10^{-3} \end{array}" />
+      <p>
+        前向差商的最优点<strong>正落在 <MathInline tex="h = 10^{-8}" /></strong>，
+        与理论的 <MathInline tex="\sqrt\varepsilon = 1.5\times10^{-8}" /> 吻合，
+        最好也就 <MathInline tex="3\times10^{-9}" />。
+        再往小拖，误差反而<strong>暴涨四个数量级</strong>——
+        这就是<router-link to="/numerical/float-error">上一讲</router-link>动画里那条曲线的同一个 U 形，
+        换了个场合又出现了一次。
+      </p>
+      <p>
+        <strong>顺带看一件划算的事：换成中心差商，白赚三位数字。</strong>
+        <MathInline tex="\dfrac{f(x+h)-f(x-h)}{2h}" /> 的截断误差是
+        <MathInline tex="O(h^2)" /> 而非 <MathInline tex="O(h)" />
+        （奇次项对消，与<router-link to="/mathphys/laplace">数理方程第 4 讲</router-link>
+        推 <MathInline tex="\Delta u" /> 时用的是同一个技巧），
+        于是最优 <MathInline tex="h \sim \varepsilon^{1/3}" />，
+        最好能到 <MathInline tex="10^{-11}" />——上表里 <MathInline tex="h = 10^{-6}" /> 那一行
+        <strong>2.8×10⁻¹¹，比前向差商最好的成绩还准两个数量级</strong>，
+        代价只是多算一次函数值。
+      </p>
+      <p>
+        <strong>这也解释了机器学习为什么不用差商求梯度。</strong>
+        参数上百万时，差商要算上百万次函数值，且每个只有 8 位准；
+        <strong>自动微分</strong>按链式法则精确地算出导数，
+        没有 h、没有截断误差、也没有这个 U 形——
+        <router-link to="/calculus/derivative">微积分第 2 讲</router-link>那条求导法则，
+        在这里从"纸上的规则"变成了编译器里的一趟遍历。
+      </p>
+    </RevealBox>
+
     <h2><span class="sec-no">伍</span>买到了什么：藏在每一次按键背后的迭代</h2>
+
+    <h3>你按下的每一次开方、每一次除法，跑的都是牛顿法</h3>
+    <p>
+      伍节第一条说"计算器就在这么算"，这话比听上去更字面。
+      CPU 里<strong>没有开方电路</strong>，也没有真正意义上的高速除法电路——
+      硬件只擅长加法和乘法。所以这两件事都是<strong>用牛顿法现算的</strong>，
+      而且算法就写在芯片的微码里。
+    </p>
+    <p>
+      <strong>除法：把除法变成不含除法的迭代。</strong>
+      要算 <MathInline tex="a/b" />，先求 <MathInline tex="1/b" /> 再乘。
+      取 <MathInline tex="f(x) = 1/x - b" />，代进牛顿迭代式并化简：
+    </p>
+    <MathBlock tex="x_{n+1} = x_n - \frac{1/x_n - b}{-1/x_n^2} = x_n\,(2 - b\,x_n)" />
+    <p>
+      <strong>请盯着右边看：只有一次减法和两次乘法，一个除号都没有。</strong>
+      这正是硬件想要的——用它最擅长的乘法，换掉它最不擅长的除法。
+      实测求 <MathInline tex="1/7" />，从一个粗糙的初值 0.1 出发：
+    </p>
+    <MathBlock tex="0.1 \to 0.13 \to 0.1417 \to 0.14284777 \to 0.1428571422 \to 0.142857142857143" />
+    <p>
+      误差 <MathInline tex="1.3\times10^{-2} \to 1.2\times10^{-3} \to 9.4\times10^{-6} \to 6.2\times10^{-10} \to 2.8\times10^{-17}" />——
+      <strong>又是位数翻倍</strong>，五步到机器精度。
+      真实芯片还要快：初值不是随手取的 0.1，而是<strong>查一张小表</strong>得到的近似值，
+      于是只需两三步。
+    </p>
+    <div class="insight">
+      <div class="insight-title">💡 程序员文化里最有名的一段代码，就是"一个好初值 + 一次牛顿迭代"</div>
+      <p>
+        1999 年《雷神之锤 III》的源码公开后，一段计算
+        <MathInline tex="1/\sqrt x" /> 的函数让无数人看傻了眼——
+        它先把浮点数的二进制<strong>当成整数</strong>，右移一位，
+        再用一个神秘常数 <code>0x5f3759df</code> 去减，得到一个初值；
+        然后<strong>只做一次</strong>牛顿迭代就返回。
+      </p>
+      <p>
+        为什么它能工作？<router-link to="/numerical/float-error">上一讲</router-link>说过，
+        浮点数的二进制里<strong>指数部分就是以 2 为底的对数的整数部分</strong>。
+        把它当整数右移一位，相当于把指数<strong>除以 2</strong>——
+        这不正是开平方要做的事吗？那个魔数则是在修正"取对数再取指数"带来的偏差。
+        <strong>整个位运算是一台极便宜的"对数近似器"</strong>。
+      </p>
+      <p>
+        效果实测（扫两万个 x 取最大相对误差）：
+        <strong>光靠那个位运算，初值的误差已经小于 3.44%</strong>；
+        接上<strong>一次</strong>牛顿迭代降到 <strong>0.175%</strong>——
+        对三维游戏里做向量归一化来说完全够用，而代价只有几条指令。
+        （再来一次能到 <MathInline tex="4.6\times10^{-6}" />，但游戏不需要，就省了。）
+      </p>
+      <p>
+        <strong>这段代码之所以成为传奇，恰恰因为它把本讲的两个教训用到了极致：</strong>
+        牛顿法收敛极快，<strong>但挑初值</strong>——那就花几条指令造一个好得离谱的初值，
+        然后迭代一次就收工。<strong>"算法快不快"从来不只取决于算法，
+        还取决于你从哪儿出发</strong>。
+      </p>
+    </div>
+
+    <h3>还买到了什么</h3>
     <ul>
-      <li>
-        <strong>你的计算器就在这么算</strong>：芯片没有"开方电路"，按下 <MathInline tex="\sqrt{}" /> 时它跑的正是牛顿迭代；
-        连硬件<strong>除法</strong>都常用牛顿法先算倒数 <MathInline tex="1/b" />（解 <MathInline tex="1/x-b=0" />）再乘——
-        因为乘法比除法便宜；
-      </li>
       <li>
         <strong>优化的心脏</strong>：机器学习、经济学里的"求最优"，本质是求导数为零点 <MathInline tex="\nabla f=0" />，
         又是一个求根问题。牛顿法在这里升级成<strong>多元</strong>版：
