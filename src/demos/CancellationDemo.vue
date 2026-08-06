@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import { usePlot, makeView, drawAxes, plotFn, drawPoint, drawLabel, C, fmt } from './plot.js'
 import DemoFrame from '../components/DemoFrame.vue'
 import ControlSlider from '../components/ControlSlider.vue'
+import MathInline from '../components/MathInline.vue'
 
 // 目标：计算 g(x) = (1 − cos x) / x²，x→0 时真值是 1/2。
 // naive 直接算，会在 x 很小时把两个几乎相等的数相减 → 灾难性抵消。
@@ -77,13 +78,30 @@ usePlot(
       （真值 0.5）—— 相对误差已达 <b>{{ relErr < 1e-12 ? '≈ 0' : relErr.toPrecision(2) }}</b>
     </template>
     <template #note>
-      公式 <b>(1 − cos x) / x²</b> 数学上恒等于 <b>1/2</b>（洛必达一下就知道），可拖动滑杆让 x 变小，
+      <b>只有一个旋钮：</b>它控制 <MathInline tex="x = 10^{-p}" /> 里的指数 p——
+      <b>把 p 拖大就是让 x 越来越接近 0</b>；x 本身不是滑杆读数，读数区会给出它的值。
+      两条线用的是<b>同一台机器、同一个 x</b>，只是把式子写成了两种代数上等价的形式。
+      <br /><br />
+      公式 <b>(1 − cos x) / x²</b> 在 <MathInline tex="x \to 0" /> 时的<b>极限</b>是 <b>1/2</b>
+      （洛必达一下就知道；注意是极限，不是恒等——x = 0.1 时它真值就是 0.49958）。
+      可拖动滑杆让 x 变小，
       红线在 x ≈ 10⁻⁸ 附近突然从 0.5 摔到 0——这不是我编的动画，是浏览器<b>真的用双精度浮点算出来的</b>。
       原因：x 很小时 cos x 极接近 1，float64 只有约 16 位有效数字，<b>1 − cos x</b> 一相减，
       前面十几位相同的数字全部抵消归零，只剩下最末尾几位被舍入污染过的"垃圾"，再除以更小的 x² 便彻底放大成噪声。
       这就是<b>灾难性抵消</b>——不是算法错，是"相近数相减"这个动作本身有毒。
       蓝色那条稳如泰山的线用的是同一台机器，只把式子改写成 <b>2 sin²(x/2) / x²</b>，
       不做危险的相减，误差就再也没冒头。<b>写法不同，精度天差地别</b>，这正是数值分析要教你的第一课。
+      <br /><br />
+      <b>拖的时候请分清两件事，它们混在同一条曲线上。</b>
+      <b>p = 1 到 5</b> 这一段，红蓝两条线<b>几乎完全重合</b>，而且都不等于 0.5
+      （p = 1 时是 0.49958）——那不是误差，是<b>数学上的真值</b>：极限是 1/2，但 x 还没小到那儿。
+      <b>从 p = 6 起红线才开始跑偏</b>（0.50004，而蓝线仍是 0.50000），<b>p = 8 直接摔成 0</b>。
+      前一段是"函数本来就长这样"，后一段才是"机器算崩了"。
+      <br /><br />
+      顺带看一眼：红线离 0.5 最近的时候在 <b>p = 4 附近</b>（相对误差 6×10⁻⁹），
+      往两边都变差——左边是 x 还不够小（截断误差），右边是抵消开始吃有效数字（舍入误差）。
+      <b>这个 U 形是数值分析里反复出现的形状</b>：同一个参数往两个方向走各有各的坏处，
+      最优点卡在中间。<router-link to="/numerical/root-finding">下一讲</router-link>算数值导数时会再撞见它。
     </template>
   </DemoFrame>
 </template>
