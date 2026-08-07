@@ -3,6 +3,7 @@ import ConceptPage from '../../components/ConceptPage.vue'
 import MathBlock from '../../components/MathBlock.vue'
 import MathInline from '../../components/MathInline.vue'
 import RevealBox from '../../components/RevealBox.vue'
+import QuizBox from '../../components/QuizBox.vue'
 import NewtonMethodDemo from '../../demos/NewtonMethodDemo.vue'
 </script>
 
@@ -121,6 +122,18 @@ import NewtonMethodDemo from '../../demos/NewtonMethodDemo.vue'
       </p>
     </div>
 
+    <QuizBox
+      quiz-id="root-finding-q1"
+      question="牛顿法收敛快得吓人，那它一定收敛吗？"
+      hint="回头看误差公式里那个系数的分母是什么；再想想重根处的导数等于多少。"
+      :options="[
+        { t: '不一定。快只是「初值离根足够近」时的特权：初值太远，切线可能把它甩飞；碰上重根（根处 $f^{\\prime}=0$），二次收敛整个垮掉，退化成每步误差只减半的慢爬。二分法慢，却有介值定理兜底，绝不失手。', why: '对。误差式 $e_{n+1}=\\frac{f^{\\prime\\prime}(\\xi)}{2f^{\\prime}(x_n)}e_n^2$ 里藏着两个前提：分母不能太小，$e_n$ 本身得先够小（平方才划算）。两个前提都是局部的。所以实战里常常先用二分法把根圈进一个小区间，再交给牛顿法收尾——稳和快各取一半。' },
+        { t: '一定收敛，只是坏初值会多绕几步——像动画里 $x_0=0.1$ 那样先被甩出去，再老老实实爬回来。', why: '你被 demo 那条抛物线的好脾气骗了：$x^2-2$ 开口向上、正半轴只有一个根，怎么甩都会滑回来。换个函数立刻翻脸——对 $\\arctan x$ 从 $x_0=2$ 出发，迭代走成 $2 \\to -3.5 \\to 14 \\to -279 \\to 1.2\\times10^{5}$，一路发散到爆。收敛是局部定理，不是全局承诺。' },
+        { t: '只要 f 连续可导就一定二次收敛；重根处函数更平坦，收敛只会更快。', why: '「更平」恰恰是灾难。二次收敛的常数是 $f^{\\prime\\prime}(\\xi)/(2f^{\\prime}(x_n))$，分母正是导数：根处越平，分母越接近 0，常数越大。重根时 $f^{\\prime}(x^{*})=0$，整条推导垮掉，收敛降成线性——每步减半，和二分法一个档次。要救回来得把迭代式改成 $x_{n+1}=x_n-m\\,f/f^{\\prime}$，m 是重数。' },
+      ]"
+      :answer="0"
+    />
+
     <h2><span class="sec-no">叁</span>亲手拖动牛顿迭代，数它正确位数翻倍</h2>
     <NewtonMethodDemo />
 
@@ -145,6 +158,18 @@ import NewtonMethodDemo from '../../demos/NewtonMethodDemo.vue'
         误差主项来自<strong>泰勒展开被截断在一阶</strong>——这正是<router-link to="/numerical/float-error">第一讲</router-link>说的截断误差。
       </p>
     </div>
+
+    <QuizBox
+      quiz-id="root-finding-q2"
+      question="收敛阶 $p=2$，是不是说每一步误差都减半？"
+      hint="先照定义把 p 等于 1 那一档写出来：误差乘一个固定的小常数，那叫哪一种收敛？"
+      :options="[
+        { t: '不是。「每步减半」是 $p=1$、$C=1/2$ 的线性收敛（二分法正是如此）；$p=2$ 说的是误差被平方，正确位数每步翻倍：$10^{-2} \\to 10^{-4} \\to 10^{-8}$。', why: '对。定义里 p 站在 $|e_n|$ 的指数位置上，不是当分母。demo 里从 $x_0=1.5$ 出发，误差走成 $8.6\\times10^{-2} \\to 2.5\\times10^{-3} \\to 2.1\\times10^{-6} \\to 1.6\\times10^{-12}$，换算成正确位数是 1.07 → 2.61 → 5.67 → 11.80，几乎精确地一步一翻倍。' },
+        { t: '是：$p=2$ 就是误差每步缩到 1/2，$p=3$ 就是缩到 1/3。', why: '这是把指数看成了分母。误差缩到固定比例（1/2 也好 1/10 也好）全都是 $p=1$，差别只写在常数 C 里——二分法那句「每步砍半」正是 $p=1$、$C=1/2$。$p=2$ 的定义是 $|e_{n+1}|\\approx C|e_n|^2$：误差自己乘自己，$10^{-2}$ 的下一步是 $10^{-4}$ 的量级，不是 0.005。' },
+        { t: '$p=2$ 是说每一步固定多算准两位小数（十进制两位两位地降）。', why: '「每步固定降两位」仍然是线性收敛，只是 $C=1/100$：降幅是个常数。二次收敛的降幅自己会加速——上面那串正确位数 1.07 → 2.61 → 5.67 → 11.80，单步涨了 1.5、3.1、6.1 位，一次比一次猛。二分法要 3.3 步才多攒一位，摆在一起就知道差在哪了。' },
+      ]"
+      :answer="0"
+    />
 
     <p>
       定义里有个悄悄的前提：牛顿法每步都要 <MathInline tex="f'(x_n)" />。
@@ -205,7 +230,10 @@ import NewtonMethodDemo from '../../demos/NewtonMethodDemo.vue'
         <strong>顺带看一件划算的事：换成中心差商，白赚三位数字。</strong>
         <MathInline tex="\dfrac{f(x+h)-f(x-h)}{2h}" /> 的截断误差是
         <MathInline tex="O(h^2)" /> 而非 <MathInline tex="O(h)" />
-        （奇次项对消，与<router-link to="/mathphys/laplace">数理方程第 4 讲</router-link>
+        （<strong>这个记号本讲第一次出现：<MathInline tex="O(h^2)" /> 读作「量级不超过
+        <MathInline tex="h^2" /> 的常数倍」——h 缩小一半，这一项至少缩小到四分之一。
+        它只报量级、不报系数</strong>，因为要紧的从来是"随 h 变化多快"，
+        而那个系数在换一个函数、换一个点时就变了；奇次项对消，与<router-link to="/mathphys/laplace">数理方程第 4 讲</router-link>
         推 <MathInline tex="\Delta u" /> 时用的是同一个技巧），
         于是最优 <MathInline tex="h \sim \varepsilon^{1/3}" />，
         最好能到 <MathInline tex="10^{-11}" />——上表里 <MathInline tex="h = 10^{-6}" /> 那一行
@@ -221,6 +249,18 @@ import NewtonMethodDemo from '../../demos/NewtonMethodDemo.vue'
         在这里从"纸上的规则"变成了编译器里的一趟遍历。
       </p>
     </RevealBox>
+
+    <QuizBox
+      quiz-id="root-finding-q3"
+      question="数值求导的步长 h，是不是取得越小越准？"
+      hint="把两种误差分开看：一种随 h 变小而变小，另一种随 h 变小反而变大。"
+      :options="[
+        { t: '不是。截断误差随 h 减小，舍入误差却随 h 减小而暴涨，最优点卡在中间：前向差商大约落在 $\\sqrt{\\varepsilon}\\approx1.5\\times10^{-8}$，再往小拖误差反而涨回去。', why: '对，这就是那条 U 形。h 太小时分子是两个几乎相等的数相减（第 1 讲那个灾难性抵消原地复发），剩下的那点有效数字再被小小的 h 一除，就被放大成灾：表里 $h=10^{-14}$ 那一行误差 $3.7\\times10^{-3}$，比 $h=10^{-4}$ 时还差了近百倍。' },
+        { t: '是：h 是这个近似唯一的误差来源，$h \\to 0$ 就是导数的定义，越小当然越接近真值。', why: '纸上成立，机器上不成立——因为纸上的实数没有「最后一位」。float64 只有约 16 位有效数字，$h=10^{-14}$ 时 $f(x+h)$ 与 $f(x)$ 只在最后一两位上不同，相减之后有效数字几乎被吃光。取极限是数学动作，浮点数不陪你做。' },
+        { t: '越小越准——只要改用中心差商就没这个毛病，它的截断误差是 $O(h^2)$。', why: '中心差商只是把 U 形的底往下挪了一截（最优 h 从 $\\sqrt{\\varepsilon}$ 变成 $\\varepsilon^{1/3}$，最好成绩从 $3\\times10^{-9}$ 提到 $10^{-11}$），U 形本身还在：表里 $h=10^{-10}$ 那一行，两种差商的误差一模一样，都是 $5.9\\times10^{-8}$——那时舍入误差已经压倒一切，跟你用哪个公式无关。' },
+      ]"
+      :answer="0"
+    />
 
     <h2><span class="sec-no">伍</span>买到了什么：藏在每一次按键背后的迭代</h2>
 
