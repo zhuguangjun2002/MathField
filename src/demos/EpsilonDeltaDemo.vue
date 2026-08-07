@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { usePlot, makeView, drawAxes, plotFn, drawPoint, drawLabel, C } from './plot.js'
 import DemoFrame from '../components/DemoFrame.vue'
 import ControlSlider from '../components/ControlSlider.vue'
@@ -15,6 +15,48 @@ const eps = ref(0.6)
 const delta = ref(0.9)
 
 const ok = computed(() => delta.value <= eps.value + 1e-9)
+
+// ―― 挑战模式（回合制）――
+// 出招序列固定写死（不用 Math.random，保证 note 里的说法可复现）；
+// 每关都验算过可赢：δ 滑杆 0.05–1.50 步长 0.01，终关 ε=0.07 仍有 0.05/0.06/0.07 三档可赢
+const ROUNDS = [1.2, 0.6, 0.25, 0.12, 0.07]
+const challenge = ref(false)
+const round = ref(0) // 当前回合下标
+const verdict = ref('') // '' | 'win' | 'lose' | 'passed'
+
+function startChallenge() {
+  challenge.value = true
+  round.value = 0
+  verdict.value = ''
+  eps.value = ROUNDS[0]
+  delta.value = 1.5
+}
+
+function quitChallenge() {
+  challenge.value = false
+  verdict.value = ''
+  eps.value = 0.6
+}
+
+function submit() {
+  if (ok.value) {
+    if (round.value === ROUNDS.length - 1) {
+      verdict.value = 'passed'
+    } else {
+      // 不重置 δ：留着上一关的应答（对新 ε 多半太大、直接显红），读者自己往下压
+      verdict.value = 'win'
+      round.value += 1
+      eps.value = ROUNDS[round.value]
+    }
+  } else {
+    verdict.value = 'lose' // 本关重来，不清零已过关数
+  }
+}
+
+// 重新拖 δ 就清掉上一次的判定语（通关状态保留）
+watch(delta, () => {
+  if (verdict.value === 'win' || verdict.value === 'lose') verdict.value = ''
+})
 
 usePlot(
   canvas,
@@ -69,11 +111,12 @@ usePlot(
     <canvas ref="canvas" class="demo-canvas"></canvas>
     <template #controls>
       <ControlSlider
-        label="对手出招 ε（纵向容差）"
+        :label="challenge ? '对手出招 ε（挑战中，由对手控制）' : '对手出招 ε（纵向容差）'"
         v-model="eps"
-        :min="0.1"
+        :min="0.05"
         :max="1.4"
         :step="0.01"
+        :disabled="challenge"
         :display="(x) => x.toFixed(2)"
       />
       <ControlSlider
@@ -84,9 +127,40 @@ usePlot(
         :step="0.01"
         :display="(x) => x.toFixed(2)"
       />
+      <div class="ctrl">
+        <button v-if="!challenge" class="challenge-btn" type="button" @click="startChallenge">
+          ⚔️ 开始挑战（5 回合）
+        </button>
+        <template v-else>
+          <button
+            class="challenge-btn is-on"
+            type="button"
+            :disabled="verdict === 'passed'"
+            @click="submit"
+          >
+            交卷：δ = {{ delta.toFixed(2) }}
+          </button>
+          <button class="challenge-btn" type="button" @click="quitChallenge">退出挑战</button>
+        </template>
+      </div>
     </template>
     <template #readout>
-      <template v-if="ok">
+      <template v-if="challenge">
+        <span class="challenge-badge">第 {{ round + 1 }}/5 回合 · 已过 {{ verdict === 'passed' ? 5 : round }} 关</span>&ensp;
+        <template v-if="verdict === 'passed'">
+          🏆 <b>五关全过！</b>ε 压到 0.07 你也接住了——可以替魏尔斯特拉斯出庭了。
+        </template>
+        <template v-else-if="verdict === 'lose'">
+          ❌ <b>δ = {{ delta.toFixed(2) }} 太大</b>：红段探出蓝带。本关重来（已过的关不清零）。
+        </template>
+        <template v-else-if="verdict === 'win'">
+          ✅ 接住了！对手加码：ε = {{ eps.toFixed(2) }} —— 拖好 δ 再交卷。
+        </template>
+        <template v-else>
+          对手出招 <b>ε = {{ eps.toFixed(2) }}</b>：拖 δ 让加粗段整段落进蓝带，点「交卷」。
+        </template>
+      </template>
+      <template v-else-if="ok">
         ✅ <b>δ = {{ delta.toFixed(2) }} 可行</b>：只要 0 &lt; |x−1| &lt; δ，曲线（绿色段）就全部落在 L±ε 的蓝带里。
       </template>
       <template v-else>
@@ -123,6 +197,14 @@ usePlot(
         <strong>始终是"δ ≤ ε 才达标"这一条线在起作用，而它是算出来的，不是调出来的。</strong>
         顺带注意：无论怎么拖，<MathInline tex="x = 1" /> 那个空心点从来没被用到过——
         极限只问"接近时的趋势"，不问该点本身。
+      </p>
+      <p>
+        <b>挑战模式的规则</b>：点「开始挑战」后 ε 滑杆交给对手，它按固定的五关出招——
+        1.20 → 0.60 → 0.25 → 0.12 → 0.07（写死在程序里，谁玩都是这五关，每关都验算过必有可赢的 δ）。
+        你拖 δ 点「交卷」：δ ≤ ε 过关，太大则本关重来（已过的关不清零）。五关全过，
+        你就亲手演完了定义里那句"<strong>任意</strong> ε &gt; 0，<strong>总存在</strong> δ &gt; 0"——
+        对手无论把 ε 压到多小，你都拿得出应答。真正的定义只是把"五关"换成"无穷关"，
+        而本例你有必胜策略（答 δ = ε 就行），这正是"极限存在"的含义。
       </p>
     </template>
   </DemoFrame>

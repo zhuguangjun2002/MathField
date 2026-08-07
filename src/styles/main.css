@@ -9,6 +9,8 @@
   --indigo: #33518f;
   --indigo-soft: #e3e9f5;
   --gold: #b07d2b;
+  --green: #2e7d4f;
+  --green-soft: #e2efe7;
   --line: #e6e1d8;
   --radius: 14px;
   --serif: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', SimSun, serif;
@@ -698,6 +700,264 @@ a.course-card:hover {
   font-size: 15.5px;
 }
 
+/* 首页学习路径（按 stage 分组） */
+.path {
+  margin-top: 34px;
+}
+
+.path-stage .card-grid {
+  margin-top: 18px;
+}
+
+.stage-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.stage-no {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.stage-name {
+  font-family: var(--serif);
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.stage-note {
+  color: var(--ink-soft);
+  font-size: 14.5px;
+}
+
+.stage-arrow {
+  text-align: center;
+  color: var(--ink-faint);
+  font-size: 22px;
+  padding: 14px 0 6px;
+}
+
+.resume-link {
+  display: inline-block;
+  margin-top: 18px;
+  padding: 8px 18px;
+  border: 1.5px solid var(--accent);
+  border-radius: 99px;
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 15px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.resume-link:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.card-foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 6px;
+  font-size: 13px;
+  color: var(--ink-faint);
+}
+
+.card-difficulty {
+  display: inline-flex;
+  gap: 3px;
+  align-items: center;
+}
+
+.card-difficulty .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--line);
+}
+
+.card-difficulty .dot.on {
+  background: var(--accent);
+}
+
+/* 课程页目录 / 讲页头部的已读标记 */
+.concept-index .ci-read {
+  font-size: 15px;
+  color: var(--green);
+  vertical-align: super;
+  margin-left: 2px;
+}
+
+.concept-meta .meta-read {
+  color: var(--green);
+}
+
+/* 讲页先修栏 */
+.prereq-bar {
+  margin-top: 16px;
+  background: var(--indigo-soft);
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 14.5px;
+  color: var(--indigo);
+  line-height: 1.9;
+}
+
+.prereq-bar a {
+  color: var(--indigo);
+  font-weight: 700;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.prereq-bar .prereq-read {
+  color: var(--green);
+  margin-left: 2px;
+}
+
+/* QuizBox 自测框（属"定义侧"，靛蓝系；区别于朱红的 RevealBox） */
+.quiz {
+  background: var(--indigo-soft);
+  border-left: 4px solid var(--indigo);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin: 26px 0;
+}
+
+.quiz .quiz-title {
+  font-weight: 700;
+  color: var(--indigo);
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+
+.quiz .quiz-question {
+  margin: 0 0 6px;
+}
+
+.quiz .quiz-hint {
+  color: var(--ink-soft);
+  font-size: 14px;
+  margin: 0 0 4px;
+}
+
+.quiz .quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.quiz .quiz-btn {
+  font: inherit;
+  font-size: 15px;
+  text-align: left;
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  background: var(--bg-card);
+  color: var(--ink);
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  padding: 9px 14px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.quiz .quiz-btn:hover:not(:disabled) {
+  border-color: var(--indigo);
+}
+
+.quiz .quiz-btn:disabled {
+  cursor: default;
+}
+
+.quiz .quiz-mark {
+  flex: none;
+  color: var(--ink-faint);
+}
+
+.quiz .quiz-option.right .quiz-btn {
+  border-color: var(--green);
+  background: var(--green-soft);
+}
+
+.quiz .quiz-option.right .quiz-mark {
+  color: var(--green);
+}
+
+.quiz .quiz-option.wrong .quiz-btn {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.quiz .quiz-option.wrong .quiz-mark {
+  color: var(--accent);
+}
+
+.quiz .quiz-why {
+  margin: 6px 2px 2px 24px;
+  font-size: 14.5px;
+  color: var(--ink-soft);
+}
+
+.quiz .quiz-done {
+  margin: 12px 0 0;
+  font-size: 14px;
+  color: var(--green);
+}
+
+/* demo 挑战模式（回合制），样板：EpsilonDeltaDemo */
+.ctrl.is-disabled {
+  opacity: 0.55;
+}
+
+.challenge-btn {
+  font: inherit;
+  font-size: 14px;
+  padding: 6px 16px;
+  border: 1.5px solid var(--accent);
+  border-radius: 99px;
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.challenge-btn:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.challenge-btn.is-on {
+  background: var(--accent);
+  color: #fff;
+}
+
+.challenge-badge {
+  display: inline-block;
+  font-size: 13px;
+  border-radius: 99px;
+  padding: 2px 12px;
+  background: var(--green-soft);
+  color: var(--green);
+  white-space: nowrap;
+}
+
 @media (max-width: 640px) {
   .concept-title {
     font-size: 32px;
@@ -714,5 +974,8 @@ a.course-card:hover {
   }
   .brand-text {
     font-size: 16px;
+  }
+  .stage-head {
+    align-items: flex-start;
   }
 }

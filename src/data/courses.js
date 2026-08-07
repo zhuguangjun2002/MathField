@@ -7,6 +7,8 @@ export const calculusConcepts = [
     question: '芝诺说阿基里斯永远追不上乌龟，错在哪里？',
     era: '公元前 450 — 1861',
     figures: '芝诺 · 阿基米德 · 柯西 · 魏尔斯特拉斯',
+    prereqs: [],
+    baseline: '中学的数轴、绝对值，会解 $1/n < 0.001$ 这种不等式',
   },
   {
     slug: 'derivative',
@@ -16,6 +18,8 @@ export const calculusConcepts = [
     question: '炮弹在最高点的那一瞬间，速度到底是多少？',
     era: '1629 — 1684',
     figures: '费马 · 牛顿 · 莱布尼茨',
+    prereqs: [{ slug: 'limit', why: '导数就是一个极限' }],
+    baseline: '中学的直线斜率与函数图象',
   },
   {
     slug: 'integral',
@@ -25,6 +29,8 @@ export const calculusConcepts = [
     question: '曲线围成的面积，怎么用直边图形算出来？',
     era: '公元前 250 — 1854',
     figures: '阿基米德 · 开普勒 · 黎曼',
+    prereqs: [{ slug: 'limit', why: '"无限细分再加起来"的最后一步就是取极限' }],
+    baseline: '中学的矩形面积、简单的连加',
   },
   {
     slug: 'ftc',
@@ -34,6 +40,10 @@ export const calculusConcepts = [
     question: '为什么求导的"反操作"恰好能算出面积？',
     era: '1666 — 1693',
     figures: '牛顿 · 莱布尼茨 · 巴罗',
+    prereqs: [
+      { slug: 'derivative', why: '定理的一半在讲变化率' },
+      { slug: 'integral', why: '另一半在讲面积' },
+    ],
   },
   {
     slug: 'taylor',
@@ -41,8 +51,9 @@ export const calculusConcepts = [
     title: '泰勒展开',
     subtitle: '用多项式"冒充"任何函数',
     question: '计算器没有 sin 键的电路，它是怎么算出 sin 0.3 的？',
-    era: '1715 — 1837',
+    era: '1715 — 1823',
     figures: '泰勒 · 麦克劳林 · 拉格朗日 · 柯西',
+    prereqs: [{ slug: 'derivative', why: '整讲都在反复求导' }],
   },
 ]
 
@@ -293,9 +304,13 @@ export const courses = [
     title: '微积分',
     subtitle: '从芝诺悖论到 ε-δ：驯服无穷的两千年',
     available: true,
+    order: 1,
+    stage: '地基',
+    difficulty: 1,
+    prereqCourses: [],
     concepts: calculusConcepts,
     intro:
-      '微积分只回答两个几何问题：<strong>曲线在一点有多陡</strong>（导数），<strong>曲线下方围了多大面积</strong>（积分）。让它难学的从来不是这两个问题本身，而是回答它们必须动用「无穷」—— 无穷细分、无穷逼近。整部微积分史，就是人类学会与无穷安全打交道的历史。',
+      '微积分只回答两个几何问题：<strong>曲线在一点有多陡</strong>（导数），<strong>曲线下方围了多大面积</strong>（积分）。这门课<strong>不假设你学过微积分</strong>——只要会中学的代数和函数图象就能读，每个新符号第一次出现都会当场交代它怎么读、从哪来。真正难的从来不是那两个几何问题本身，而是回答它们必须动用「无穷」—— 无穷细分、无穷逼近。整部微积分史，就是人类学会与无穷安全打交道的历史。',
     timelineTitle: '两千年时间线',
     timeline: [
       {
@@ -338,6 +353,10 @@ export const courses = [
     title: '线性代数',
     subtitle: '从解方程组到向量空间：抽象是怎么长出来的',
     available: true,
+    order: 2,
+    stage: '主干',
+    difficulty: 1,
+    prereqCourses: [],
     concepts: linearAlgebraConcepts,
     intro:
       '线性代数的教科书上来就是行列式和矩阵的运算规则，却不说这些规则为什么长这样。历史的顺序恰好相反：先有<strong>解方程组的记账技巧</strong>（消元），记账表用得多了才有了名字（矩阵），研究记账表才发现它的真身是<strong>变换</strong>，最后才把"能相加、能数乘"这件事本身抽象成<strong>向量空间</strong>。抽象不是从天而降的，是一层层被逼出来的。',
@@ -383,6 +402,10 @@ export const courses = [
     title: '概率论',
     subtitle: '从赌桌纠纷到测度论：给"运气"建立数学',
     available: true,
+    order: 3,
+    stage: '主干',
+    difficulty: 2,
+    prereqCourses: ['calculus'],
     concepts: probabilityConcepts,
     intro:
       '几千年来人类一直在掷骰子，却始终认为"运气"属于神明，不属于数学——直到 1654 年两个法国人为一场没赌完的赌局通了几封信。概率论是数学史上罕见的<strong>出生证齐全</strong>的分支：我们确切知道它诞生在哪一年、为了什么问题。这门课从那张赌桌讲起，看"运气"如何一步步变成可计算的对象，你教科书里那些测度味十足的定义（分布函数、期望、依概率收敛）各自是被什么麻烦逼出来的。',
@@ -428,6 +451,10 @@ export const courses = [
     title: '复变函数',
     subtitle: '从"不可能的数"到最优雅的分析学',
     available: true,
+    order: 4,
+    stage: '进阶',
+    difficulty: 3,
+    prereqCourses: ['calculus', 'linear-algebra'],
     concepts: complexConcepts,
     intro:
       '$\\sqrt{-1}$ 在数学里住了三百年"黑户"：人人都用它算题，人人都不承认它存在——笛卡尔给它起的蔑称"虚数"沿用至今。这门课讲它的平反史：它如何被三次方程<strong>逼</strong>进数学（不是请进来的），如何在复平面上获得肉身，以及一件教科书很少直说的怪事——把实分析搬到复数上，非但没有变难，反而处处出现<strong>实函数享受不到的奇迹</strong>：可导一次就无穷可导、函数值由边界全息决定、算不动的实积分数几个点就出答案。',
@@ -473,9 +500,13 @@ export const courses = [
     title: '数学物理方程',
     subtitle: '弦振动、热传导、引力场：三大方程的物理起源',
     available: true,
+    order: 6,
+    stage: '收官',
+    difficulty: 3,
+    prereqCourses: ['calculus', 'linear-algebra', 'probability', 'complex'],
     concepts: mathphysConcepts,
     intro:
-      '这门课你没学过，所以我们从零铺。它研究的是三个看得见摸得着的问题：<strong>琴弦怎么振动、热量怎么扩散、引力场长什么形状</strong>。三个问题各自凝成一个方程（波动、热传导、拉普拉斯），合称"三大方程"——大学里这门课的全部内容就是围着它们转。对你来说它还有另一层身份：<strong>全站的收官</strong>。微积分给的导数与级数、线性代数给的特征值与函数空间、概率论给的扩散直觉、复变给的调和函数——四门课埋的伏笔，都在这里兑现。',
+      '这门课大学里一般到高年级才开，我们照样从零铺。它研究的是三个看得见摸得着的问题：<strong>琴弦怎么振动、热量怎么扩散、引力场长什么形状</strong>。三个问题各自凝成一个方程（波动、热传导、拉普拉斯），合称"三大方程"——大学里这门课的全部内容就是围着它们转。对你来说它还有另一层身份：<strong>全站的收官</strong>。微积分给的导数与级数、线性代数给的特征值与函数空间、概率论给的扩散直觉、复变给的调和函数——四门课埋的伏笔，都在这里兑现。',
     timelineTitle: '一百五十年时间线',
     timeline: [
       {
@@ -518,6 +549,10 @@ export const courses = [
     title: '数值分析',
     subtitle: '当公式失效：用有限步、有限精度算出够用的答案',
     available: true,
+    order: 5,
+    stage: '进阶',
+    difficulty: 2,
+    prereqCourses: ['calculus', 'linear-algebra'],
     concepts: numericalConcepts,
     intro:
       '教科书里的数学默认一切都能"精确算出来"：根有求根公式、积分有原函数、方程组能解出漂亮的分数。可真实世界几乎处处相反——<strong>五次以上方程没有求根公式</strong>、<strong>大多数积分没有初等原函数</strong>、计算机连 0.1 都存不准。数值分析研究的正是这件被纯数学"看不起"、却撑起整个科学计算的事：<strong>怎么用有限的步骤、有限的精度，算出一个误差可控、够用的近似答案</strong>。它从头到尾跟两个对手周旋——算不完带来的<strong>截断误差</strong>、存不准带来的<strong>舍入误差</strong>；也反复请出同一位英雄——<strong>迭代逼近 + 误差分析</strong>。学这门课晕，多半是因为公式一大堆却不知道每个都在跟哪种误差较劲；这门课就把这条暗线挑明。',
@@ -563,6 +598,17 @@ const numerals = ['一', '二', '三', '四', '五', '六', '七', '八', '九',
 
 export function courseByPath(path) {
   return courses.find((c) => c.path === path)
+}
+
+/** 概念 slug -> { course, concept } 里的 concept（跨课查找，slug 全站唯一） */
+export function conceptBySlug(slug) {
+  const ctx = conceptContext(slug)
+  return ctx ? ctx.concept : null
+}
+
+/** 课程 slug -> course 对象 */
+export function courseBySlug(slug) {
+  return courses.find((c) => c.slug === slug)
 }
 
 /** 概念 slug -> { course, concept, index(1 起), prev, next } */

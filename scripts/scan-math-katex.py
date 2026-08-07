@@ -26,6 +26,9 @@ SIGNALS = [
 
 TAG_MATH = re.compile(r'<Math(Inline|Block)\b[^>]*/?>', re.S)
 TAG_MATH_PAIR = re.compile(r'<Math(Inline|Block)\b.*?</Math\1>', re.S)
+# QuizBox 的 question/hint/options 全部经 RichText 走 KaTeX（同 courses.js 文案字段），
+# 里面的 $...$、{ } 不是泄漏；整个标签（含多行 props）抠掉，保留行数以免行号错位
+TAG_QUIZ = re.compile(r'<QuizBox\b.*?/>', re.S)
 INTERP = re.compile(r'\{\{.*?\}\}', re.S)
 VBIND = re.compile(r'\s(?::|v-)[\w:.-]+="[^"]*"')     # :min="0.4" v-model=... 等绑定值是 JS
 TEXTAG = re.compile(r'\btex="[^"]*"')
@@ -43,6 +46,7 @@ def scan_vue(path):
         return []
     # 行号基准：模板起始行
     start_line = text[:text.index(tpl)].count('\n') + 1
+    tpl = TAG_QUIZ.sub(lambda m: '\n' * m.group(0).count('\n'), tpl)
     hits = []
     for i, line in enumerate(tpl.split('\n')):
         clean = TAG_MATH_PAIR.sub(' ', line)

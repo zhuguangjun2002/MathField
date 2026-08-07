@@ -6,6 +6,7 @@ const props = defineProps({
   max: { type: Number, required: true },
   step: { type: Number, default: 1 },
   display: { type: Function, default: null },
+  disabled: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -16,9 +17,9 @@ function onInput(e) {
 </script>
 
 <template>
-  <label class="ctrl">
+  <label class="ctrl" :class="{ 'is-disabled': disabled }">
     <span class="ctrl-label">{{ label }}</span>
-    <input type="range" :min="min" :max="max" :step="step" :value="modelValue" @input="onInput" />
+    <input type="range" :min="min" :max="max" :step="step" :value="modelValue" :disabled="disabled" @input="onInput" />
     <span class="ctrl-value">{{ display ? display(modelValue) : modelValue }}</span>
   </label>
 </template>

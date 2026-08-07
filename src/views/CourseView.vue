@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { courseByPath, numerals } from '../data/courses.js'
+import { isRead } from '../composables/useProgress.js'
 import RichText from '../components/RichText.vue'
 
 const route = useRoute()
@@ -32,7 +33,9 @@ const course = computed(() => courseByPath(route.path))
       <p>{{ course.tocNote }}</p>
       <div class="concept-list">
         <router-link v-for="(c, i) in course.concepts" :key="c.slug" :to="c.path" class="concept-item">
-          <div class="concept-index">{{ numerals[i] }}</div>
+          <div class="concept-index">
+            {{ numerals[i] }}<span v-if="isRead(c.slug)" class="ci-read" title="已读完">✓</span>
+          </div>
           <div>
             <div class="ci-title">{{ c.title }}</div>
             <div class="ci-sub"><RichText :text="c.subtitle" /></div>
