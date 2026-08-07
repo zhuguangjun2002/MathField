@@ -63,13 +63,19 @@ grep -n 'sec-no' src/views/<course>/<X>View.vue | sed 's/<[^>]*>//g'
 供进度记录）、`question`（RichText，可含 `$...$`）、`options`（`[{ t, why }]`）、`answer`（正确项下标）、
 `hint`（先想后选提示）。答错就地展开该项 `why`、不揭示正确答案、可继续选；答对记入 localStorage。
 
+- **`hint` 是纯文本插值（`{{ }}`），不走 RichText**——里面写 `$...$` 会原样露出裸 `$`
+  （2026-08-07 两个执行代理各踩一次）。hint 里的数学只能用 Unicode 轻量写法（i²=−1）；
+  `question` 与 `options` 的 `t`/`why` 才走 RichText 可用 `$...$`。
+- `:options` 是 JS 表达式：字符串用单引号包裹，内容里不能出现单引号（中文「」代替）；
+  KaTeX 反斜杠要双写。而 `question` 是静态 HTML 属性，反斜杠必须**单写**——两个位置规则相反，
+  写错的症状分别是编译报错和页面上冒出字面 "times"。
 - 每讲 2–3 道，位置固定三类节点：**贰节末**（考思路转折是否真懂）、**肆节定义拆解后**
   （考定义里"刻刀"落在哪个词）、**伍节案例后**（可选，考迁移）。
 - **只考"分叉点"不考计算**；每个错误选项必须是一种真实的常见误解，`why` 要写清
   "你这么选是因为把 X 当成了 Y"——写完自问三个错项各对应哪种误解，答不上就重出。
 - 题干/选项里的数字同样要 `node -e` 验算。
 
-### demo 挑战模式写法约定（2026-08-07，样板：EpsilonDeltaDemo）
+### demo 挑战模式写法约定（2026-08-07；已落地 5 个：EpsilonDelta / Eigen / PointsProblem / Residue / NewtonMethod）
 
 不抽通用组件（各 demo 的判定逻辑千差万别），沉淀的是样式（main.css 的 `.challenge-*`）和四条规矩：
 
