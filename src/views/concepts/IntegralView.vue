@@ -3,6 +3,7 @@ import ConceptPage from '../../components/ConceptPage.vue'
 import MathBlock from '../../components/MathBlock.vue'
 import MathInline from '../../components/MathInline.vue'
 import RevealBox from '../../components/RevealBox.vue'
+import QuizBox from '../../components/QuizBox.vue'
 import RiemannSumDemo from '../../demos/RiemannSumDemo.vue'
 </script>
 
@@ -111,6 +112,17 @@ import RiemannSumDemo from '../../demos/RiemannSumDemo.vue'
       所以"面积"该被定义成<strong>所有取法共同的那个极限</strong>——
       如果这个共同极限真的存在的话。下面就来亲手把 n 拖上去看看。
     </p>
+    <QuizBox
+      quiz-id="integral-q1"
+      question="用左端点矩形算 $x^2$ 在 $[0,2]$ 的面积：切 8 条误差约 0.48。把条数翻倍到 16 条，误差大约变成多少？"
+      hint="想想左端点矩形「亏」在哪：每一条里它都少算了一块三角形状的边角料，边角料的底和高各随条宽怎么变？"
+      :options="[
+        { t: '约 0.24——减半', why: '对（实测 0.2448）。每条里少算的边角料近似一个小三角形，底是条宽 h、高是这条里函数爬升的量（也随 h 缩），单块面积 ~h²；可条数是 2/h 块，总账 ~h。条宽减半，误差就减半——一次只赚一倍，这叫一阶收敛。' },
+        { t: '约 0.12——变成四分之一', why: '四分之一是「中点」那档的待遇（实测 0.0104 → 0.0026）：中点矩形在每条里左右两半的亏和赚几乎相抵，剩下的误差 ~h²。动画读数区的「误差指数」显示的正是这两种档次的差别——取点位置不影响极限，但影响奔向极限的速度。' },
+        { t: '基本不变——反正都是近似', why: '拖一下动画就能推翻：n 从 8 拖到 150，三种取法全都明显收紧。「近似」不等于「差不多就行」，误差随 n 缩小的规律（一阶还是二阶）恰恰是数值分析整门课的主线。' },
+      ]"
+      :answer="0"
+    />
 
     <h2><span class="sec-no">叁</span>亲手切条</h2>
     <p>
@@ -120,6 +132,19 @@ import RiemannSumDemo from '../../demos/RiemannSumDemo.vue'
     <RiemannSumDemo />
 
     <h2><span class="sec-no">肆</span>严格定义</h2>
+    <p>
+      定义要用到一个新记号 <MathInline tex="\Sigma" />（希腊字母，读"西格玛"），
+      它只是把"连加"写紧凑：<MathInline tex="\sum_{i=1}^{3} i^2" /> 读作
+      "让 i 从 1 数到 3，把每个 <MathInline tex="i^2" /> 加起来"，展开就是
+      <MathInline tex="1^2 + 2^2 + 3^2 = 14" />——没有任何新运算，只有一套速记。
+      角标 i 是"第几条"的编号：<MathInline tex="\Delta x_i" /> 读作"第 i 条的宽"
+      （<MathInline tex="\Delta" /> 历来当"一小段"讲），<MathInline tex="\xi_i" />
+      （希腊字母，读"克西"）是"在第 i 条里挑出的那个代表点"。
+      于是贰节干的事可以拆成四个动作，每个动作一句人话：
+      <strong>分割</strong>（把地皮切成 n 条）、<strong>取点</strong>（每条里挑个代表，量出高度）、
+      <strong>求和</strong>（矩形面积 高×宽 逐条加总，这就是 Σ 干的活）、
+      <strong>取极限</strong>（让最宽的条也趋于零，问总和停向哪里）。定义只是把这四个动作誊写成书面语：
+    </p>
     <div class="definition">
       <div class="def-title">📐 定义（定积分，黎曼 1854）</div>
       <p>
@@ -232,12 +257,64 @@ import RiemannSumDemo from '../../demos/RiemannSumDemo.vue'
       也是<router-link to="/probability/distribution">现代概率论</router-link>里
       "概率"二字的严格出身——概率就是一种测度。
     </p>
+    <QuizBox
+      quiz-id="integral-q2"
+      question="定义要求「与取点方式无关」——可取法有无穷多种，一种一种去验永远验不完。折叠框里那个证明是靠什么一次管住所有取法的？"
+      hint="与其追着每种取法算，不如给它们全体上一副夹子。"
+      :options="[
+        { t: '造出上和 U 与下和 L：任何取法都被夹在两者之间，再证 U − L → 0', why: '对。每段里不管挑哪个点，函数值都不出该段的最大值和最小值之间，所以一切黎曼和都被 L 和 U 夹住；两片夹板一合拢（U − L → 0），无穷多种取法就被一起挤到了同一个数上。「造一对极端把全体夹住」是分析学里反复出现的招式。' },
+        { t: '因为 n 很大时每条都很窄，取哪个点数值都几乎一样', why: '方向对但不成句：「几乎一样」每段差多少、加总后会不会积少成多？狄利克雷函数每段也「都很窄」，可每段里 1 和 0 照样同时取到、总差恒为 b − a。把这句直觉变成不等式，正需要上和下和与「振幅 × 宽度」那笔账。' },
+        { t: '验有限种代表性取法（左、右、中点）一致就够了', why: '三种对齐挡不住第四种捣乱——狄利克雷函数「全取有理数」和「全取无理数」两种取法就各奔东西。门槛是对一切取法设的，所以证明也必须一次覆盖一切取法。' },
+      ]"
+      :answer="0"
+    />
 
     <h2><span class="sec-no">伍</span>买到了什么：凡是"累积"，皆是积分</h2>
     <p>
       面积只是幌子。积分真正的身份是<strong>"变化率已知时，把总量累积回来"的万能机器</strong>：
       每个小段上"变化率 × 小段长"是小贡献，积分把无穷多个小贡献加总。
+      最顺手的例子在你的仪表盘上：车速表读数一路起伏，<strong>里程表</strong>却稳稳地涨——
+      里程就是速度的累积，速度曲线下的"面积"。（速度是路程的导数、路程又是速度的积分，
+      这一来一回像是互逆的两台机器——是不是巧合，<router-link to="/calculus/ftc">下一讲</router-link>专门审这桩案。）
+      下面把这台机器开进一个性命攸关的地方。
     </p>
+
+    <h3>药盒上"一天两次"是怎么算出来的：血药浓度的曲线下面积</h3>
+    <p>
+      吃下一片药，有效成分溶进血液：浓度先冲上一个峰值，然后肝肾开始清除，曲线一路衰减。
+      药效好不好、毒性大不大，看的<strong>不是峰值，而是这条曲线下面的面积</strong>——
+      医学上叫 AUC（area under the curve，曲线下面积），它衡量的是身体
+      <strong>"浓度 × 时间"的总暴露量</strong>：每一小段时间里，组织受到的作用是
+      "当时的浓度 × 这段时长"，全程加总，正是本讲的黎曼和。
+      新药说明书上"一天两次、一次一片"的用法，背后就是把 AUC 控制在有效而不中毒的窗口里。
+    </p>
+    <p>
+      可麻烦和阿基米德当年一模一样：这条曲线<strong>没有现成的公式可以套面积</strong>，
+      而且医生手里只有离散的点——血液一小时才能抽一管。切条机器该上场了。
+      拿一组典型数字：静脉给药后初始浓度 <MathInline tex="C_0 = 10" /> mg/L，
+      身体按比例清除，每过一小时浓度剩下约 82%（临床叫"一级消除"）。
+      按一小时一条切成矩形、高取每条中点的浓度，加总得
+    </p>
+    <MathBlock tex="\text{AUC} \approx \sum_i C(\xi_i)\,\Delta t_i = 49.92 \ \text{mg·h/L}" />
+    <p>
+      把条切细到 0.1 小时，读数变成 49.9989——一串黎曼和稳稳挤向 <strong>50</strong>。
+      这不是巧合：对这种按比例衰减的曲线，AUC 恰好等于 <MathInline tex="C_0 / k" />
+      （k 是清除速率，这里 0.2/小时，<MathInline tex="10/0.2 = 50" />，与切条结果对上）。
+      这条现在只能靠切条逼近出来的公式，<router-link to="/calculus/ftc">下一讲</router-link>的机器一行就能算出——
+      又是一笔记在下一讲头上的账。
+    </p>
+    <p>
+      <strong>读出药理</strong>：AUC = C₀/k 说明总暴露量只由"进多少"和"清多快"两个数定死。
+      于是剂量翻倍、AUC 翻倍；而<strong>清除速率 k 减半时，同一片药的 AUC 直接翻倍到 100</strong>——
+      这正是肾功能减退的病人和老人吃药要减量的数学原因：药片没变，是分母变了。
+      <strong>条件不成立会怎样？</strong>"按比例清除"不是人人适用——酒精走的是另一条路：
+      清除它的酶一饱和就只能恒速工作，曲线变成直线下坡，AUC 随剂量按平方增长，
+      所以"多喝一倍"远不止"醉一倍"。临床上实测 AUC 也从不套公式，
+      而是抽血得离散点后用梯形法加总——那正是
+      <router-link to="/numerical/quadrature">数值分析第四讲</router-link>的开场白。
+    </p>
+
+    <p>这台累积机器还有几处马上要用到的去处：</p>
     <ul>
       <li>
         <strong>路程</strong>：速度曲线下的"面积"就是路程

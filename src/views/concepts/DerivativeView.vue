@@ -3,6 +3,7 @@ import ConceptPage from '../../components/ConceptPage.vue'
 import MathBlock from '../../components/MathBlock.vue'
 import MathInline from '../../components/MathInline.vue'
 import RevealBox from '../../components/RevealBox.vue'
+import QuizBox from '../../components/QuizBox.vue'
 import SecantTangentDemo from '../../demos/SecantTangentDemo.vue'
 </script>
 
@@ -33,6 +34,15 @@ import SecantTangentDemo from '../../demos/SecantTangentDemo.vue'
     </div>
 
     <h2><span class="sec-no">贰</span>破局：不问"瞬间"，问"逼近的目标"</h2>
+    <p>
+      先把记号备好。<MathInline tex="s(t)" /> 读作"t 时刻的下落距离"——括号不是乘法，
+      是"给我一个时刻，我还你一个距离"的取值动作；于是 <MathInline tex="s(1+h)" />
+      就是"<MathInline tex="1+h" /> 时刻的下落距离"，h 是从 1 秒再往后数的一小段时间。
+      两个时刻的<strong>平均速度</strong>就是路程差除以时间差：
+      <MathInline tex="\frac{s(1+h) - s(1)}{h}" />。若把 s 随 t 的变化画成一条曲线，
+      这个比值恰好是<strong>连接曲线上两点的那条直线的斜率</strong>——中学坐标系里
+      "纵坐标差除以横坐标差"的老朋友。
+    </p>
     <p>
       解决方案漂亮地绕开了 0/0：<strong>不直接算瞬时速度，而是用一串越来越短的时间段的平均速度去围剿它</strong>。
       算一下 [1, 1.1] 秒的平均速度、[1, 1.01] 的、[1, 1.001] 的……这串数会稳稳地停在 10 m/s 上：
@@ -87,6 +97,17 @@ import SecantTangentDemo from '../../demos/SecantTangentDemo.vue'
       割线转动着趋于一个极限位置——这个极限位置就是<strong>切线</strong>，它的斜率就是导数。
       "瞬时速度"和"切线斜率"原来是同一个数学对象。
     </p>
+    <QuizBox
+      quiz-id="derivative-q1"
+      question="算瞬时速度时，为什么不干脆一开始就令 $h = 0$，而要绕一大圈「先算差商、再取极限」？"
+      hint="回想上一讲贝克莱的责难：o 到底是不是零？"
+      :options="[
+        { t: '因为 h = 0 时差商是 0/0 没有意义；极限问的是 h 缩小途中差商停向哪里，全程 h ≠ 0', why: '对。整个流程里 h 一次都没等于零，0/0 从未发生；「瞬时速度」被定义为逼近的目标值，而不是某次代入的结果。这正是治好「此刻的速度」这个病句的方法。' },
+        { t: '因为 h = 0 算不了，正确做法是代一个很小但非零的 h，比如 0.0001', why: '代任何非零 h 得到的都只是一段平均速度（本例是 10 + 5h），不是瞬时速度。瞬时速度是这串数的停靠点 10——它不由任何一次代入给出，而由极限给出。' },
+        { t: '其实可以：先约分再代 h = 0，取极限只是走个形式', why: '「先约分」要求 h ≠ 0，「再代 h = 0」代的其实是极限值——这两步合起来恰恰就是取极限，不是绕开它。当年被贝克莱骂「消失量的幽灵」的，正是把这两步含糊过去的人。' },
+      ]"
+      :answer="0"
+    />
 
     <h2><span class="sec-no">叁</span>亲手把割线压成切线</h2>
     <p>
@@ -191,14 +212,60 @@ import SecantTangentDemo from '../../demos/SecantTangentDemo.vue'
         <strong>局部用线性函数冒充自己</strong>，一句话贯穿此后所有的微积分。
       </p>
     </RevealBox>
+    <QuizBox
+      quiz-id="derivative-q2"
+      question="「f 在 a 处可导」保证了「局部像直线」。那么用切线预测 $f(a+h)$ 时，可导到底把预测误差 $r(h)$ 压到了什么程度？"
+      hint="回想折叠框里那句「那太廉价了」——h 趋于零时几乎什么都趋于零。"
+      :options="[
+        { t: '误差除以 h 之后仍趋于 0——误差比 h 本身还小一个数量级', why: '对。这就是 o(h) 的含义，也是「可导」全部的含金量所在：不只误差消失，而且消失得比 h 更快，所以 h 减半时误差远不止减半。第五讲的泰勒展开会把这句话一路升级到「比 hⁿ 还小」。' },
+        { t: '误差趋于 0 就是全部保证', why: '太廉价了：只要 f 连续，h → 0 时误差就趋于 0——连尖点处的 |x| 都做得到，可它在 0 处根本没有切线。可导多给的那一句是「误差 ÷ h 仍趋于 0」，这才把直线钉成唯一的最佳近似。' },
+        { t: '误差恰好等于 0，切线就是函数本身', why: '那只有 f 本来就是直线才办得到。可导说的是「冒充得越来越像」，不是「就是」——误差 r(h) 一般非零，只是小到除以 h 都还趋于零。' },
+      ]"
+      :answer="0"
+    />
 
     <h2><span class="sec-no">伍</span>买到了什么：只要有"变化率"，就有导数</h2>
+
+    <h3>车速表量的其实不是瞬时速度</h3>
+    <p>
+      本讲从头到尾在算的"瞬时速度"，你的车里就有一个仪器天天在报——车速表。
+      可有个少有人知的实情：<strong>车速表量不到瞬时速度，它量的恰恰是本讲开头那个差商</strong>。
+      轮轴上装着一圈齿的转速传感器，每转过一个齿发一个脉冲；车载电脑数的是
+      <strong>一小段固定时间窗 h 里进来了多少个脉冲</strong>，换算成这段时间的路程，再除以 h——
+      这就是 <MathInline tex="\frac{s(t+h)-s(t)}{h}" />，如假包换的平均速度。
+      "瞬时"是极限里的理想；仪器只能取一个小而有限的 h。
+    </p>
+    <p>
+      那它差多少？拿匀加速当标尺算一遍就知道。设当前速度 <MathInline tex="v" />、加速度
+      <MathInline tex="a" />，则窗口 <MathInline tex="[t,\ t+h]" /> 里的路程是
+      <MathInline tex="vh + \tfrac{1}{2}ah^2" />（中学运动学），于是
+    </p>
+    <MathBlock tex="\text{表显速度} = \frac{vh + \tfrac{1}{2}ah^2}{h} = v + \frac{ah}{2}" />
+    <p>
+      误差恰好是 <MathInline tex="ah/2" />——跟贰节里那个 <MathInline tex="10+5h" />
+      的尾巴 <MathInline tex="5h" /> 是同一张脸（那里 <MathInline tex="a=10" />，
+      <MathInline tex="10h/2=5h" />，对得上）。代进日常数字：时间窗
+      <MathInline tex="h = 0.1" /> 秒、一脚地板油加速度 <MathInline tex="a = 3\ \text{m/s}^2" />，
+      误差只有 <MathInline tex="0.15\ \text{m/s} = 0.54\ \text{km/h}" />——
+      不到表针一格的宽度。<strong>这就是"h 足够小时，平均速度就是瞬时速度的合格替身"</strong>：
+      导数定义反过来用，就是全世界仪表的设计原理——它同时告诉你该做多准，以及做到多准就够了。
+    </p>
+    <p>
+      <strong>条件不成立会怎样？</strong>急刹车轮胎抱死的那一瞬间，轮速曲线出现一个"尖点"——
+      正如肆节里 <MathInline tex="|x|" /> 在 0 处那样，<strong>这一点上导数不存在</strong>，
+      差商在两侧奔向完全不同的值。ABS 防抱死系统盯的就是这个信号：
+      它以每秒上百次的频率监测各轮的差商（轮速变化率），一旦某个轮子的减速率
+      异常地陡——远超车身可能的减速——就判定该轮即将抱死，立刻松一下刹车再夹紧。
+      你脚下咔哒咔哒的那串震动，是一台差商计算器在一秒钟里打赢的几十场官司。
+    </p>
+
+    <p>除了这件贴身的事，"变化率"这把刀还有几处马上要用到的去处：</p>
     <ul>
       <li>
         <strong>物理</strong>：速度是位置对时间的导数，加速度是速度的导数，电流是电荷量的导数，
         功率是做功的导数——物理定律天然用导数写成。牛顿第二定律
         <MathInline tex="F = m\ddot{x}" /> 就是个<router-link to="/mathphys/pde-intro">微分方程</router-link>
-        （<b>本站那一讲从零讲起，不需要先修</b>）；
+        （站内数理方程课开篇就从它讲起）；
       </li>
       <li>
         <strong>求极值（费马 1629，比牛顿还早）</strong>：山顶处切线必水平，所以极值点满足
@@ -225,7 +292,7 @@ import SecantTangentDemo from '../../demos/SecantTangentDemo.vue'
       </li>
     </ul>
     <div class="insight">
-      <div class="insight-title">🔗 与你学过的课程连一连</div>
+      <div class="insight-title">🔗 这把刀往后通到哪：站内连一连</div>
       <p>
         <strong>极限</strong>：导数从头到尾就是一个极限，<router-link to="/calculus/limit">第一讲</router-link>
         那套 ε-δ 语言在这里第一次真正派上用场；

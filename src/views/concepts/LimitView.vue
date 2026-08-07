@@ -3,6 +3,7 @@ import ConceptPage from '../../components/ConceptPage.vue'
 import MathBlock from '../../components/MathBlock.vue'
 import MathInline from '../../components/MathInline.vue'
 import RevealBox from '../../components/RevealBox.vue'
+import QuizBox from '../../components/QuizBox.vue'
 import LimitSequenceDemo from '../../demos/LimitSequenceDemo.vue'
 import EpsilonDeltaDemo from '../../demos/EpsilonDeltaDemo.vue'
 </script>
@@ -73,12 +74,19 @@ import EpsilonDeltaDemo from '../../demos/EpsilonDeltaDemo.vue'
     <p>
       17 世纪，牛顿和莱布尼茨发明微积分（<router-link to="/calculus/derivative">第二讲</router-link>、
       <router-link to="/calculus/integral">第三讲</router-link>），威力巨大，却把地基埋在了一个
-      含糊的概念上——<strong>无穷小量</strong>。比如求 <MathInline tex="y = x^2" /> 的导数，当时的算法是：
-      给 <MathInline tex="x" /> 一个"无穷小"的增量 <MathInline tex="o" />，
+      含糊的概念上——<strong>无穷小量</strong>。他们最常算的一类问题是：
+      <MathInline tex="x" /> 挪动一小步，<MathInline tex="y = x^2" /> 跟着变多少？
+      两个变化量的<em>比值</em>是多少？（这个比值后来有了专门的名字"导数"，
+      要到<router-link to="/calculus/derivative">第二讲</router-link>才正式登场——此处你只需要跟得上分数运算。）
+      当时的算法是：给 <MathInline tex="x" /> 一个"无穷小"的增量 <MathInline tex="o" />，
+      算出 <MathInline tex="y" /> 的变化量 <MathInline tex="(x+o)^2 - x^2" />，再除以 <MathInline tex="o" />：
     </p>
-    <MathBlock tex="\frac{(x+o)^2 - x^2}{o} = \frac{2xo + o^2}{o} = 2x + o" />
+    <MathBlock tex="\frac{(x+o)^2 - x^2}{o} = \frac{x^2 + 2xo + o^2 - x^2}{o} = \frac{2xo + o^2}{o} = 2x + o" />
     <p>
-      然后宣布：<MathInline tex="o" /> 无穷小，扔掉不要，答案是 <MathInline tex="2x" />。
+      三步全是中学代数：第一步把 <MathInline tex="(x+o)^2" /> 按乘法分配展开成
+      <MathInline tex="x^2 + 2xo + o^2" />，第二步 <MathInline tex="x^2" /> 对消，
+      第三步分子分母同除以 <MathInline tex="o" />。然后宣布：<MathInline tex="o" /> 无穷小，
+      扔掉不要，答案是 <MathInline tex="2x" />。
     </p>
     <div class="story">
       <div class="story-title">📜 1734 年 · 贝克莱主教的致命一问</div>
@@ -113,14 +121,22 @@ import EpsilonDeltaDemo from '../../demos/EpsilonDeltaDemo.vue'
       </p>
     </div>
     <p>
-      "接得住"不能只是嘴上说说，得当场应答一次。拿最简单的
+      先把两个新记号交代干净。<strong>数列</strong>就是一串编了号的数：第 1 个、第 2 个、第 3 个……
+      整串记作 <MathInline tex="\{a_n\}" />，n 是编号，<MathInline tex="a_n" /> 是第 n 个数。
+      比如 <MathInline tex="a_n = 1 + \frac{1}{n}" /> 就是 2, 1.5, 1.333…, 1.25, … 这串数。
+      而 <MathInline tex="|a_n - L|" /> 读作"<MathInline tex="a_n" /> 与 L 的<strong>距离</strong>"——
+      绝对值把正负方向抹掉，只留"差多远"，正是数轴上两点之间的距离。
+    </p>
+    <p>
+      "接得住"不能只是嘴上说说，得当场应答一次。就拿上面那串
       <MathInline tex="a_n = 1 + \frac{1}{n}" /> 试试，我宣称它的极限是 1：
     </p>
     <ul>
       <li>
         对手出 <MathInline tex="\varepsilon = 0.001" />。我要找的 N 必须保证 n &gt; N 时
-        <MathInline tex="|a_n - 1| = \frac{1}{n} < 0.001" />，也就是 <MathInline tex="n > 1000" />。
-        <strong>取 N = 1000</strong>，交卷；
+        <MathInline tex="|a_n - 1| = \frac{1}{n} < 0.001" />，也就是 <MathInline tex="n > 1000" />
+        （<MathInline tex="\frac{1}{n} < 0.001" /> 两边同取倒数——中学那条规矩：对正数取倒数，
+        不等号要翻面）。<strong>取 N = 1000</strong>，交卷；
       </li>
       <li>
         对手加码到 <MathInline tex="\varepsilon = 10^{-9}" />。同样解 <MathInline tex="\frac{1}{n} < 10^{-9}" />，
@@ -161,6 +177,17 @@ import EpsilonDeltaDemo from '../../demos/EpsilonDeltaDemo.vue'
       x 贴近 1 时它明明白白地贴近 2。<strong>"函数在某点没有定义"与"函数在该点有极限"
       完全可以同时成立</strong>——这正是极限这个概念最值得买的地方。
     </p>
+    <QuizBox
+      quiz-id="limit-q1"
+      question="贰节回应贝克莱时说「o 从头到尾都不是零」。那么在求 $y=x^2$ 变化率的那局游戏里，增量 $o$ 到底是什么身份？"
+      hint="回想那个插曲：第一步除以 o 为什么合法，最后一步的「扔掉」被换成了什么动作。"
+      :options="[
+        { t: '一个不等于零的普通实数；游戏问的是差商 $2x+o$ 逼近的目标', why: '对。o 一直是普通非零实数，所以除法合法；最后一步不是把 o 扔掉，而是问差商随 o 逼近谁——答案 2x 是极限值，不是代入 o=0 的结果。' },
+        { t: '一个「无穷小」：比任何正数都小，但又不是零', why: '这正是贝克莱攻击的靶子——实数里根本没有「比任何正数都小的正数」。ε-δ 方案的全部意义，就是不再需要这种可疑的量。' },
+        { t: '先当非零数用，算完再当零扔掉', why: '你复述的是 17 世纪的原始算法，也就是被贝克莱抓住的把柄：同一个量不能一会儿非零、一会儿是零。新方案里 o 从头到尾非零。' },
+      ]"
+      :answer="0"
+    />
 
     <h2><span class="sec-no">叁</span>亲手打两局 ε 挑战</h2>
     <p>
@@ -176,6 +203,13 @@ import EpsilonDeltaDemo from '../../demos/EpsilonDeltaDemo.vue'
     <EpsilonDeltaDemo />
 
     <h2><span class="sec-no">肆</span>严格定义</h2>
+    <p>
+      读定义之前，先把三样装备认齐——它们你其实都见过：<MathInline tex="\{a_n\}" />
+      是贰节那串<strong>编了号的数</strong>；<MathInline tex="|a_n - L|" /> 是
+      <strong>第 n 个数与 L 在数轴上的距离</strong>；而"任意 / 存在"这对词，
+      就是把贰节的攻防游戏誊写成书面语——<strong>"任意"是对手随便出，"存在"是我总能应答</strong>。
+      带着这三样再读，下面这段话就不是天书，而是一份战报：
+    </p>
     <div class="definition">
       <div class="def-title">📐 定义（数列极限，柯西 1821 / 魏尔斯特拉斯 1861）</div>
       <p>
@@ -256,8 +290,9 @@ import EpsilonDeltaDemo from '../../demos/EpsilonDeltaDemo.vue'
       </p>
       <p>
         验一验：<MathInline tex="\varepsilon = 0.1" /> 时 <MathInline tex="\delta = 0.02" />，
-        而 <MathInline tex="|x-2|<0.02" /> 范围内 <MathInline tex="|x^2-4|" /> 最大约 0.0803，
-        确实小于 0.1，还留了余量——<strong>δ 不必是最优的，够用就行</strong>，
+        而 <MathInline tex="|x-2|<0.02" /> 范围内 <MathInline tex="|x^2-4|" /> 始终小于
+        <MathInline tex="2.02^2-4 = 0.0804" />，确实小于 0.1，还留了余量——
+        <strong>δ 不必是最优的，够用就行</strong>，
         定义只要求"存在"，从不要求"最好"。
       </p>
       <p>
@@ -266,6 +301,17 @@ import EpsilonDeltaDemo from '../../demos/EpsilonDeltaDemo.vue'
         把碍事的东西压成常数。你在习题里遇到的绝大多数 ε-δ 证明，用的都是这一招。
       </p>
     </RevealBox>
+    <QuizBox
+      quiz-id="limit-q2"
+      question="把定义里的「对<strong>任意</strong> $\varepsilon>0$，都<strong>存在</strong> $N$」换成「<strong>存在</strong> $N$，对<strong>任意</strong> $\varepsilon>0$」，意思变了吗？"
+      hint="用游戏语言想：两种说法里，先出招的分别是谁？"
+      :options="[
+        { t: '变了：换序后要求一个 N 通吃所有 ε，苛刻得多', why: '对。量词顺序就是出招顺序：原定义是对手先出 ε、我再挑 N（N 可以随 ε 换）；换序后我要先亮出 N、还得应付之后的一切 ε——那等于要求从第 N 项起每个 aₙ 与 L 的距离小于所有正数，也就是全都恰好等于 L。' },
+        { t: '没变，只是换了个说法', why: '把「你先出招我再应答」换成「我先亮底牌你随便打」，是两场完全不同的比赛。数学句子里量词的先后就是出招的先后，交换不得——这是读一切严格定义的第一条纪律。' },
+        { t: '变了，但只是稍微严了一点', why: '不是稍微：与所有正数的距离都更小的量只能是 0，所以换序后逼出的结论是「从第 N 项起 aₙ 恒等于 L」——比「逼近 L」苛刻了无穷多倍，绝大多数收敛数列都会被判不合格。' },
+      ]"
+      :answer="0"
+    />
 
     <h2><span class="sec-no">伍</span>买到了什么：整座大厦的地基</h2>
     <p>有了极限这块基石，微积分里所有"懵懵懂懂"的概念都能落地了：</p>
@@ -345,8 +391,53 @@ import EpsilonDeltaDemo from '../../demos/EpsilonDeltaDemo.vue'
         <router-link to="/calculus/taylor">第五讲</router-link>以泰勒展开的身份正式登场。
       </p>
     </RevealBox>
+
+    <h3>0.999… 到底等不等于 1：一场吵了三十年的网络论战</h3>
+    <p>
+      最后来结一桩你多半亲眼见过的公案。从上世纪九十年代的新闻组 sci.math，
+      到后来的各大论坛和贴吧，"0.999… 是不是等于 1"大概是被吵得最多的数学问题：
+      一方咬定"后面拖着无穷多个 9，总归差那么一丁点"，另一方拿
+      <MathInline tex="\tfrac{1}{3} = 0.333\ldots" /> 两边乘 3 反击，谁也说服不了谁。
+      2004 年 4 月 1 日，游戏公司暴雪甚至专门发了一份愚人节公告，
+      以"官方裁定"的口吻宣布 0.999… = 1——拿自家论坛上绵延数月的口水战开涮。
+    </p>
+    <p>
+      为什么这一架吵不出结果？因为双方都在拿直觉打直觉，而<strong>那串点点点从头到尾没被定义过</strong>——
+      这正是壹节那个"没兑现的等号"的翻版。0.999… 不是一个现成的数摆在那里等你测量，
+      它是一串记号；要谈它等于几，得先说清它<em>指</em>什么。而本讲已经准备好了唯一说得通的定义：
+      <strong>0.999… 表示部分和数列 0.9, 0.99, 0.999, … 的极限</strong>。
+    </p>
+    <p>写出第 n 个部分和，游戏三行就打完：</p>
+    <MathBlock tex="S_n = 0.\underbrace{99\cdots9}_{n\ \text{个}} = 1 - 10^{-n}, \qquad |S_n - 1| = 10^{-n}" />
+    <p>
+      对手出任意 <MathInline tex="\varepsilon" />，我取一个使 <MathInline tex="10^{-N} < \varepsilon" />
+      的 N 应答（比如 ε = 0.001 就取 N = 4：从 <MathInline tex="S_4 = 0.9999" /> 起距离只有
+      0.0001，达标）。对手出招再狠都接得住，所以极限是 1——于是
+      <strong>0.999… = 1 不是"约等于"，不是"取整"，而是定义的直接后果，等号一分不打折</strong>。
+      顺带一个机器视角：计算机的双精度小数（float64）能存下的最后一格差别在第 16 个 9——
+      <MathInline tex="1 - 10^{-16}" /> 还能和 1 区分开，而 <MathInline tex="1 - 10^{-17}" />
+      存进去就<em>是</em> 1。机器比论坛更早认输。
+    </p>
+    <p>
+      那"总归差一点"的直觉就全无立足之地吗？也不是——数学里真有一套"非标准分析"，
+      它扩充实数、允许"无穷小"合法存在，在那套数系里确实能造出与 1 差一个无穷小的数。
+      但那得<strong>先换数系、并重新定义那串点点点</strong>。可见这场论战争的从来不是计算，
+      而是定义：定义一换，结论就换；而在同一个定义下，等号没有商量的余地。
+      吵了三十年的架，病根和芝诺、贝克莱是同一个——<strong>用一个没定义的记号，去打一场关于它的官司</strong>。
+    </p>
+    <QuizBox
+      quiz-id="limit-q3"
+      question="有人说：「0.999… 和 1 之间还差一个 0.000…1。」这句话的毛病出在哪？"
+      hint="小数点后的每一位都得有个编号：第 1 位、第 2 位……那个 1 排在第几位？"
+      :options="[
+        { t: '「0.000…1」不是任何实数：无穷多个 0 之后再放一个 1，这串记号没有定义', why: '对。小数的每一位都要有确定的编号，而「无穷多个 0 之后」的那个 1 落不到任何一位上——它没有位置，所以这串记号不指任何实数。整场论战的病根就在这类想当然的记号上。' },
+        { t: '毛病在算错了：那个差其实应该是 0.000…9', why: '换个末位数字救不了一串本来就没定义的记号——问题不在末位是 1 还是 9，在「无穷多个 0 之后还有一位」这件事本身就没有意义。' },
+        { t: '没毛病，0.999… 确实比 1 小那么一丁点', why: '正文刚刚三行算完：0.999… 被定义为部分和数列 0.9, 0.99, 0.999, … 的极限，而这个极限恰好是 1。觉得「差一点」，其实是拿某个部分和 Sₙ 冒充了极限本身——每个 Sₙ 都小于 1，但极限不是任何一个 Sₙ。' },
+      ]"
+      :answer="0"
+    />
     <div class="insight">
-      <div class="insight-title">🔗 与你学过的课程连一连</div>
+      <div class="insight-title">🔗 这块地基上盖着什么：站内连一连</div>
       <p>
         <strong>数值分析</strong>：<router-link to="/numerical/root-finding">牛顿迭代</router-link>
         算的就是数列极限，那里说的"收敛阶"衡量的正是本讲那个 N 随 ε 变大的速度有多快；
@@ -355,9 +446,10 @@ import EpsilonDeltaDemo from '../../demos/EpsilonDeltaDemo.vue'
         <strong>复变函数</strong>：幂级数的<router-link to="/complex/continuation">收敛半径</router-link>，
         是本讲的 ε-N 语言搬到复平面后的产物；
         <strong>数学物理方程</strong>：傅里叶级数"收敛到"一个函数是什么意思，
-        答案还是本讲这套语言（<router-link to="/mathphys/heat">热传导讲</router-link>，
-        <b>本站那一讲从零讲起，不需要先修</b>）。
-        极限不是微积分第一章的过路考点，它是你后来所有数学课的公共地基。
+        答案还是本讲这套语言（<router-link to="/mathphys/heat">热传导讲</router-link>）。
+        这些课全都在本站，而且都从零讲起——顺着首页的学习路径走过去，
+        每到一处你都会重新撞见本讲这套 ε 语言。极限不是第一章的过路考点，
+        它是后面所有数学的公共地基。
       </p>
     </div>
   </ConceptPage>

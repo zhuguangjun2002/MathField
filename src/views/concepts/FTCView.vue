@@ -3,15 +3,37 @@ import ConceptPage from '../../components/ConceptPage.vue'
 import MathBlock from '../../components/MathBlock.vue'
 import MathInline from '../../components/MathInline.vue'
 import RevealBox from '../../components/RevealBox.vue'
+import QuizBox from '../../components/QuizBox.vue'
 import FTCDemo from '../../demos/FTCDemo.vue'
 </script>
 
 <template>
   <ConceptPage slug="ftc">
-    <h2><span class="sec-no">壹</span>困境：按定义算积分，是英雄行为</h2>
+    <h2><span class="sec-no">壹</span>困境：两门手艺，各自为战两千年</h2>
     <p>
-      <router-link to="/calculus/integral">上一讲</router-link>的黎曼和定义漂亮而严格，
-      但拿它<em>计算</em>就是灾难。试试按定义算最简单的
+      到 1665 年为止，人类其实<strong>两样都已经会了</strong>：求切线有费马那套系统方法
+      （<router-link to="/calculus/derivative">第二讲</router-link>提过，他比牛顿还早三十多年）；
+      求面积的手艺更是从阿基米德传下来两千年
+      （<router-link to="/calculus/integral">第三讲</router-link>刚看过他的穷竭法）。
+      可在当时所有人眼里，这是<strong>两门互不相识的手艺</strong>：
+      一门盯着"这一点有多陡"，一门盯着"这一块有多大"，问题不同、方法不同，
+      连擅长的人都不怎么重叠。没人想到它们是同一枚硬币的两面。
+    </p>
+    <div class="story">
+      <div class="story-title">📜 1670 年 · 差一步的巴罗</div>
+      <p>
+        剑桥的巴罗——牛顿的老师——在《几何讲义》里用纯几何语言证明了一件事：
+        切线问题与面积问题<strong>互为逆运算</strong>。这几乎就是本讲的定理！
+        但巴罗把它当作书里几十条几何命题中的一条，没看出自己摸到的是整座大厦的枢纽。
+        真正"发明微积分"的是他的学生辈：切线与面积的具体结果大多是前人的，
+        牛顿和莱布尼茨的功绩是<strong>看穿并证明了这两个问题互逆，并据此把零散的天才技巧
+        改造成一套任何人都能学会的算法</strong>（求导法则 + 反查）。本讲要讲的，就是那座桥。
+      </p>
+    </div>
+    <p>
+      桥为什么值钱？得先看看没有桥的日子有多苦。切线那边好歹有章可循；
+      面积那边则是英雄的战场——<router-link to="/calculus/integral">上一讲</router-link>的
+      黎曼和定义漂亮而严格，但拿它<em>计算</em>就是灾难。试试按定义算最简单的
       <MathInline tex="\int_0^1 x^2\,\mathrm{d}x" />：把 [0,1] 等分成 n 段、取右端点，
       黎曼和是
     </p>
@@ -61,6 +83,7 @@ import FTCDemo from '../../demos/FTCDemo.vue'
     </RevealBox>
     <p>
       <strong>面积问题需要的不是更多技巧，而是一台通用机器。</strong>
+      而机器的图纸，就压在巴罗那条没人细看的几何命题里。
     </p>
 
     <h2><span class="sec-no">贰</span>破局：别盯着一块面积，看面积怎么"生长"</h2>
@@ -84,8 +107,19 @@ import FTCDemo from '../../demos/FTCDemo.vue'
       </p>
     </div>
     <p>
-      有了名字，问题就清楚了：<strong>面积函数 A 长什么样？</strong>
-      直觉上，让 x 向右挪一点点 h，面积就新增一窄条；窄条细得像矩形，宽 h、
+      为什么要把一块死面积变成一个活函数？因为<strong>函数才谈得上变化率</strong>——
+      我们的全部家当（<router-link to="/calculus/derivative">第二讲</router-link>的求导术）
+      只对函数有效。把 A 想成一幅<strong>从左往右拉开的窗帘</strong>：拉到哪，
+      A 就记下已经罩住的面积；x 是窗帘杆上滑环的位置，A(x) 随它一路增长。
+    </p>
+    <p>
+      先拿最笨的例子踩踩实：f 恒等于 2（一条水平线）时，从 a 拉到 x 罩住的是矩形，
+      <MathInline tex="A(x) = 2(x-a)" />——一条<strong>斜率为 2</strong> 的直线。
+      注意这个"巧合"：A 的斜率 2，恰好是 f 的高度 2。
+    </p>
+    <p>
+      这不是巧合。<strong>面积函数 A 长什么样？</strong>直觉上，让 x 向右挪一点点 h，
+      面积就新增一窄条；窄条细得像矩形，宽 h、
       高约等于当地的曲线高度 f(x)，所以 <MathInline tex="\Delta A \approx f(x)\,h" />，
       两边除以 h 就得到 <MathInline tex="A'(x) = f(x)" />。
     </p>
@@ -148,7 +182,20 @@ import FTCDemo from '../../demos/FTCDemo.vue'
     <p>
       结论值得念一遍：<strong>面积函数的导数，就是曲线本身。</strong>
       求面积（积分）与求变化率（求导）竟是互逆的操作！
+      上一讲末尾仪表盘上那对"车速表 / 里程表"，正是这案子的原告和被告：
+      里程是速度的积分，速度是里程的导数——现在有了正式判词。
     </p>
+    <QuizBox
+      quiz-id="ftc-q1"
+      question="窗帘再往右拉一点点（x 挪动 h），罩住的面积 A 大约增加多少？由什么决定？"
+      hint="盯着新增的那一窄条：它的宽是多少，高约是多少？"
+      :options="[
+        { t: '约 f(x)·h——新增窄条近似矩形，高是「当地」的曲线高度', why: '对。所以 A 的变化率恰是 f 在当地的取值：曲线高的地方面积涨得快，曲线贴地的地方面积几乎不涨。整条定理的直觉就浓缩在这一窄条里。' },
+        { t: '约 A(x)·h——已经积累的面积越大，涨得越快', why: '这混淆了存量和增量：窗帘已经拉开多宽，不影响下一寸新罩住多少布。新增量只看「当地这一条」的高度 f(x)，与已有面积 A(x) 无关——利滚利那是别的函数的故事。' },
+        { t: '说不准——窄条上边是弯的，矩形近似靠不住', why: '弯没关系：折叠框里用一高一矮两个真矩形把窄条夹住，h → 0 时两者同奔 f(x)，「约」被夹逼兑现成了等号。可靠与否不靠感觉裁定，靠 ε-δ。' },
+      ]"
+      :answer="0"
+    />
 
     <h2><span class="sec-no">叁</span>亲手扫一遍面积函数</h2>
     <p>
@@ -233,18 +280,65 @@ import FTCDemo from '../../demos/FTCDemo.vue'
       <strong>刚才那条求和公式加取极限的全部工作，被两秒钟取代了。</strong>
       这就是"积分表""不定积分技巧"存在的意义：它们都是在<strong>反查求导表</strong>。
     </p>
-    <div class="story">
-      <div class="story-title">📜 为什么说牛顿和莱布尼茨"发明"了微积分？</div>
-      <p>
-        切线问题（费马、笛卡尔）和面积问题（阿基米德、卡瓦列里）都不是他们首创，
-        很多具体结果前人已有。他们的真正功绩是<strong>看穿并证明了这两个问题互逆</strong>，
-        并据此建立了一套系统化的计算规则（求导法则 + 反查）——把零散的天才技巧变成了
-        任何人都能学会的算法。顺便说：牛顿的老师巴罗已经几乎摸到了这个定理，
-        但只有牛顿和莱布尼茨认识到它是整座大厦的枢纽。
-      </p>
-    </div>
+    <p>
+      上一讲赊的另一笔账也能当场结清。血药浓度那个 AUC，切条挤了半天才挤出 50；
+      现在只需反查：谁的导数是 <MathInline tex="C_0 e^{-kt}" />？求导表里有
+      <MathInline tex="(e^{-kt})' = -k\,e^{-kt}" />，所以
+      <MathInline tex="F(t) = -\tfrac{C_0}{k} e^{-kt}" /> 就是原函数。代两端：
+      t = 0 时 <MathInline tex="e^{0}=1" />，t 拖到很久以后 <MathInline tex="e^{-kt}" /> 归零，于是
+    </p>
+    <MathBlock tex="\text{AUC} = F(\infty) - F(0) = 0 - \Bigl(-\frac{C_0}{k}\Bigr) = \frac{C_0}{k} = \frac{10}{0.2} = 50" />
+    <p>
+      与切条逼近的 49.9989 分毫不差。<strong>切条三百下，反查一行字</strong>——
+      药理学家口袋里的 AUC 公式，全是这台机器批发的。
+    </p>
+    <QuizBox
+      quiz-id="ftc-q2"
+      question="基本定理说「连续函数都有原函数」。那 $e^{-x^2}$ 的原函数存在吗？写得出来吗？"
+      hint="「存在」由谁保证？「写出来」又是指用什么写？这两件事是一回事吗？"
+      :options="[
+        { t: '存在（它的面积函数就是），但写不成初等函数——「存在」和「写得出」是两码事', why: '对。第一部分白送一个原函数 $A(x) = \\int_0^x e^{-t^2}\\,dt$——可导、导数恰是被积函数；但刘维尔在 1835 年证明了它不能用有限个初等符号拼出来。正态分布表只能数值造，查表查的就是这个「存在却写不出」的函数。' },
+        { t: '不存在——要是存在，教科书早就印出来了', why: '存在性是定理白送的：$e^{-x^2}$ 连续，面积函数就是现成的原函数。教科书给不出的是它的「初等表达式」，不是原函数本身——书架上没有某人的照片，不等于此人不存在。' },
+        { t: '存在而且总能写出来，只是换元、分部的技巧还没学到家', why: '不是技巧问题，是被证明了的不可能（刘维尔定理）：无论怎样组合初等函数，导数都不会恰好等于 $e^{-x^2}$。承认写不出，正是数值积分（数值分析第四讲）存在的理由。' },
+      ]"
+      :answer="0"
+    />
 
     <h2><span class="sec-no">伍</span>买到了什么：更深远的馈赠</h2>
+
+    <h3>没有 GPS 的潜艇怎么知道自己在哪：惯性导航</h3>
+    <p>
+      核潜艇一潜几个月，水下收不到 GPS，也不能上浮暴露行踪——可它必须时刻知道自己在哪。
+      艇上能测的只有一样东西：<strong>加速度</strong>（惯性会把每一次加减速、转向如实压在传感器上）。
+      要的却是<strong>位置</strong>。从"变化率"重建"总量"——这正是本讲这台机器的活，而且要连开两遍：
+    </p>
+    <MathBlock tex="a(t) \;\xrightarrow{\ \int\ }\; v(t) = v_0 + \int_0^t a \;\xrightarrow{\ \int\ }\; x(t) = x_0 + \int_0^t v" />
+    <p>
+      基本定理保证这两步累积是合法的、结果是唯一的——<strong>只要再交出两个初值</strong>
+      （出发时的速度和位置，这正是原函数"一整族差个常数"在物理里的回声：
+      不给初值，机器只能告诉你"走了多远"，不能告诉你"在哪"）。
+      这套装置叫惯性导航，阿波罗飞船、洲际导弹、你手机里的计步器都是它的亲戚。
+    </p>
+    <p>
+      <strong>但有一笔账躲不掉。</strong>传感器总有一点点系统性偏差（零偏）。
+      设加速度计恒定多报 <MathInline tex="b = 0.01\ \text{m/s}^2" />（手机里那颗芯片的量级，
+      约千分之一个重力加速度）——静止的艇会被算成在匀加速，误差按
+      <MathInline tex="\tfrac12 b t^2" /> 增长：十分钟后偏 1.8 公里，
+      <strong>一小时后偏 64.8 公里</strong>。这就是手机做不了惯导的原因：
+      积分是台放大器，<strong>恒定的小错，积两次就按 t² 疯长</strong>。
+      军用级陀螺与加速度计把零偏压小几个数量级——同一条公式，零偏小一万倍，
+      一小时的漂移就从 64.8 公里缩到 6.5 米——但 t² 增长不饶人，
+      所以核潜艇仍要定期用天文、地形或短暂上浮来校准，把积分的"常数"重新钉住。
+    </p>
+    <p>
+      <strong>条件不成立会怎样？</strong>本讲的机器吃的是连续函数，而传感器每毫秒才吐一个数——
+      工程上真正跑的是离散版的累积（数值积分），每一步都再添一份截断误差。
+      误差怎么控制、步长怎么选，是<router-link to="/numerical/quadrature">数值分析第四讲</router-link>的正题；
+      而"小误差被系统性放大"这出戏的血泪版——爱国者导弹 0.34 秒的时钟漂移——
+      在<router-link to="/numerical/float-error">数值分析第一讲</router-link>等你。
+    </p>
+
+    <p>除了导航这件大事，这座桥还有几件更深远的馈赠：</p>
     <ul>
       <li>
         <strong>不定积分与定积分的和解</strong>：教科书先讲"不定积分 = 原函数族"，
@@ -273,7 +367,7 @@ import FTCDemo from '../../demos/FTCDemo.vue'
         <strong>微分方程的总开关</strong>：知道变化率求原量，是"解微分方程"的最简形式。
         牛顿力学、电路方程、人口模型……整个用
         <router-link to="/mathphys/pde-intro">微分方程</router-link>描述世界的范式，
-        都从这里出发（<b>本站那一讲从零讲起，不需要先修</b>）；
+        都从这里出发（站内数理方程课就从这里接棒）；
       </li>
       <li>
         <strong>它还会长大</strong>：格林公式、斯托克斯公式、高斯散度定理（多元微积分），
@@ -287,7 +381,7 @@ import FTCDemo from '../../demos/FTCDemo.vue'
       </li>
     </ul>
     <div class="insight">
-      <div class="insight-title">🔗 与你学过的课程连一连</div>
+      <div class="insight-title">🔗 这座桥往后通到哪：站内连一连</div>
       <p>
         <strong>数值分析</strong>：本定理只在"能找到原函数"时才省力，
         而绝大多数被积函数找不到——于是又得退回
