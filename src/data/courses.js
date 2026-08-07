@@ -187,6 +187,8 @@ export const complexConcepts = [
     question: '明明在求一个实数根，中途为什么必须穿过 $\\sqrt{-121}$？',
     era: '1545 — 1831',
     figures: '卡尔达诺 · 邦贝利 · 韦塞尔 · 高斯',
+    prereqs: [],
+    baseline: '中学的平方根、坐标系，以及三角函数的"名字"',
   },
   {
     slug: 'holomorphic',
@@ -196,6 +198,10 @@ export const complexConcepts = [
     question: '复可导的函数为什么自动无穷次可导？实函数怎么没这种好事？',
     era: '1748 — 1851',
     figures: '欧拉 · 柯西 · 黎曼',
+    prereqs: [
+      { slug: 'imaginary', why: '复可导的核心直觉，就是第 1 讲"乘复数 = 旋转 + 伸缩"' },
+      { slug: 'derivative', why: '差商取极限的定义原样搬来，只是 h 换成了复数' },
+    ],
   },
   {
     slug: 'cauchy-integral',
@@ -205,6 +211,7 @@ export const complexConcepts = [
     question: '复平面上从 A 到 B 路径千万条，积分值凭什么不变？',
     era: '1814 — 1900',
     figures: '柯西 · 古萨',
+    prereqs: [{ slug: 'holomorphic', why: '证明的两把工具之一，就是上一讲的柯西-黎曼方程' }],
   },
   {
     slug: 'residue',
@@ -214,6 +221,7 @@ export const complexConcepts = [
     question: '$\\int \\mathrm{d}x/(1+x^4)$ 硬算是酷刑，为什么数几个点就出答案？',
     era: '1826 — 1846',
     figures: '柯西',
+    prereqs: [{ slug: 'cauchy-integral', why: '洛朗展开与"绕圈积分"全部建立在上一讲的积分公式上' }],
   },
   {
     slug: 'continuation',
@@ -223,6 +231,7 @@ export const complexConcepts = [
     question: '「1+2+3+… = −1/12」这句"胡话"，严格的说法是什么？',
     era: '1859 — 1900',
     figures: '黎曼 · 魏尔斯特拉斯',
+    prereqs: [{ slug: 'residue', why: '圆盘接力的每一步，靠上一讲"收敛半径顶到最近奇点"来判盘' }],
   },
 ]
 
@@ -283,6 +292,8 @@ export const numericalConcepts = [
     question: '明明用了双精度、十几位有效数字，为什么算着算着答案全错了？',
     era: '公元前 1700 — 1991',
     figures: '巴比伦人 · 卡亨 · IEEE 754',
+    prereqs: [],
+    baseline: '中学的小数与科学计数法，知道计算器会"舍入"',
   },
   {
     slug: 'root-finding',
@@ -292,6 +303,7 @@ export const numericalConcepts = [
     question: '计算器按下 $\\sqrt{2}$，芯片里那一瞬间到底在做什么？',
     era: '公元前 1700 — 1690',
     figures: '巴比伦人 · 牛顿 · 拉夫森',
+    prereqs: [{ slug: 'float-error', why: '差商的最优步长与"雷神之锤"案例，直接用第 1 讲的机器精度与灾难性抵消' }],
   },
   {
     slug: 'interpolation',
@@ -301,6 +313,8 @@ export const numericalConcepts = [
     question: '用 11 个点插一条平滑曲线，为什么两端反而甩出巨大的波浪？',
     era: '1795 — 1901',
     figures: '拉格朗日 · 牛顿 · 龙格',
+    prereqs: [],
+    baseline: '中学的"两点定一条直线、三点定一条抛物线"',
   },
   {
     slug: 'quadrature',
@@ -310,6 +324,7 @@ export const numericalConcepts = [
     question: '$\\int e^{-x^2}\\,\\mathrm{d}x$ 算不出原函数，正态分布表里的数是从哪来的？',
     era: '1668 — 1814',
     figures: '牛顿 · 辛普森 · 高斯',
+    prereqs: [{ slug: 'float-error', why: '算尾概率时会正面撞上第 1 讲的抵消陷阱' }],
   },
   {
     slug: 'linear-system',
@@ -319,6 +334,10 @@ export const numericalConcepts = [
     question: '系数只动了千分之一，解却翻了个底朝天——是谁在放大误差？',
     era: '1809 — 1948',
     figures: '高斯 · 图灵 · 威尔金森',
+    prereqs: [
+      { slug: 'float-error', why: '条件数是第 1 讲那桩舍入误差悬案的最终解答，首尾呼应' },
+      { slug: 'interpolation', why: '岭回归与范德蒙病态，是第 3 讲白纸黑字留下的欠账' },
+    ],
   },
 ]
 
@@ -482,7 +501,7 @@ export const courses = [
     prereqCourses: ['calculus', 'linear-algebra'],
     concepts: complexConcepts,
     intro:
-      '$\\sqrt{-1}$ 在数学里住了三百年"黑户"：人人都用它算题，人人都不承认它存在——笛卡尔给它起的蔑称"虚数"沿用至今。这门课讲它的平反史：它如何被三次方程<strong>逼</strong>进数学（不是请进来的），如何在复平面上获得肉身，以及一件教科书很少直说的怪事——把实分析搬到复数上，非但没有变难，反而处处出现<strong>实函数享受不到的奇迹</strong>：可导一次就无穷可导、函数值由边界全息决定、算不动的实积分数几个点就出答案。',
+      '$\\sqrt{-1}$ 在数学里住了三百年"黑户"：人人都用它算题，人人都不承认它存在——笛卡尔给它起的蔑称"虚数"沿用至今。这门课讲它的平反史（<strong>不假设你学过复变</strong>，只需先修过站内的微积分与线代课）：它如何被三次方程<strong>逼</strong>进数学（不是请进来的），如何在复平面上获得肉身，以及一件教科书很少直说的怪事——把微积分搬到复数上，非但没有变难，反而处处出现<strong>实函数享受不到的奇迹</strong>：可导一次就无穷可导、函数值由边界全息决定、算不动的实积分数几个点就出答案。',
     timelineTitle: '三百年时间线',
     timeline: [
       {
@@ -580,7 +599,7 @@ export const courses = [
     prereqCourses: ['calculus', 'linear-algebra'],
     concepts: numericalConcepts,
     intro:
-      '教科书里的数学默认一切都能"精确算出来"：根有求根公式、积分有原函数、方程组能解出漂亮的分数。可真实世界几乎处处相反——<strong>五次以上方程没有求根公式</strong>、<strong>大多数积分没有初等原函数</strong>、计算机连 0.1 都存不准。数值分析研究的正是这件被纯数学"看不起"、却撑起整个科学计算的事：<strong>怎么用有限的步骤、有限的精度，算出一个误差可控、够用的近似答案</strong>。它从头到尾跟两个对手周旋——算不完带来的<strong>截断误差</strong>、存不准带来的<strong>舍入误差</strong>；也反复请出同一位英雄——<strong>迭代逼近 + 误差分析</strong>。学这门课晕，多半是因为公式一大堆却不知道每个都在跟哪种误差较劲；这门课就把这条暗线挑明。',
+      '教科书里的数学默认一切都能"精确算出来"：根有求根公式、积分有原函数、方程组能解出漂亮的分数。可真实世界几乎处处相反——<strong>五次以上方程没有求根公式</strong>、<strong>大多数积分没有初等原函数</strong>、计算机连 0.1 都存不准。数值分析研究的正是这件被纯数学"看不起"、却撑起整个科学计算的事：<strong>怎么用有限的步骤、有限的精度，算出一个误差可控、够用的近似答案</strong>。它从头到尾跟两个对手周旋——算不完带来的<strong>截断误差</strong>、存不准带来的<strong>舍入误差</strong>；也反复请出同一位英雄——<strong>迭代逼近 + 误差分析</strong>。这门课<strong>不假设你学过数值分析</strong>——只需先修过站内的微积分与线代。公式一大堆的课最怕不知道每个公式在跟哪种误差较劲；我们一开始就把这条暗线挑明。',
     timelineTitle: '一部"逼近"的历史',
     timeline: [
       {

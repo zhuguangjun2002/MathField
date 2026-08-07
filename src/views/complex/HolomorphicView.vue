@@ -3,6 +3,7 @@ import ConceptPage from '../../components/ConceptPage.vue'
 import MathBlock from '../../components/MathBlock.vue'
 import MathInline from '../../components/MathInline.vue'
 import RevealBox from '../../components/RevealBox.vue'
+import QuizBox from '../../components/QuizBox.vue'
 import ConformalDemo from '../../demos/ConformalDemo.vue'
 import JoukowskiDemo from '../../demos/JoukowskiDemo.vue'
 import MercatorDemo from '../../demos/MercatorDemo.vue'
@@ -39,6 +40,22 @@ import PotentialFlowDemo from '../../demos/PotentialFlowDemo.vue'
 
     <h2><span class="sec-no">贰</span>破局："各方向一致"翻译出两条方程</h2>
     <p>
+      往下走会反复出现一个记号，先花三句话交代清楚——它并不需要什么新本事。
+      <MathInline tex="u(x, y)" /> 是<strong>两个输入、一个输出</strong>的函数：给一个横坐标、
+      一个纵坐标，还你一个数（比如一块铁板上每一点的温度）。
+      记号 <MathInline tex="\partial u/\partial x" /> 读作"u 对 x 的偏导数"，
+      它的动作只有一个：<strong>把 y 冻住不动、当成常数，剩下的就是一元的普通导数</strong>。
+      拿最低的例子走一遍，<MathInline tex="u = x^2 y" />：求 <MathInline tex="\partial u/\partial x" /> 时
+      把 y 看成常数，<MathInline tex="u" /> 就是"常数 y 乘 <MathInline tex="x^2" />"，
+      导数是 <MathInline tex="2xy" />；求 <MathInline tex="\partial u/\partial y" /> 时反过来把 x 冻住，
+      <MathInline tex="u" /> 是"常数 <MathInline tex="x^2" /> 乘 y"，导数就是 <MathInline tex="x^2" />。
+      在 <MathInline tex="(x, y) = (3, 2)" /> 这一点，两个数分别是 12 和 9。
+      所以<strong>偏导数没有任何新运算，新的只是"切之前先声明按哪个方向切"这个动作</strong>——
+      恰好是本讲开头那句"复平面上可以从任何方向逼近"的一次小小预演。
+      站内<router-link to="/mathphys/pde-intro">数学物理方程第 1 讲</router-link>会把它从零细讲
+      （那门课不需要先修），本讲只需要上面这一句。
+    </p>
+    <p>
       把 <MathInline tex="f(x + iy) = u(x, y) + i\,v(x, y)" /> 拆成实部虚部，只比较两个最容易的方向。
       沿实轴（Δz = Δx）与沿虚轴（Δz = iΔy）的差商分别是：
     </p>
@@ -46,14 +63,22 @@ import PotentialFlowDemo from '../../demos/PotentialFlowDemo.vue'
     <p>两者必须相等，实部对实部、虚部对虚部：</p>
     <MathBlock tex="\frac{\partial u}{\partial x} = \frac{\partial v}{\partial y}, \qquad \frac{\partial u}{\partial y} = -\frac{\partial v}{\partial x}" />
     <p>
-      这就是<strong>柯西-黎曼方程</strong>。它的几何翻译是本讲的心脏。回忆线代第三讲：
-      二元映射 (u, v) 在一点的局部行为由雅可比矩阵决定。柯西-黎曼方程恰好说：这个矩阵必须长成
+      这就是<strong>柯西-黎曼方程</strong>。它的几何翻译是本讲的心脏，而翻译要借一样东西，
+      现在正式请出来：把 (u, v) 对 (x, y) 的依赖在<strong>一点的近旁</strong>摆成一个 2×2 的方阵——
+      四个格子分别是四个偏导数（第一行放 u 对 x、对 y 的偏导，第二行放 v 的），
+      这个方阵叫<strong>雅可比矩阵</strong>。它就是<router-link to="/linear-algebra/linear-map">线代第 3 讲</router-link>
+      那句"局部用线性变换冒充自己"的二元版：函数整体弯弯曲曲，
+      但在一点的小邻域里，它对微小位移 (Δx, Δy) 的作用可以由这一个矩阵代劳。
+      柯西-黎曼方程恰好说：这个矩阵必须长成
     </p>
     <MathBlock tex="J = \begin{bmatrix} \partial_x u & \partial_y u \\ \partial_x v & \partial_y v \end{bmatrix} = \begin{bmatrix} a & -b \\ b & a \end{bmatrix}" />
     <div class="insight">
       <div class="insight-title">💡 核心直觉：复可导 = 局部只做"旋转 + 伸缩"</div>
       <p>
-        <MathInline tex="\begin{bmatrix} a & -b \\ b & a \end{bmatrix}" /> 正是上一讲的复数乘法矩阵！
+        <MathInline tex="\begin{bmatrix} a & -b \\ b & a \end{bmatrix}" /> 正是<router-link
+          to="/complex/imaginary"
+          >上一讲</router-link
+        >那个复数乘法矩阵！
         所以复可导的真义是：<strong>函数在每一点的局部，行为恰好是"乘一个复数 f′(z)"</strong>——
         纯旋转加纯伸缩，不许剪切、不许各方向不同比例拉伸。
         旋转伸缩不改变角度，所以解析函数处处<strong>保角</strong>；
@@ -61,6 +86,18 @@ import PotentialFlowDemo from '../../demos/PotentialFlowDemo.vue'
         "各方向导数一致"这个分析条件，与"局部是旋转伸缩"这个几何条件，是同一句话。
       </p>
     </div>
+
+    <QuizBox
+      quiz-id="holomorphic-q1"
+      question="同样是「差商取极限」，为什么复可导比实可导苛刻得多？"
+      hint="数一数：实轴上让增量趋于零有几条路可走，复平面上又有几条？"
+      :options="[
+        { t: '实轴上只有左、右两个方向要对齐；复平面上「所有方向」逼近算出的差商，都得等于同一个复数', why: '对。极限的定义不挑路径，所以沿实轴来、沿虚轴来、沿 45° 来、螺旋着来，全都得交出同一个 $f^{\\prime}(z_0)$。$\\bar z$ 就是最著名的落榜者：沿实轴差商是 1，沿虚轴是 −1，沿 45° 方向是 $-i$——它光滑得无可挑剔（不过是把平面上下翻转），却处处不可导。' },
+        { t: '因为要同时管住实部 u 和虚部 v 两个函数，两个总比一个难', why: '难点不在「函数变多了」。$\\bar z$ 的 $u = x$、$v = -y$ 各自要多光滑有多光滑，照样当场出局——真正卡人的是柯西-黎曼把这四个偏导数锁死成一张只许旋转伸缩的方阵，不许有一丝剪切。' },
+        { t: '只是把「左右两个方向」换成了「上下左右四个方向」，四个方向都测过就稳了', why: '方向有连续无穷多个，不是四个。而且只让两条轴上的差商一致，逼出来的仅仅是柯西-黎曼那两条方程，那只是必要条件——肆节定义框里的定理还多要一句「u、v 在该点实可微」，两条合起来才等价于复可导。' },
+      ]"
+      :answer="0"
+    />
 
     <h2><span class="sec-no">叁</span>亲眼看保角性</h2>
     <ConformalDemo />
@@ -162,6 +199,17 @@ import PotentialFlowDemo from '../../demos/PotentialFlowDemo.vue'
       </ul>
       <p>两个滑杆调出的整族翼型，至今叫<strong>茹科夫斯基翼型</strong>。</p>
     </RevealBox>
+    <QuizBox
+      quiz-id="holomorphic-q2"
+      question="「解析函数保角」——这条性质是不是在整个定义域里处处成立、没有例外？"
+      hint="保角靠的是「局部等于乘那个导数值」这一句。要是那个乘数本身是零呢？"
+      :options="[
+        { t: '有例外：在 $f^{\\prime}(z_0) = 0$ 的点上保角失效，那里的角度会被成倍放大', why: '对。乘法一退化，局部主项就变成平方项，角度加倍：$z^2$ 在原点把两条夹 90° 的射线撑成 180°（0° 那条仍去 0°，90° 那条被送到 180°），也就是折成了一条直线。茹科夫斯基映射的 $f^{\\prime}(z) = 1 - 1/z^2$ 恰在 $z = \\pm 1$ 处为零，机翼那道锋利的尖后缘正是靠这个「故障」造出来的。' },
+        { t: '处处成立——解析是区域性质，整个区域都可导，保角当然也整个区域都有', why: '解析确实保证了逐点可导，可保角还多要一个条件：局部那个乘数不能是 0。$z^2$ 在整个复平面上都解析，角度却偏偏在原点被加倍——解析保证的是「局部等于乘一个复数」，从没保证那个复数非零。' },
+        { t: '只在 $f^{\\prime}(z_0)$ 是实数时成立，导数一带虚部就会把角度转歪', why: '转歪的是整幅图，不是图里的角。乘一个复数等于整体旋转加整体伸缩，交于一点的两条曲线的切线一起转过同样的角度，夹角一分不差。导数的辐角只决定「转多少」，唯一能破坏夹角的情形是它等于 0。' },
+      ]"
+      :answer="0"
+    />
     <p>
       下面这张图有四个旋钮，别被名字唬住：<strong>厚度、弯度、迎角</strong>是机翼真正的三个参数，
       前两个就是上面说的"把圆心往左挪、往上挪"（数字是挪动的距离，尺子取成"原点到临界点
@@ -378,8 +426,11 @@ import PotentialFlowDemo from '../../demos/PotentialFlowDemo.vue'
         上面第二条式子（在单连通区域上）保证存在一个<strong>速度势</strong>
         <MathInline tex="\varphi" />，使
         <MathInline tex="\vec V = \nabla\varphi = (\partial_x\varphi,\ \partial_y\varphi)" />——
-        这正是微积分课里那句"旋度为零的场是某个函数的梯度"，
+        这正是那句"旋度为零的场是某个函数的梯度"，
         也正是前面"山坡与水流"的一般版本：<MathInline tex="\varphi" /> 就是那张地形图。
+        （这是多元微积分的一条定理，站内暂未展开——本框把它当已知用。
+        直觉版本正文已经给过：绕任何一个小圈的环流都为零，一路记账就攒得出一个单值的势；
+        哪怕有一个圈对不上账，势就凑不齐了。）
       </p>
       <p>
         <strong>第二句：无源 ⇒ 流函数存在。</strong>
@@ -433,6 +484,17 @@ import PotentialFlowDemo from '../../demos/PotentialFlowDemo.vue'
         同一个 <MathInline tex="z + 1/z" />，那边当映射用，这边当流场读。
       </li>
     </ul>
+    <QuizBox
+      quiz-id="holomorphic-q3"
+      question="是不是每一个二维流场背后，都藏着一个速度势 $\varphi$？"
+      hint="回想那个绕圈的漩涡：沿一个圆走整整一圈，势会回到原来的读数吗？"
+      :options="[
+        { t: '不是。只有「无旋」（绕任何一个小圈的环流都为零）才保证势存在且单值——点涡绕一圈就对不上账', why: '对。势的本事是「沿路把箭头累加起来记账」，可这本账要成立，就得保证绕回原点时读数回到原值。点涡每一步都在顺着箭头走，转完一圈 $\\varphi$ 只增不减，却又必须等于出发时的值，账当场崩掉。所以势是一种特权，不是标配——下面动画里 $f(z) = -i\\ln z$ 那一档画的正是这个流场。' },
+        { t: '是。任何流场都能沿一条路径把速度积起来，积出来的那个函数就是势', why: '沿路径积分确实能算出一个数，但这个数会不会依赖你走的路，是另一回事。无旋恰好就是「同起点同终点的任意两条路给出同一个数」这条保证；缺了它，同一点会被记上无穷多个不同读数，那就不成其为函数了。' },
+        { t: '只要流场是定常的（不随时间变），势就一定存在', why: '定常管的是「随时间变不变」，势存不存在管的是「在空间里绕圈对不对得上」，两件事互不相干。点涡就是一个定常得不能再定常的流场——图像一秒都不变，照样没有单值的势。' },
+      ]"
+      :answer="0"
+    />
     <p>
       拖两个探针滑杆在图上走一圈，盯住读数区：<strong>夹角那一栏永远是 90°</strong>
       （等势线与流线处处垂直，就是"水垂直穿过等高线"那句话）；

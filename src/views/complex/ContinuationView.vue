@@ -3,6 +3,7 @@ import ConceptPage from '../../components/ConceptPage.vue'
 import MathBlock from '../../components/MathBlock.vue'
 import MathInline from '../../components/MathInline.vue'
 import RevealBox from '../../components/RevealBox.vue'
+import QuizBox from '../../components/QuizBox.vue'
 import ContinuationDemo from '../../demos/ContinuationDemo.vue'
 </script>
 
@@ -159,6 +160,18 @@ import ContinuationDemo from '../../demos/ContinuationDemo.vue'
         对 <MathInline tex="1/(1-z)" />，挡路的墙只有 <MathInline tex="z=1" /> 一块砖，绕过去畅通无阻。
       </p>
     </RevealBox>
+    <QuizBox
+      quiz-id="continuation-q1"
+      question="你手里只有 $1+z+z^2+\cdots$ 在单位圆盘里的那一段。要把它延拓到 $z=-1.5$，圆盘接力的路线可以摆得千奇百怪。那么不同人铺出来的延拓结果之间是什么关系？"
+      hint="回想贰节那条「一小段决定全体」：新中心处的泰勒系数是谁定的？"
+      :options="[
+        { t: '只要终点落在同一个连通区域里、路上没绕过奇点，结果就完全一样——那一小段已经把整条函数钉死了', why: '对。唯一性定理说的正是这件事：两个解析函数只要在一个有聚点的点集上相等（这里干脆是整整一个圆盘），就在整个连通区域上处处相等。所以延拓是发现，不是发明。' },
+        { t: '不一样。换个新中心就是换了一个新级数，得到的当然是另一个函数', why: '你把函数的一件「衣服」当成了函数本体。新中心处的泰勒系数一点自由度也没有：它们由老盘内部那点上的各阶导数算出来，而那些导数早被老级数定死了。' },
+        { t: '一样，但那是因为我们事先知道答案是 $\\frac{1}{1-z}$；要是手里只有级数就说不准了', why: '很常见的顾虑，可贰节那步接力全程没用过闭形式，只用了「老盘内部一点处各阶导数都算得出来」。知不知道闭形式，不影响唯一性。' },
+        { t: '不好说，要看延拓时用的是泰勒级数还是别的展开方法', why: '方法确实可以千奇百怪，但结论被唯一性定理管着：只要两个结果都在同一个连通区域上解析、且在出发的那一小段上与原函数相等，它们就必须处处相等。' },
+      ]"
+      :answer="0"
+    />
     <p>
       <strong>回到开篇那句"胡话"。</strong>把 ζ 一路延拓过去（黎曼那八页纸干的就是这件事，
       结果是：<MathInline tex="\zeta" /> 在整个复平面上解析，只在 <MathInline tex="s=1" /> 留一个极点），
@@ -175,11 +188,24 @@ import ContinuationDemo from '../../demos/ContinuationDemo.vue'
       <MathInline tex="-1" />"完全成立。<strong>发散的是级数（衣服），不是函数（本体）。</strong>
     </p>
     <p>
-      那 <MathInline tex="-1/12" /> 这个具体数字是怎么冒出来的？黎曼那篇论文的核心结果是一条
-      <strong>函数方程</strong>，它把 <MathInline tex="s" /> 处的值和 <MathInline tex="1-s" /> 处的值
-      钉在一起——于是"左半平面"的值可以由"右半平面"（级数还收敛的地方）换算出来。
-      这条方程本身的证明超出本讲，但只要<strong>把它当已知</strong>，
-      <MathInline tex="-1/12" /> 是可以当场算出来的：
+      那 <MathInline tex="-1/12" /> 这个具体数字是怎么冒出来的？黎曼那篇八页论文有两个核心结果：
+      一个是把 <MathInline tex="\zeta" /> 延拓到整个复平面，另一个是一条<strong>函数方程</strong>——
+      它把 <MathInline tex="s" /> 处的值和 <MathInline tex="1-s" /> 处的值钉在一起，
+      于是"左半平面"的值可以由"右半平面"（级数还老老实实收敛的地方）换算出来。
+      这条方程的证明超出本讲，但请留意它的地位：<strong>整条 <MathInline tex="-1/12" /> 的推导里，
+      黑箱只有这一条方程</strong>。把它当已知之后，剩下每一步都是当场可验的算术——
+      查一个正弦值、算一个阶乘、代一个欧拉早就算出的收敛级数，仅此而已。
+    </p>
+    <p>
+      动手之前还有一个零件要认个脸：<strong>Γ 函数</strong>。
+      阶乘 <MathInline tex="n!" /> 本来只对正整数有定义（<MathInline tex="3! = 6" />，
+      可"2.5 的阶乘"是什么？没人规定过）。Γ 干的事，就是把阶乘这张<strong>只画在整数点上的散点图，
+      内插成一条画在一切数上的光滑曲线</strong>，记号约定是
+      <MathInline tex="\Gamma(n) = (n-1)!" />（差的这个 1 是历史遗留的写法习惯，别被它绊住）。
+      拿整数点验两个就有感觉了：<MathInline tex="\Gamma(2) = 1! = 1" />，
+      <MathInline tex="\Gamma(4) = 3! = 6" />。
+      本讲用到 Γ 的地方<strong>全都落在整数点上</strong>，所以你现在完全可以把它读成
+      "错开一位的阶乘"；至于它在非整数点上凭什么有唯一的取法，正是伍节要还的一笔账。
     </p>
     <RevealBox
       title="🔍 −1/12 到底从哪来：把 s = −1 代进函数方程"
@@ -190,8 +216,7 @@ import ContinuationDemo from '../../demos/ContinuationDemo.vue'
         <MathInline tex="s = -1" /> 代进去，右边会用到
         <MathInline tex="\sin(-\pi/2)" />、<MathInline tex="\Gamma(2)" /> 和
         <MathInline tex="\zeta(2)" /> 三个值——它们各等于几？
-        （<MathInline tex="\Gamma" /> 是阶乘的推广，<MathInline tex="\Gamma(n) = (n-1)!" />；
-        <MathInline tex="\zeta(2)" /> 就是欧拉那个成名作。）
+        （Γ 刚在上面认过脸，这里只用整数点；<MathInline tex="\zeta(2)" /> 就是欧拉那个成名作。）
       </template>
       <p><strong>函数方程</strong>（黎曼 1859，本讲当已知）：</p>
       <MathBlock tex="\zeta(s) = 2^{s}\,\pi^{s-1}\,\sin\!\Bigl(\frac{\pi s}{2}\Bigr)\,\Gamma(1-s)\,\zeta(1-s)" />
@@ -227,7 +252,21 @@ import ContinuationDemo from '../../demos/ContinuationDemo.vue'
       而把它替换成 <MathInline tex="\zeta(-1) = -1/12" /> 之后，
       算出来的最终结果<strong>和实验对得上</strong>。这不是"把正整数加出了负数"，
       是"那个发散和本来就是某个解析函数在错误地点的错误写法，换成正确写法即可"。
+      这句话听着像辩解，所以伍节会挑其中最干净的一件事——真空里两块金属板互相吸引——
+      从画面一路走到实验数字，让你自己判断这套做法站不站得住。
     </p>
+    <QuizBox
+      quiz-id="continuation-q2"
+      question="网上流传的那句 $1+2+3+\cdots = -\frac{1}{12}$，严格说来对不对？"
+      hint="先分开问两件事：那个级数收敛吗？那个数错了吗？"
+      :options="[
+        { t: '不对。左边的级数是发散的，等号立不起来；对的说法是「$\\zeta$ 的解析延拓在 $s=-1$ 处取值 $-\\frac{1}{12}$」', why: '对。发散的是级数（衣服），不是函数（本体）。而 $-\\frac{1}{12}$ 是从收敛的 $\\zeta(2)=\\pi^2/6$ 经函数方程换算过来的，整条路径上没有任何一步在给发散级数求和。' },
+        { t: '对。只要换一种「特殊的求和法」，正整数之和确实就等于 $-\\frac{1}{12}$', why: '这话把「换一套记账办法」偷换成了「和真的等于它」。部分和 1, 3, 6, 10, … 一路奔向无穷，这一点没有哪种说法能改；存在的不是正整数之和，而是延拓值。' },
+        { t: '不对，因为一堆正数加起来不可能是负数，所以 $-\\frac{1}{12}$ 这个数本身就是错的', why: '结论蒙对了，理由却反了：错的是那个等号，不是那个数。$\\zeta(-1)=-\\frac{1}{12}$ 是硬邦邦算出来的，而且自然界还真按它付账（伍节要拿实验说话）。' },
+        { t: '对，但只在物理里对，数学上不对', why: '物理里并没有另一套数学。物理学家用的就是 $\\zeta(-1)$ 这个延拓值，把它写成 $1+2+3+\\cdots$ 只是速记；速记当成等式，物理上和数学上一样不成立。' },
+      ]"
+      :answer="0"
+    />
 
     <h2><span class="sec-no">叁</span>亲手铺一条圆盘链</h2>
     <ContinuationDemo />
@@ -270,8 +309,166 @@ import ContinuationDemo from '../../demos/ContinuationDemo.vue'
         与其说函数多值，不如说平面太小。
       </li>
     </ul>
+    <QuizBox
+      quiz-id="continuation-q3"
+      question="从 $z=1$ 出发（约定 $\sqrt{1}=1$）把 $\sqrt{z}$ 延拓到 $z=-1$：一条路线走上半平面绕过去，另一条走下半平面。两条路线给出的值一样吗？"
+      hint="唯一性定理有一个前提词，回头在定义框里找一下——再看看这两条路合起来围出了什么。"
+      :options="[
+        { t: '不一样，差一个负号：绕过原点这个奇点就落到了另一层（黎曼面）；只有路径没把奇点圈进去时，两条路才必定同结果', why: '对。上半平面那条路辐角从 0 走到 $\\pi$，得 $i$；下半平面那条走到 $-\\pi$，得 $-i$。两条路合起来正好绕原点一圈，函数值翻了号——与其说函数多值，不如说平面太小，黎曼面就是为此发明的。' },
+        { t: '一样。唯一性定理说了延拓唯一，所以任意两条路径都必须给出同一个值', why: '唯一性定理的前提是「在一个连通区域上解析」。$\\sqrt{z}$ 在原点不解析，两条路把它圈在了中间，谁也没法在整个圈起来的区域上把两个结果连成一个解析函数，前提就不成立了。' },
+        { t: '不一样，因为两条路上取的圆盘中心不同，累积的数值误差不同', why: '这里没有数值误差可言，每一步都是精确的重新展开。差别是拓扑性质的：只看绕没绕过奇点，跟你把圆盘摆在哪儿完全无关。' },
+        { t: '一样，只要两条路都不经过原点这个奇点就行', why: '不经过还不够。要紧的是两条路合起来的闭曲线有没有把奇点套在里面——这里两条路都躲开了原点，可它们围成的圈正好套住原点，值就对不上了。' },
+      ]"
+      :answer="0"
+    />
 
-    <h2><span class="sec-no">伍</span>买到了什么：全课收官，两张门票</h2>
+    <h2><span class="sec-no">伍</span>买到了什么：自然界按延拓值付账</h2>
+
+    <h3>卡西米尔效应：真空里的两块金属板，为什么自己吸到一起</h3>
+    <p>
+      这一讲到现在为止，全是数学内部的事。可 <MathInline tex="\zeta(-1) = -\tfrac{1}{12}" />
+      有一个非常不数学的去处：它出现在一张<strong>实验账单</strong>上。
+    </p>
+    <p>
+      <strong>先给画面。</strong>真空舱里挂两块平行的金属板，相距一微米
+      （大约头发丝直径的百分之一）。两块板<strong>不带电、不通电、不磁化</strong>，
+      中间的空气也抽干净了。按中学物理，它们之间不该有任何力。
+      可它们会<strong>互相吸引</strong>，而且靠得越近吸得越凶。
+      1948 年，荷兰物理学家<strong>卡西米尔</strong>（Hendrik Casimir）算出了这个力——
+      他当时在飞利浦实验室里研究胶体悬浮为什么会沉淀，本来是桩工业活。
+      预言之后将近半个世纪都测不准，直到 1997 年 Lamoreaux 用一台扭秤第一次精确测到，
+      与理论符合到百分之几的水平；此后用原子力显微镜做的实验把符合度推进到 1% 的量级。
+    </p>
+    <p>
+      <strong>为什么这事非绕道本讲不可。</strong>量子理论说真空不空：电磁场的每一个
+      允许存在的振动模式，哪怕里面一个光子也没有，也仍然带着一份抹不掉的<strong>零点能</strong>
+      <MathInline tex="\tfrac12\hbar\omega" />（这跟量子力学里"谐振子的基态能量不为零"是同一件事）。
+      两块板一夹，中间就只剩<strong>驻波</strong>能存在：像吉他弦两端被按死一样，
+      板间距里必须正好塞进整数个半波长。<strong>"只能取整数"这四个字是全部关键</strong>——
+      模式于是按 <MathInline tex="n = 1, 2, 3, \ldots" /> 编号，频率正比于
+      <MathInline tex="n" />，把这些 <MathInline tex="\tfrac12\hbar\omega" /> 全加起来，
+      纸上冒出来的东西正是开篇那句"胡话"的形状：<MathInline tex="1 + 2 + 3 + \cdots" />。
+      板外的空间没人限制，模式是连续的——两边的账不一样，那个<strong>差额</strong>才是要算的东西。
+    </p>
+    <p><strong>推导的逻辑链：前两步是认脸，后两步是本讲的活。</strong></p>
+    <ul>
+      <li>
+        ① 板间零点能的总和，形式上是（一个常数）乘以
+        <MathInline tex="(1 + 2 + 3 + \cdots)" />，发散——物理学家头一回算到这里也想撕纸；
+      </li>
+      <li>
+        ② 认一下这个和的身份：它正是 <MathInline tex="\zeta(s) = \sum n^{-s}" /> 在
+        <MathInline tex="s = -1" /> 处的<strong>级数写法</strong>。级数写法在那里失效了，
+        <strong>函数并没有失效</strong>——这就是本讲从头讲到尾的那句话；
+      </li>
+      <li>
+        ③ 于是换成贰节已经当场算出来的延拓值 <MathInline tex="\zeta(-1) = -\tfrac{1}{12}" />。
+        回想那个数的来路：它是从收敛的 <MathInline tex="\zeta(2) = \pi^2/6" /> 经函数方程
+        换算过来的，整条路径上没有任何一步在给发散级数求和；
+      </li>
+      <li>
+        ④ 无穷大当场塌成一个有限的负数：板间的零点能<strong>比同一块空间在板不在时更低</strong>，
+        而且板越近越低。能量随距离减小而下降，就等于有一个把两块板往一起拉的力。
+      </li>
+    </ul>
+    <p>
+      真实的三维平板还要对两个横向方向多求一次和（板面上的波可以斜着跑），
+      落地的是同一族公式的另一个成员 <MathInline tex="\zeta(-3) = \tfrac{1}{120}" />——
+      同一条函数方程照代不误，推导见下面的框。最后的结果只有一行：
+    </p>
+    <MathBlock tex="\frac{E}{A} = -\frac{\pi^2 \hbar c}{720\, d^3}, \qquad \frac{F}{A} = -\frac{\pi^2 \hbar c}{240\, d^4}" />
+    <p>
+      <MathInline tex="d" /> 是板间距，<MathInline tex="A" /> 是板面积，
+      <MathInline tex="\hbar" /> 是普朗克常数除以 <MathInline tex="2\pi" />，
+      <MathInline tex="c" /> 是光速；负号表示"吸引"。
+      第二式就是第一式对 <MathInline tex="d" /> 求一次导（能量随距离怎么降，力就有多大），
+      <MathInline tex="d^{-3}" /> 求导掉出一个 3，<MathInline tex="720/3 = 240" />。
+      值得盯一眼的是：<strong>这两行里没有一个可调参数</strong>——没有材料常数、没有电荷、
+      没有拟合系数，只有两个自然常数和一个几何长度。理论要是错了，无处可赖。
+    </p>
+    <RevealBox
+      title="🔍 同一条函数方程，这次代 s = −3"
+      label="对答案 / 看完整拆解"
+    >
+      <template #hint>
+        照贰节的样子再走一遍：把 <MathInline tex="s = -3" /> 代进函数方程，
+        右边会用到 <MathInline tex="\sin(-3\pi/2)" />、<MathInline tex="\Gamma(4)" /> 和
+        <MathInline tex="\zeta(4) = \pi^4/90" />。留意第一个的正负号跟上次不一样。
+      </template>
+      <p>四个零件逐个摆出来：</p>
+      <ul>
+        <li><MathInline tex="2^{-3} = \tfrac18" />，<MathInline tex="\pi^{-4} = 1/\pi^4" />；</li>
+        <li>
+          <MathInline tex="\sin(-3\pi/2) = +1" />——上次 <MathInline tex="s = -1" /> 时它是
+          <MathInline tex="-1" />，差了半个周期，符号翻了过来；
+        </li>
+        <li><MathInline tex="\Gamma(1-(-3)) = \Gamma(4) = 3! = 6" />（Γ 又只用在整数点上）；</li>
+        <li><MathInline tex="\zeta(4) = \pi^4/90" />，还是一个级数老老实实收敛的地方。</li>
+      </ul>
+      <MathBlock tex="\zeta(-3) = \tfrac18 \cdot \frac{1}{\pi^4} \cdot 1 \cdot 6 \cdot \frac{\pi^4}{90} = \frac{6}{720} = \frac{1}{120}" />
+      <p>
+        <MathInline tex="\pi^4" /> 又一次上下约光。这个 <MathInline tex="120" /> 就是上面那两行
+        物理公式里分母的出处：<MathInline tex="720 = 6 \times 120" />，
+        <MathInline tex="240 = 720/3" />。换句话说，实验测的那个数，
+        分母里明明白白站着一个只有靠解析延拓才写得出来的值。
+      </p>
+    </RevealBox>
+    <p>
+      <strong>读出物理：这个力有多大。</strong>拿 <MathInline tex="\hbar c \approx 3.16\times10^{-26}" />
+      J·m 代进去，<MathInline tex="d = 1" /> 微米时
+    </p>
+    <MathBlock tex="\frac{F}{A} \approx 1.3\times 10^{-3}\ \mathrm{N/m^2}" />
+    <p>
+      换成能想象的单位：每平方厘米板面上约 <MathInline tex="1.3\times10^{-7}" /> 牛，
+      连百万分之一牛都不到，<strong>相当于托着一粒十几微克的尘埃</strong>。
+      1997 年那次实验的了不起之处正在这里——要在这个量级上分辨出静电残余、
+      板面不平、温度漂移之外的那一点点力。
+    </p>
+    <p>
+      但它对距离极其敏感，公式里是<strong>四次方</strong>。把板挪到 10 纳米
+      （几十个原子的厚度），同一条公式给出 <MathInline tex="1.3\times10^{5}" /> N/m²，
+      也就是<strong>约 1.3 个大气压</strong>——不再是"测不测得到"的问题了。
+      微机电器件做到这个尺度时，卡西米尔力会把悬臂直接吸死在衬底上，是工程上必须防的一件事。
+    </p>
+    <div class="insight">
+      <div class="insight-title">💡 账单核对</div>
+      <p>
+        理论值里那个延拓值是<strong>必需的零件</strong>：把它抽掉，纸上剩下的就是一个发散的
+        无穷大，什么都预言不了；换成 <MathInline tex="\zeta(-1)" />、
+        <MathInline tex="\zeta(-3)" /> 的值，得到的是一条没有可调参数的公式，
+        而实验称出来的力与它对得上。
+        <strong>解析延拓不是数学家的文字游戏——自然界按延拓值付账。</strong>
+      </p>
+    </div>
+    <p>
+      <strong>条件不成立会怎样：凭什么是它？</strong>上面那步"发散了就代延拓值"，
+      最该被追问的是：我随便抓一个有限数顶包不行吗？不行。
+      而理由不是"数学家规定的"，是<strong>物理自己提的要求</strong>：
+    </p>
+    <ul>
+      <li>
+        <strong>发散本来就是模型说过头了</strong>。"金属板对任意高频率的电磁波都是完美反射镜"
+        这句话是假的：频率高到波长短过原子间距，电磁波直接穿板而过，板对它根本不存在。
+        所以真实的那个和本来就是有限的，只是<strong>截止在哪儿、怎么截，谁也说不准</strong>；
+      </li>
+      <li>
+        <strong>于是物理要求答案与"截断方案"无关</strong>。换一种截断办法
+        （让高频按指数衰减、按幂次衰减、把频率上限挪到别处），中间过程面目全非，
+        可算出来的<strong>力</strong>是同一个：截断带来的那些项，在"减去板不在时同一块空间的能量"
+        这一步里成对消掉了，剩下的与方案无关的部分，恰好等于代入 <MathInline tex="\zeta(-1)" />
+        的结果。<strong>这个方案无关性才是延拓值的凭据</strong>——
+        延拓只是把这个与方案无关的部分一次写出来的最省事办法；
+      </li>
+      <li>
+        <strong>所以壹节那个立场一步也没松动</strong>：<MathInline tex="1+2+3+\cdots = -\tfrac{1}{12}" />
+        这个等号依然是错的。物理里从来没有人真的把一串正整数加出了负数。
+        真实发生的是：写下一个本该有限的量，图省事写成了发散级数的样子，
+        再问"这个量正确的值是多少"——答案是 <MathInline tex="\zeta" /> 在那一点的取值，
+        而不是那串加法的结果。
+      </li>
+    </ul>
+
+    <h3>还买到了什么</h3>
     <ul>
       <li>
         <strong>ζ 与素数</strong>：延拓 + 留数（ζ 在 s=1 的极点）+ 围道积分，合力证明了素数定理
@@ -287,11 +484,12 @@ import ContinuationDemo from '../../demos/ContinuationDemo.vue'
         <strong>这是延拓的标准用法：把一个只在稀疏点上定义的东西，唯一地补成整片</strong>；
       </li>
       <li>
-        <strong>物理里"发散了怎么办"的正规答案</strong>：物理计算中途算出无穷大，
-        并不总意味着理论错了——常常是因为把某个量写成了它在错误地点的级数形式。
-        上面 <MathInline tex="\zeta(-1) = -1/12" /> 就是最干净的样板：
-        换成延拓值，最终结果与实验吻合。这套"发散了就查它的延拓值"的做法，
-        在物理里是一门正经手艺；
+        <strong>物理里"发散了怎么办"的正规答案</strong>：刚才那两块金属板不是孤例。
+        物理计算中途算出无穷大，并不总意味着理论错了——
+        常常只是因为把某个本该有限的量，写成了它在错误地点的级数形式。
+        把这类和换成对应函数的延拓值，是一门正经手艺（叫<strong>正规化</strong>），
+        弦论里"时空维数只能取某几个数"这类结论，也是从同一个
+        <MathInline tex="\zeta(-1)" /> 上掉下来的；
       </li>
       <li>
         <strong>全课地图</strong>：虚数被三次方程逼出（壹）→ 复可导 = 局部旋转伸缩（贰）→

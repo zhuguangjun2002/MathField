@@ -3,6 +3,7 @@ import ConceptPage from '../../components/ConceptPage.vue'
 import MathBlock from '../../components/MathBlock.vue'
 import MathInline from '../../components/MathInline.vue'
 import RevealBox from '../../components/RevealBox.vue'
+import QuizBox from '../../components/QuizBox.vue'
 import ComplexMulDemo from '../../demos/ComplexMulDemo.vue'
 </script>
 
@@ -19,9 +20,15 @@ import ComplexMulDemo from '../../demos/ComplexMulDemo.vue'
       <p>
         三次方程求根公式的发现史本身就是一出戏：塔尔塔利亚在比武中靠它扬名，被<strong>卡尔达诺</strong>
         软磨硬泡学去并立誓保密，几年后卡尔达诺发现费罗更早的手稿，认为誓言失效，将公式发表于《大术》——
-        两人反目成仇。但真正的麻烦在公式本身。对 <MathInline tex="x^3 = px + q" />，公式给出：
+        两人反目成仇。但真正的麻烦在公式本身。对 <MathInline tex="x^3 = px + q" />，公式给出
+        （下面这条就是<strong>卡尔达诺公式</strong>——本讲只把它当一件<strong>历史文物</strong>引用，
+        你不需要会推它，也不必逐项看懂，只需要盯住它中途冒出来的那个根号）：
       </p>
       <MathBlock tex="x = \sqrt[3]{\frac{q}{2} + \sqrt{\frac{q^2}{4} - \frac{p^3}{27}}} + \sqrt[3]{\frac{q}{2} - \sqrt{\frac{q^2}{4} - \frac{p^3}{27}}}" />
+      <p>
+        整条公式里唯一要你留神的，是最里层那个 <MathInline tex="\sqrt{\frac{q^2}{4} - \frac{p^3}{27}}" />：
+        全讲的麻烦都从它开始。
+      </p>
       <p>
         某些方程——比如 <MathInline tex="x^3 = 15x + 4" />——根号里的数是<strong>负的</strong>：
         <MathInline tex="\sqrt{4 - 125} = \sqrt{-121}" />。按理该宣布"无解"，
@@ -79,6 +86,17 @@ import ComplexMulDemo from '../../demos/ComplexMulDemo.vue'
       好用、可靠、但没人知道它"是"什么。莱布尼茨称之为"存在与不存在之间的两栖物"，
       欧拉一边写下 <MathInline tex="e^{i\pi} + 1 = 0" /> 一边仍叫它"不可能的数"。
     </p>
+    <QuizBox
+      quiz-id="imaginary-q1"
+      question="邦贝利到底「解出」了 $\sqrt[3]{2+\sqrt{-121}}$ 吗？上面那个等号，说的是哪件事？"
+      hint="先回忆他手里到底有什么工具：他没有平面、没有辐角，只有一条「照普通代数算，碰到那个怪东西自乘就换成 −1」的规则。这条规则能拿来做什么动作，又做不了什么动作？"
+      :options="[
+        { t: '不算解出：他先赌立方根长成 $a+b\\sqrt{-1}$ 的样子，用乘积把 a、b 卡死，再把 $2+\\sqrt{-1}$ 立方回去，发现正好还原成被开方数——等号的意思是「验算通过」', why: '对，这就是全讲的要害。他手上那条规则只能用来「往前算」（展开、化简、验证），不能用来「往回开方」。所以他猜了个形状，再把 $2+\\sqrt{-1}$ 立方展开得到 $2+11\\sqrt{-1}$，正好是被开方数；另一个候选 $1+2\\sqrt{-1}$ 立方后是 $-11-2\\sqrt{-1}$，对不上，就这么被淘汰。整件事里他始终不知道 $\\sqrt{-1}$ 是什么，只知道账目合得上。' },
+        { t: '解出来了：先把 $\\sqrt{-121}$ 写成 $11\\sqrt{-1}$，再对 $2+11\\sqrt{-1}$ 开立方就是了', why: '你这么选，是把「能写出来」当成了「能算出来」。把 $\\sqrt{-121}$ 改写成 $11\\sqrt{-1}$ 只是换了个记号，一点新东西都没产生；真正的动作是「开立方」，而在 1572 年，对这种东西开立方根本没有定义——没有平面、没有辐角，谁也答不出「三次方等于它的那个数在哪儿」。邦贝利绕开的正是这一步。' },
+        { t: '既然不算解出，那这个等号在当时就只是个没有根据的猜测，靠后人才补上根据', why: '你这么选，是把「第一步是猜的」当成了「整件事都是猜的」。猜的只有形状（孪生的 $a\\pm b\\sqrt{-1}$）这一步；后两步是硬碰硬的：两个被开方数相乘得 125，逼出 $a^2+b^2=5$，正整数解只剩两组；立方展开又把其中一组当场淘汰。猜想加验算，等号站得稳稳的——站不稳的是「$\\sqrt{-1}$ 究竟是什么」这个问题，那要再等两百多年才有答案。' },
+      ]"
+      :answer="0"
+    />
 
     <h2><span class="sec-no">贰</span>破局：别问它是什么，看它在哪儿</h2>
     <p>
@@ -91,8 +109,14 @@ import ComplexMulDemo from '../../demos/ComplexMulDemo.vue'
       <p>
         实数排成一条线，早已被"占满"了——<MathInline tex="\sqrt{-1}" /> 在线上确实无处可住。但谁规定数只能住在线上？
         <strong>把数轴扩建成平面</strong>：横轴照旧是实数，纵轴留给 i 的倍数，复数 a+bi 就是点 (a, b)。
-        加法是平移（向量相加），而乘法的几何意义堪称神来之笔：
+        加法是平移（向量相加），而乘法的几何意义堪称神来之笔。说它之前先把两个词就地说定：
+        既然复数是平面上的点，就可以从原点朝它拉一根箭头——<strong>这根箭头的长度，叫这个复数的「模」；
+        箭头与正右方（横轴的正方向，即正实数那一侧）的夹角，叫它的「辐角」</strong>。
+        换句话说，一个复数的位置，用"横走多远、竖走多远"能说清，用"箭头多长、朝哪个方向"同样能说清，
+        后一种说法正是为乘法准备的。有了这两个词，那句神来之笔只有一行：
         <strong>乘一个复数 = 按它的辐角旋转 + 按它的模伸缩</strong>。
+        （这两个词第肆节还会用记号正式立一次：那里的 <MathInline tex="|z|" /> 与
+        <MathInline tex="\arg z" />，说的就是此处的长度与夹角。）
         于是 i²=−1 瞬间"脱魅"：乘 i 是逆时针转 90°，转两次就是转 180°——把 1 转到 −1。
         <strong>−1 的平方根不是一个数值怪胎，是"旋转半圈"这个动作的两个中点（转 90° 或转 −90°）。</strong>
       </p>
@@ -102,6 +126,12 @@ import ComplexMulDemo from '../../demos/ComplexMulDemo.vue'
       而是<strong>平面几何的代数语言</strong>——这也是欧拉公式 <MathInline tex="e^{i\theta} = \cos\theta + i\sin\theta" />
       的正确打开方式：<MathInline tex="e^{i\theta}" /> 就是"逆时针转 θ 角"的旋转算符，
       <MathInline tex="e^{i\pi} = -1" /> 说的不过是"转半圈就是掉头"。
+      （<strong>这里先打个招呼</strong>：本讲从头到尾没有定义过"把虚数放到指数上"是什么意思，
+      所以此处的 <MathInline tex="e^{i\theta}" /> 请先当成"模为 1、辐角为 θ 的那个复数"的
+      <strong>记号缩写</strong>——这么读，本节和后面几节的结论一个都不受影响。
+      它凭什么配用指数这个记号、而不是随便一个字母，凭据在
+      <router-link to="/calculus/taylor">微积分 · 泰勒展开</router-link>那一讲末尾，
+      本讲第肆节还会再交代一次。）
     </p>
 
     <h2><span class="sec-no">叁</span>亲手转一转</h2>
@@ -168,13 +198,28 @@ import ComplexMulDemo from '../../demos/ComplexMulDemo.vue'
         看见了吗：复数除法能不能做，最后还是由实数说了算。这就是开头那句"寄生"的现金兑付；
       </li>
       <li>
-        <strong>极形式里的 <MathInline tex="e^{i\theta}" /> 这里先欠着</strong>：把虚数放到指数上，
-        本讲并没有定义过它是什么意思——此刻你可以把 <MathInline tex="e^{i\theta}" /> 纯粹当作
-        <MathInline tex="\cos\theta + i\sin\theta" /> 的<strong>缩写</strong>，本节的结论一个都不受影响。
+        <strong>极形式里的 <MathInline tex="e^{i\theta}" /> 仍然欠着</strong>：第贰节打招呼时说过，
+        这里把这笔账正式挂在明处——定义框里从头到尾只用了实数对与四则运算，
+        <MathInline tex="e^{i\arg z}" /> 是<strong>唯一一个没有出处的符号</strong>，
+        它仍旧只是 <MathInline tex="\cos\theta + i\sin\theta" /> 的<strong>缩写</strong>，
+        换成任何别的字母，上面那些结论一个都不受影响。
         凭什么这个缩写偏偏配用 <MathInline tex="e" />、而不是随便一个字母？靠的是级数展开，
         <router-link to="/calculus/taylor">微积分 · 泰勒展开</router-link>
-        那一讲末尾把逐项整理的全过程摊开了（连"这算推导还是算定义"也一并交代）；
+        那一讲末尾把逐项整理的全过程摊开了（连"这算推导还是算定义"也一并交代）。
       </li>
+    </ul>
+    <QuizBox
+      quiz-id="imaginary-q3"
+      question="$e^{i\theta} = \cos\theta + i\sin\theta$ 这个等号，在<strong>本讲</strong>里的地位是「定义」还是「定理」？"
+      hint="想清楚一件事：要证明一个等号，得先有两边各自独立的意思。本讲给过左边独立的意思吗？"
+      :options="[
+        { t: '在本讲它只是记号缩写（一条约定）：把右边那个复数简写成左边；要让它升级成一条真正的定理，得先独立定义「指数函数吃复数」是什么意思——那份定义本讲没有', why: '对。证明一个等号的前提是左右两边各有各的来历，可以各算各的、再比对；而本讲从没说过把 iθ 放到指数上是什么运算，左边除了「右边的简写」以外没有别的意思。没有独立的左边，就没有可证的命题，只有一个方便的记号。' },
+        { t: '是定理，本讲已经把它证出来了：乘 i 是转 90°，所以 $e^{i\\theta}$ 就是转 θ 角', why: '你这么选，是把「解释得通」当成了「证明了」。本讲确实给了这个记号一个说得通的几何读法，但全程绕开了一个前置问题：把 iθ 放到指数上，究竟在做什么运算？指数原本的意思是「自乘若干次」，而「自乘 iθ 次」是没有意义的一句话。前置问题没答，后面的推理再顺，也没有一条被证明的命题。' },
+        { t: '是定义，欧拉当年就是这么规定 $e^{i\\theta}$ 的，所以无所谓证不证，也没什么可算的', why: '你这么选，是把「本讲拿它当缩写」当成了「这件事本来就是拍脑袋约定的」。它在本讲是约定不假，但在数学里绝不是随便定的：把 $e^x$ 的级数里的 x 换成 iθ 逐项整理，实部会自动拼成 $\\cos\\theta$、虚部自动拼成 $\\sin\\theta$——右边不是选出来的，是算出来的。所以在别处它确实有定理的身份，只是那份凭据本讲还没拿到手。' },
+      ]"
+      :answer="0"
+    />
+    <ul>
       <li>
         <strong>代价要认账</strong>：<MathInline tex="\mathbb{C}" /> 里<strong>没有大小顺序</strong>——
         没法说 i 和 1 谁大（任何与四则相容的全序都会推出 −1 &gt; 0 的矛盾）。数学的每次扩张都有账单：
@@ -185,15 +230,101 @@ import ComplexMulDemo from '../../demos/ComplexMulDemo.vue'
         为解方程而扩数系的两千年长征（自然数→负数→分数→无理数→复数），<strong>到复数为止，够了</strong>。
       </li>
     </ul>
+    <QuizBox
+      quiz-id="imaginary-q2"
+      question="读完这一节，i 到底是不是一个「不存在的数」？"
+      hint="别急着表态，先问自己：这一节里 i 是从哪儿来的、用什么材料造的？i²=−1 这件事，是被规定的，还是被算出来的？"
+      :options="[
+        { t: 'i 和 1 一样，是被造出来的对象：它就是有序实数对 $(0,1)$，材料全是实数；$i^2=-1$ 是按乘法规则算出来的结果，不是要你相信的信条。「虚」只是历史留下的一个蔑称', why: '对。整个定义里没有一样新东西：两个实数、两条运算规则，如此而已。$i^2=-1$ 是算出来的——$(0,1)\\cdot(0,1)=(0\\cdot 0-1\\cdot 1,\\ 0\\cdot 1+1\\cdot 0)=(-1,0)$，而 $(-1,0)$ 正是实数 −1。要说不存在，那得先说实数对不存在。' },
+        { t: '不存在：它是为了让方程有解硬造出来的符号，现实世界里没有跟它对应的量', why: '你这么选，是把「能不能在数轴上指出来」当成了「存不存在」。按这个标准，负数（欠债不是一堆苹果）和无理数（没有哪把尺子量得出来）当年也都被判过「不存在」，如今没人再这么说了。何况 i 有再实在不过的对应物：平面上那个转 90° 的动作；伍节里插座送来的交流电，相位差正是靠它记账的。' },
+        { t: '存在啊：因为 −1 确实有一个平方根，i 就是那个数', why: '你这么选，是把结论当成了定义，顺序反了。要是开口就说「i 是 −1 的平方根」，你其实还欠着一个问题：这么个东西凭什么存在？——两百年里卡住所有人的正是这句反问。哈密顿的做法是倒过来走：先用两个实数把 $(0,1)$ 造出来，再按乘法规则算出它的平方是 $(-1,0)$。「−1 的平方根」是它算完之后领到的身份证，不是它进场的门票。' },
+      ]"
+      :answer="0"
+    />
 
     <h2><span class="sec-no">伍</span>买到了什么：一门语言，不止一个数</h2>
+
+    <h3>插座里的旋转：交流电为什么是复数的主场</h3>
+    <p>
+      先看一件此刻正在你身边发生的事：墙上插座送来的电压不是一个稳住不动的数，
+      它每秒来回摆动五十次，家里所有电器都泡在这来回摆动的电里。
+      工程师描述这样一段电压时写下的记号是 <MathInline tex="V\cos(\omega t + \varphi)" />——
+      先别管这一串符号，只回答一个问题：<strong>要把这样一段电压说清楚，一共得给几个数？</strong>
+      （摆动的快慢是全电路公用的，不必每处重说一遍。）
+      想清楚这个数字，你其实已经猜到复数为什么会成为电工的母语了。
+      （这一小节<strong>不需要任何电学基础</strong>：全部物理输入只有两条常识，到第 ④ 步当场奉上。）
+    </p>
+    <p>
+      <strong>① 一个正弦量 = 两个数 = 一个复数。</strong>
+      交流电路里所有电压电流都是<strong>同一个频率</strong>的正弦（这是它跟直流最大的不同），
+      彼此的差别只剩两项：<strong>振幅多大、波形前后错开多少（相位）</strong>。
+      两个数——正好装进一个复数 <MathInline tex="V e^{i\varphi}" />（模是振幅、辐角是相位），
+      工程上管它叫<strong>相量</strong>。这一步没有物理，只是把"两个数"打了个包。
+    </p>
+    <p>
+      <strong>② 让它转起来。</strong>把整条电路想成一个匀速转动的转盘：
+    </p>
+    <MathBlock tex="V\cos(\omega t + \varphi) = \operatorname{Re}\left[\underbrace{V e^{i\varphi}}_{\text{相量：静止的}} \cdot \underbrace{e^{i\omega t}}_{\text{转盘：大家共用}}\right]" />
+    <p>
+      实际电压就是转盘上那个点<strong>在实轴上的投影</strong>——上上下下的正弦波，
+      不过是匀速圆周运动的影子。既然 <MathInline tex="e^{i\omega t}" /> 是全电路共用的因子，
+      干脆<strong>跟着转盘一起转</strong>，把它约掉，只留下静止的相量来记账。
+    </p>
+    <p>
+      <strong>③ 奇迹只有一句：求导 = 乘 <MathInline tex="i\omega" />。</strong>
+      因为 <MathInline tex="\frac{d}{dt}e^{i\omega t} = i\omega\, e^{i\omega t}" />。
+      而乘 i 是<strong>逆时针转 90°</strong>（本讲第贰节的老结论）。于是——
+      示波器上看到的"电容里电流比电压早四分之一个周期"这件物理现象，
+      代数上不过是<strong>求一次导多转 90°</strong>。<strong>那个 90° 不是巧合，
+      它就是 i 的几何身份。</strong>
+    </p>
+    <p>
+      <strong>④ 于是微分方程降级成了乘除法。</strong>全部物理输入只有两条中学之后的常识：
+      电容上<strong>电流正比于电压的变化率</strong>（<MathInline tex="i = C\,dv/dt" />，
+      电容像个水桶：进水快慢决定水位上升快慢）；电感上<strong>电压正比于电流的变化率</strong>
+      （<MathInline tex="v = L\,di/dt" />，电感像个飞轮：想让它变速就得使劲）。
+      把 ③ 的"求导 = 乘 <MathInline tex="i\omega" />"代进去，两条微分关系当场变成两条乘法关系：
+    </p>
+    <MathBlock tex="Z_R = R, \qquad Z_L = i\omega L, \qquad Z_C = \frac{1}{i\omega C} = -\frac{i}{\omega C}" />
+    <p>
+      这三个复数就叫<strong>阻抗</strong>，而欧姆定律原封不动地升级成
+      <MathInline tex="V = I \cdot Z" />——只不过 V、I、Z 现在都是复数。
+      <strong>解交流电路从此不必再解微分方程</strong>：串联相加、并联倒数相加，
+      照初中算电阻的老规矩算就是了。这就是"电工的母语"的全部含义。
+    </p>
+    <p>
+      <strong>⑤ 顺带把两句行话译成人话。</strong>电工挂在嘴边的"相位差就是辐角差""电容电感不过是
+      乘 ±i 的元件"，听着像黑话，现在字面全都可读了：
+      阻抗的<strong>模</strong>是电压与电流的振幅之比（"这元件有多挡电流"），
+      阻抗的<strong>辐角</strong>就是电压与电流的相位差——所以说"相位差就是辐角差"。
+      而 <MathInline tex="Z_L" /> 的辐角是 +90°、<MathInline tex="Z_C" /> 的辐角是 −90°，
+      所以说"电容电感不过是乘 ±i 的元件"：<strong>电阻只缩放，电容电感只旋转</strong>。
+      纯电阻电流电压同相位，功率老老实实变热；纯电容电感差 90°，
+      一个周期里吸收的能量原样吐回去——这就是电工说的"无功功率"。
+    </p>
+    <p>
+      <strong>⑥ 一个记号上的小注</strong>：电工程里虚数单位写作 <strong>j</strong> 而不是 i，
+      因为 i 这个字母早就被<strong>电流</strong>占用了。看到 <MathInline tex="Z = R + jX" />
+      别慌，就是本讲的 <MathInline tex="a + bi" />。
+    </p>
+    <p>
+      所以别被"电工程"三个字唬住：这段东西<strong>不需要先学一学期电路</strong>。
+      它要的只是"复数是有序对"（第肆节）、"乘 i 是转 90°"（第贰节）、"求导"（微积分讲），
+      外加上面那两条元件常识。真正的电路课要处理的是网络拓扑、瞬态、非线性——那些是另一回事，
+      与复数没什么关系。同一个转盘还能转得更远：
+      <router-link to="/mathphys/heat">数理方程 · 热传导方程与傅里叶级数</router-link>
+      那一讲的主角也是 <MathInline tex="e^{i\omega t}" />，只不过那里不是一个频率在转，
+      而是无穷多个频率一起转。
+    </p>
+
+    <h3>还买到了什么</h3>
     <ul>
       <li>
         <strong>三角恒等式批发部</strong>：棣莫弗公式 <MathInline tex="(\cos\theta + i\sin\theta)^n = \cos n\theta + i\sin n\theta" />
         就是"转 n 次 = 转 n 倍角"——单位圆上的复数 <MathInline tex="\cos\theta + i\sin\theta" /> 模为 1，
         乘它只转不伸缩，乘 n 次自然转到 <MathInline tex="n\theta" />。
         这个"批发部"到底怎么出货？下面那个框把它拆开了——<strong>先自己动笔试一分钟再点开</strong>，
-        这是整节唯一要算一算的地方：
+        这是本讲最后一处要你自己动笔的地方：
       </li>
     </ul>
     <RevealBox
@@ -241,83 +372,6 @@ import ComplexMulDemo from '../../demos/ComplexMulDemo.vue'
         而生产它们的机制自始至终只有一条——<strong>乘法即旋转</strong>，展开取实虚部。
         线性代数讲里我们用旋转矩阵连乘变过同一个魔术（<MathInline tex="R(\alpha)R(\beta) = R(\alpha+\beta)" />
         的四个矩阵元就是上面那两条和角公式），复数把那个 2×2 的账本压缩成了一行乘法。
-      </p>
-    </RevealBox>
-    <ul>
-      <li>
-        <strong>电工程的母语</strong>：交流电路的阻抗、相位全用复数记账——"相位差"就是辐角差，
-        电容电感不过是"乘 ±i"的元件。傅里叶分析（数理方程课的主角）同样建立在
-        <MathInline tex="e^{i\omega t}" /> 上。这句话听着像黑话，其实拆开只要两条物理常识，
-        下面那个框把它翻译成人话；
-      </li>
-    </ul>
-    <RevealBox
-      title='🔌 把"电工的母语"翻译一遍（不需要任何电学基础）'
-      label="展开翻译（只用到导数 + 乘 i 是转 90°）"
-      close-label="收起这段翻译"
-    >
-      <template #hint>
-        点开之前先想一个问题：一段交流电压 <MathInline tex="V\cos(\omega t + \varphi)" />，
-        要完整描述它得给几个数？（频率是全电路公用的，不算）——想清楚这个数字，
-        你其实已经猜到复数为什么会成为电工的母语了。
-      </template>
-      <p>
-        <strong>① 一个正弦量 = 两个数 = 一个复数。</strong>
-        交流电路里所有电压电流都是<strong>同一个频率</strong>的正弦（这是它跟直流最大的不同），
-        彼此的差别只剩两项：<strong>振幅多大、波形前后错开多少（相位）</strong>。
-        两个数——正好装进一个复数 <MathInline tex="V e^{i\varphi}" />（模是振幅、辐角是相位），
-        工程上管它叫<strong>相量</strong>。这一步没有物理，只是把"两个数"打了个包。
-      </p>
-      <p>
-        <strong>② 让它转起来。</strong>把整条电路想成一个匀速转动的转盘：
-      </p>
-      <MathBlock tex="V\cos(\omega t + \varphi) = \operatorname{Re}\left[\underbrace{V e^{i\varphi}}_{\text{相量：静止的}} \cdot \underbrace{e^{i\omega t}}_{\text{转盘：大家共用}}\right]" />
-      <p>
-        实际电压就是转盘上那个点<strong>在实轴上的投影</strong>——上上下下的正弦波，
-        不过是匀速圆周运动的影子。既然 <MathInline tex="e^{i\omega t}" /> 是全电路共用的因子，
-        干脆<strong>跟着转盘一起转</strong>，把它约掉，只留下静止的相量来记账。
-      </p>
-      <p>
-        <strong>③ 奇迹只有一句：求导 = 乘 <MathInline tex="i\omega" />。</strong>
-        因为 <MathInline tex="\frac{d}{dt}e^{i\omega t} = i\omega\, e^{i\omega t}" />。
-        而乘 i 是<strong>逆时针转 90°</strong>（本讲第贰节的老结论）。于是——
-        示波器上看到的"电容里电流比电压早四分之一个周期"这件物理现象，
-        代数上不过是<strong>求一次导多转 90°</strong>。<strong>那个 90° 不是巧合，
-        它就是 i 的几何身份。</strong>
-      </p>
-      <p>
-        <strong>④ 于是微分方程降级成了乘除法。</strong>全部物理输入只有两条中学之后的常识：
-        电容上<strong>电流正比于电压的变化率</strong>（<MathInline tex="i = C\,dv/dt" />，
-        电容像个水桶：进水快慢决定水位上升快慢）；电感上<strong>电压正比于电流的变化率</strong>
-        （<MathInline tex="v = L\,di/dt" />，电感像个飞轮：想让它变速就得使劲）。
-        把 ③ 的"求导 = 乘 <MathInline tex="i\omega" />"代进去，两条微分关系当场变成两条乘法关系：
-      </p>
-      <MathBlock tex="Z_R = R, \qquad Z_L = i\omega L, \qquad Z_C = \frac{1}{i\omega C} = -\frac{i}{\omega C}" />
-      <p>
-        这三个复数就叫<strong>阻抗</strong>，而欧姆定律原封不动地升级成
-        <MathInline tex="V = I \cdot Z" />——只不过 V、I、Z 现在都是复数。
-        <strong>解交流电路从此不必再解微分方程</strong>：串联相加、并联倒数相加，
-        照初中算电阻的老规矩算就是了。这就是"电工的母语"的全部含义。
-      </p>
-      <p>
-        <strong>⑤ 回头看那两句黑话，现在字面可读了：</strong>
-        阻抗的<strong>模</strong>是电压与电流的振幅之比（"这元件有多挡电流"），
-        阻抗的<strong>辐角</strong>就是电压与电流的相位差——所以说"相位差就是辐角差"。
-        而 <MathInline tex="Z_L" /> 的辐角是 +90°、<MathInline tex="Z_C" /> 的辐角是 −90°，
-        所以说"电容电感不过是乘 ±i 的元件"：<strong>电阻只缩放，电容电感只旋转</strong>。
-        纯电阻电流电压同相位，功率老老实实变热；纯电容电感差 90°，
-        一个周期里吸收的能量原样吐回去——这就是电工说的"无功功率"。
-      </p>
-      <p>
-        <strong>⑥ 一个记号上的小注</strong>：电工程里虚数单位写作 <strong>j</strong> 而不是 i，
-        因为 i 这个字母早就被<strong>电流</strong>占用了。看到 <MathInline tex="Z = R + jX" />
-        别慌，就是本讲的 <MathInline tex="a + bi" />。
-      </p>
-      <p>
-        所以别被"电工程"三个字唬住：这段东西<strong>不需要先学一学期电路</strong>。
-        它要的只是"复数是有序对"（第肆节）、"乘 i 是转 90°"（第贰节）、"求导"（微积分讲），
-        外加上面那两条元件常识。真正的电路课要处理的是网络拓扑、瞬态、非线性——那些是另一回事，
-        与复数没什么关系。
       </p>
     </RevealBox>
     <ul>
