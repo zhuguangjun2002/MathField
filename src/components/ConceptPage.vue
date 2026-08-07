@@ -63,7 +63,7 @@ onBeforeUnmount(() => {
       <div v-if="prereqs.length" class="prereq-bar">
         🧭 开始前你需要会：
         <span v-for="(p, i) in prereqs" :key="p.path" class="prereq-item">
-          <router-link :to="p.path">{{ p.title }}</router-link><span v-if="p.read" class="prereq-read">✓</span>（{{ p.why }}）<span v-if="i < prereqs.length - 1">、</span>
+          <router-link :to="p.path">{{ p.title }}</router-link><span v-if="p.read" class="prereq-read">✓</span>（<RichText :text="p.why" />）<span v-if="i < prereqs.length - 1">、</span>
         </span>
       </div>
       <div v-else-if="info.baseline" class="prereq-bar">

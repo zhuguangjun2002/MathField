@@ -3,6 +3,7 @@ import ConceptPage from '../../components/ConceptPage.vue'
 import MathBlock from '../../components/MathBlock.vue'
 import MathInline from '../../components/MathInline.vue'
 import RevealBox from '../../components/RevealBox.vue'
+import QuizBox from '../../components/QuizBox.vue'
 import EigenDemo from '../../demos/EigenDemo.vue'
 </script>
 
@@ -10,8 +11,19 @@ import EigenDemo from '../../demos/EigenDemo.vue'
   <ConceptPage slug="eigen">
     <h2><span class="sec-no">壹</span>困境：变换一遍看得清，变换一万遍怎么办</h2>
     <p>
+      先从一个中学生都会背的数列进门。1202 年，斐波那契在《计算之书》里用一对兔子出题，
+      题目催生的数列流传至今：1, 1, 2, 3, 5, 8, 13, 21, 34, …——
+      <strong>每一项是前两项之和</strong>，规则加法到不能再加法。可拿相邻两项做个除法：
+      <MathInline tex="13/8 = 1.625" />、<MathInline tex="21/13 \approx 1.615" />、
+      <MathInline tex="34/21 \approx 1.619" />……这串比值死死咬住一个<strong>无理数</strong>
+      <MathInline tex="\varphi = (1+\sqrt5)/2 \approx 1.618" />——黄金比例。
+      一条纯加法、纯整数的规则，凭什么吐出一个带根号的常数？目录页挂的那句悬念，本讲结案。
+    </p>
+    <p>
+      这个小谜题和 18 世纪最重的大问题，形状竟然相同。
       <router-link to="/linear-algebra/linear-map">第三讲</router-link>把矩阵看成变换，
-      一次作用还算直观。但 18 世纪的大问题偏偏都是<strong>反复作用</strong>型的：
+      一次作用还算直观；但真正要命的问题偏偏都是<strong>反复作用</strong>型的
+      （斐波那契"再走一步"是反复，行星"再转一年"也是反复）：
     </p>
     <div class="story">
       <div class="story-title">📜 1743 — 1829 年 · 太阳系会散架吗</div>
@@ -37,6 +49,8 @@ import EigenDemo from '../../demos/EigenDemo.vue'
     </p>
     <MathBlock tex="A\boldsymbol{v} = \lambda \boldsymbol{v}" />
     <p>
+      （<MathInline tex="\lambda" /> 读"拉姆达"，它就是一个<strong>普通的数</strong>——
+      用希腊字母只是提醒你它身份特殊，不是什么新数学对象。）
       如果有这样的方向 v（特征向量）和伸缩倍数 λ（特征值），那么在这个方向上，
       矩阵这头猛兽退化成一个<strong>普通数字</strong>：作用一次是乘 λ，作用一百次就是乘
       <MathInline tex="\lambda^{100}" />。矩阵的幂算不动，数字的幂小学生都会。
@@ -46,8 +60,12 @@ import EigenDemo from '../../demos/EigenDemo.vue'
       <p>
         若能找到一整组基都由特征向量组成，把任意初始状态按这组基拆开：
         <MathInline tex="\boldsymbol{x} = c_1\boldsymbol{v}_1 + c_2\boldsymbol{v}_2" />，
-        则演化 n 步后就是 <MathInline tex="A^n\boldsymbol{x} = c_1\lambda_1^n\boldsymbol{v}_1 + c_2\lambda_2^n\boldsymbol{v}_2" />——
-        各方向<strong>各过各的日子，互不打扰</strong>（术语叫"解耦"或"对角化"）。
+        则演化 n 步后就是 <MathInline tex="A^n\boldsymbol{x} = c_1\lambda_1^n\boldsymbol{v}_1 + c_2\lambda_2^n\boldsymbol{v}_2" />
+        （中间用了"A 作用在和上 = 分别作用再相加"——正是
+        <router-link to="/linear-algebra/linear-map">第三讲</router-link>线性变换的定义本身）——
+        各方向<strong>各过各的日子，互不打扰</strong>。术语叫"解耦"或"<strong>对角化</strong>"：
+        换到特征基下，A 的表只剩对角线上的 <MathInline tex="\lambda_1, \lambda_2" />、其余全零——
+        这种表叫<strong>对角矩阵</strong>，矩阵里最老实的一种。
         长期命运一眼可见：|λ| 最大的那个方向最终独霸天下，|λ|&lt;1 的方向逐渐消亡。
         特征向量是变换的"纹理"，顺着纹理看，一切复杂运动都是几个独立伸缩的叠加。
       </p>
@@ -85,9 +103,11 @@ import EigenDemo from '../../demos/EigenDemo.vue'
       <MathBlock tex="\det\begin{pmatrix} 1-\lambda & 1 \\ 1 & -\lambda\end{pmatrix} = (1-\lambda)(-\lambda) - 1 = \lambda^2 - \lambda - 1 = 0" />
       <p>
         （顺手记一个好用的规律：二阶的特征方程永远是
-        <MathInline tex="\lambda^2 - (\operatorname{tr}A)\lambda + \det A = 0" />，
-        这里迹是 <MathInline tex="1+0=1" />、行列式是
-        <MathInline tex="1\cdot 0 - 1\cdot 1 = -1" />，正好对上。）
+        <MathInline tex="\lambda^2 - (\operatorname{tr}A)\lambda + \det A = 0" />。
+        <MathInline tex="\operatorname{tr}A" /> 读"A 的<strong>迹</strong>"，定义极简：
+        对角线元素之和。这里迹是 <MathInline tex="1+0=1" />、行列式是
+        <MathInline tex="1\cdot 0 - 1\cdot 1 = -1" />，正好对上；
+        这条规律本身会在肆节的折叠框里当场推出来。）
       </p>
       <MathBlock tex="\lambda_{1,2} = \frac{1 \pm \sqrt5}{2}, \qquad \varphi = \frac{1+\sqrt5}{2} \approx 1.6180,\quad \psi = \frac{1-\sqrt5}{2} \approx -0.6180" />
       <p>
@@ -110,8 +130,11 @@ import EigenDemo from '../../demos/EigenDemo.vue'
       <p>
         <strong>第四步：把初始状态按特征基拆开。</strong>
         <MathInline tex="\boldsymbol{x}_0 = (F_1, F_0) = (1, 0)" /> 拆成
-        <MathInline tex="c_1\boldsymbol{v}_1 + c_2\boldsymbol{v}_2" />，
-        解出 <MathInline tex="c_1 = -c_2 = 1/\sqrt5" />。走 n 步：
+        <MathInline tex="c_1\boldsymbol{v}_1 + c_2\boldsymbol{v}_2" />。逐分量写开是个二元一次方程组：
+        第二分量给出 <MathInline tex="c_1 + c_2 = 0" />，第一分量给出
+        <MathInline tex="c_1\varphi + c_2\psi = 1" />；代入 <MathInline tex="c_2 = -c_1" /> 得
+        <MathInline tex="c_1(\varphi - \psi) = 1" />，而 <MathInline tex="\varphi - \psi = \sqrt5" />，
+        所以 <MathInline tex="c_1 = -c_2 = 1/\sqrt5" />。走 n 步：
       </p>
       <MathBlock tex="A^n \boldsymbol{x}_0 = \frac{1}{\sqrt5}\varphi^n\begin{pmatrix}\varphi\\1\end{pmatrix} - \frac{1}{\sqrt5}\psi^n\begin{pmatrix}\psi\\1\end{pmatrix}" />
       <p>取第二个分量，就是那条著名的<strong>比内公式</strong>：</p>
@@ -141,6 +164,17 @@ import EigenDemo from '../../demos/EigenDemo.vue'
         <strong>一个中学生都会背的数列，把这门课的五讲全用上了。</strong>
       </p>
     </RevealBox>
+    <QuizBox
+      quiz-id="eigen-q1"
+      question="一个特征值 λ 配的特征向量，是唯一的一个向量吗？"
+      hint="拿定义验：v 满足 $A\boldsymbol{v}=\lambda\boldsymbol{v}$，那 $2\boldsymbol{v}$ 呢？$-\boldsymbol{v}$ 呢？"
+      :options="[
+        { t: '不唯一：拉长、缩短、反向都还满足定义——「特征」的其实是一整条过原点的直线', why: '对。A(2v) = 2Av = 2λv = λ(2v)，任何非零倍数都合格。所以说「特征方向」比「特征向量」更贴切；demo 里长度固定 1.4 只转方向、且 225° 与 45° 同样变绿（同一条直线的反向），都是这件事。' },
+        { t: '唯一：一个 λ 恰好配一个 v，否则「特征」二字就不特殊了', why: '特殊的是「方向」不是「那支箭」：同一条直线上的向量全体（除零向量）都属于 λ。真正稀有的是方向本身——demo 扫一整圈通常只逮到两条线，这才是「特征」的分量。' },
+        { t: '不唯一，而且可以偏离原方向一点点，差不多就行', why: '不行，共线是硬要求：偏离哪怕 1°，Av 与 v 就不再平行，定义立刻不满足。demo 的绿色判定留了 0.035 的数值容差，那是浮点世界的工程让步，不是数学定义松了口。' },
+      ]"
+      :answer="0"
+    />
 
     <h2><span class="sec-no">叁</span>亲手扫描出特征方向</h2>
     <p>
@@ -174,8 +208,12 @@ import EigenDemo from '../../demos/EigenDemo.vue'
         而第二讲说过，"压扁"的判据正是行列式为零。三讲之前埋的伏笔，在此严丝合缝地扣上；
       </li>
       <li>
-        特征方程是 λ 的 n 次多项式，所以<strong>特征值最多 n 个</strong>，
-        而且可能出现<strong>复根</strong>——动画里"旋转矩阵等不到绿色"就是这情形。
+        特征方程是 λ 的 n 次多项式，所以<strong>特征值最多 n 个</strong>
+        （n 次多项式至多 n 个根——中学对二次方程的经验，推广到高次照样成立），
+        而且可能出现<strong>复根</strong>——要动用虚数
+        <MathInline tex="i" />（约定 <MathInline tex="i^2 = -1" /> 的那个新数）才写得出的根。
+        还没读过复变课不要紧，此处只需知道：实数里无解 ≠ 无解。
+        动画里"旋转矩阵等不到绿色"就是这情形。
       </li>
     </ul>
     <p>
@@ -216,7 +254,9 @@ import EigenDemo from '../../demos/EigenDemo.vue'
         <MathInline tex="A(1,-1) = (1,-1)" />。
         <strong>两个方向线性无关、够成一组基，可以对角化</strong>——第贰节那句直觉完全适用。
         （注意这两个方向<strong>互相垂直</strong>，这不是巧合：
-        A 是<strong>对称矩阵</strong>，而对称矩阵的特征值必为实数、特征向量必可取成正交的。
+        A 是<strong>对称矩阵</strong>——沿主对角线翻折不变、即
+        <MathInline tex="a_{ij} = a_{ji}" /> 的矩阵，本例两个 1 正好互为镜像——
+        而对称矩阵的特征值必为实数、特征向量必可取成正交的。
         主成分分析、二次型化主轴、刚体的三根主轴，全靠这条。）
       </p>
       <p>
@@ -257,11 +297,76 @@ import EigenDemo from '../../demos/EigenDemo.vue'
         所以解空间 <MathInline tex="2-1=1" /> 维，差了一维。）
       </p>
     </RevealBox>
+    <QuizBox
+      quiz-id="eigen-q2"
+      question="特征方程解出一个二重根（根有两个但相等）。特征方向也一定能凑出两条吗？"
+      hint="剪切矩阵刚在折叠框里演过它的结局。"
+      :options="[
+        { t: '不一定：剪切矩阵 $(\lambda-1)^2=0$ 根的重数是 2，特征方向却只有一条', why: '对。「根够了、方向不够」正是不可对角化的病灶：代数上数出来的重数，几何上未必配得齐同样多的独立方向。判据要一个特征值一个特征值地查：解空间维数（上一讲的 n − r）加总够不够 n。' },
+        { t: '一定：n 个根（按重数数）就配 n 条方向', why: '这正是最值得拆掉的想当然。剪切矩阵 (1 1; 0 1) 的重根是 2，可 (A−I)v=0 的解空间只有 1 维——demo 里选「剪切」扫一整圈只闪一次绿，就是亲眼看这个反例。' },
+        { t: '重根意味着根本没有特征方向', why: '方向不是没有，是不够：剪切矩阵好歹有 (1,0) 那一条。「一条都没有」是旋转矩阵的结局（实数里连根都没有），和重根的「有根缺方向」是两种不同的病。' },
+      ]"
+      :answer="0"
+    />
 
     <h2><span class="sec-no">伍</span>买到了什么：长期行为的水晶球</h2>
+
+    <h3>谷歌的第一桶金：把整个互联网排成一个特征向量</h3>
+    <p>
+      1998 年，斯坦福两个博士生佩奇和布林盯上了当时搜索引擎的死穴：按"关键词出现次数"排序，
+      垃圾网页只要拼命堆砌关键词就能霸榜。他们的替代方案只有一句话：
+      <strong>重要性由链接投票——被重要网页链接的网页，才重要</strong>。
+      这话听着在绕圈子（定义"重要"用到了"重要"），可正是这个圈，把问题送进了本讲的地盘。
+    </p>
+    <p>
+      <strong>为什么绕到特征向量？</strong>想象一个永不疲倦的网虫随机点链接闲逛。
+      "下一步他在哪"的分布，等于"转移矩阵 M 乘以当前分布"——
+      又是<strong>反复作用</strong>型问题，和壹节的形状一模一样。
+      一个网页的重要性，就定义为网虫<strong>长期</strong>停留在它上面的频率；
+      而"长期分布"意味着再走一步也不变：<MathInline tex="M\boldsymbol{x} = \boldsymbol{x}" />——
+      <strong>这恰是 λ = 1 的特征向量</strong>。绕圈子的定义，翻译成数学是一句不动点方程。
+    </p>
+    <p>
+      拿四个网页手算一遍。链接关系：A 链向 B、C；B 链向 C；C 链向 A；D 链向 A、C
+      （每页把"一票"均分给它链出的页面）。从均匀分布
+      <MathInline tex="(0.25,\ 0.25,\ 0.25,\ 0.25)" /> 出发反复乘 M：
+      第一步 <MathInline tex="(0.375,\ 0.125,\ 0.5,\ 0)" />，第二步
+      <MathInline tex="(0.5,\ 0.1875,\ 0.3125,\ 0)" />……来回震荡二十几步后，稳稳停在
+    </p>
+    <MathBlock tex="\boldsymbol{x}^* = (0.4,\ 0.2,\ 0.4,\ 0), \qquad M\boldsymbol{x}^* = \boldsymbol{x}^*\ \text{（代回去验：不动）}" />
+    <p>
+      排名出炉：A 与 C 并列第一，B 次之，<strong>D 得零分——因为没有任何网页链接它</strong>，
+      网虫永远流不进去。注意算法自动识破了"自吹"：D 自己链出去两票拉关系，一分都换不回来。
+    </p>
+    <p>
+      <strong>读出工程</strong>：真实互联网几十亿页，特征方程是几十亿次的多项式、
+      行列式有 <MathInline tex="n!" /> 项——想都别想。可行的只有刚才那招笨办法：
+      <strong>反复相乘，硬"迭"出来</strong>（术语叫幂迭代）。它管用的原因本讲已经讲过：
+      次要方向按 <MathInline tex="|\lambda_2/\lambda_1|^n" /> 的速度消亡，剩下的就是主特征向量——
+      和斐波那契比值趋于 φ 是同一台机器（那里消亡速度是
+      <MathInline tex="0.382^n" />，20 步就七位小数准）。
+      <strong>条件不成立会怎样？</strong>若网络裂成互不相通的几块、或存在"只进不出"的死循环区，
+      网虫会被困住，λ = 1 的方向不止一条，排名失去唯一性。
+      谷歌的对策写在原始论文里：让网虫每一步有 15% 的概率无视链接、随机跳到任意页面
+      （"阻尼因子 0.85"）——这一改保证了主特征方向唯一，迭代必收敛。
+      一门 18 世纪为行星轨道发明的数学，一百七十年后成了搜索引擎的地基。
+    </p>
+    <QuizBox
+      quiz-id="eigen-q3"
+      question="谷歌为什么不老老实实解特征方程，而要几十次「矩阵乘向量」硬迭代？"
+      hint="几十亿阶的行列式有多少项？"
+      :options="[
+        { t: '因为几十亿阶的特征方程根本写不出来；幂迭代每步只需「矩阵乘向量」，还自动挑出 λ 最大的方向', why: '对。行列式 n! 项、高次方程无求根公式，正面进攻在 n 巨大时全线不通；而链接矩阵极稀疏，乘一次向量只花「链接总数」的功夫。幂迭代以退为进——不求全部特征值，只让时间替它筛出老大。' },
+        { t: '因为解方程不够精确，迭代能算得更准', why: '账算反了：解特征方程（若能解）给的是精确答案，迭代才是逐步逼近。迭代胜出靠的不是精度，是可行性——n 巨大时它是唯一进得了场的选手。' },
+        { t: '随便选的，两种方法成本差不多', why: '差得天远：特征方程路线的成本随 n 爆炸（行列式 n! 项起步），幂迭代一步只要一次稀疏矩阵乘向量，几十步收工。规模一大，「能算」与「不能算」就是全部区别——数值分析整门课都在算这种账。' },
+      ]"
+      :answer="0"
+    />
+
     <ul>
       <li>
-        <strong>微分方程组解耦</strong>：<MathInline tex="\boldsymbol{x}' = A\boldsymbol{x}" />
+        <strong>微分方程组解耦</strong>（写给已读过微积分的读者，没读过跳过这条即可）：
+        <MathInline tex="\boldsymbol{x}' = A\boldsymbol{x}" />
         在特征基下拆成 n 个互不相干的一维方程 <MathInline tex="y_i' = \lambda_i y_i" />，
         解就是 <MathInline tex="e^{\lambda_i t}" /> 的叠加——特征值的实部正负当场判定系统稳不稳定。
         拉格朗日问"太阳系会不会散架"，问的就是世纪方程的根；
@@ -272,16 +377,6 @@ import EigenDemo from '../../demos/EigenDemo.vue'
         特征值必定是实数。这些方向指向数据"最伸展"的方位，特征值就是该方向的方差——
         降维就是只保留大特征值的那几个方向。二次型化主轴、椭圆的长短轴、
         欧拉那三根刚体主轴，都是这同一条定理的不同马甲；
-      </li>
-      <li>
-        <strong>谷歌 PageRank</strong>：把网页链接关系写成转移矩阵，网页的重要性排序就是它最大特征值
-        （λ = 1）对应的特征向量。它不是解特征方程解出来的（网页有几十亿个，
-        <MathInline tex="n!" /> 项的行列式想都别想），而是<strong>反复相乘</strong>硬"迭"出来的——
-        随便取个初始向量，乘上几十次转移矩阵，
-        <strong>次要方向按 <MathInline tex="|\lambda_2/\lambda_1|^n" /> 的速度消亡</strong>，
-        剩下的就是主特征向量。这叫<strong>幂迭代</strong>，
-        和斐波那契的比值趋于 φ 是同一台机器（那里的消亡速度是
-        <MathInline tex="|\psi/\varphi|^n \approx 0.382^n" />，所以 20 步就七位小数准）；
       </li>
       <li>
         <strong>数值分析的谱半径</strong>：迭代法
@@ -315,8 +410,8 @@ import EigenDemo from '../../demos/EigenDemo.vue'
         <router-link to="/mathphys/separation">分离变量法</router-link>，
         本质是在无穷维<router-link to="/linear-algebra/vector-space">函数空间</router-link>里找特征向量——
         <strong>驻波模式就是特征向量，频率就是特征值</strong>，
-        而<router-link to="/mathphys/heat">傅里叶展开</router-link>就是"按特征基拆开、各过各的日子"
-        （<b>本站那两讲都从零讲起，不需要先修</b>）。整套解法是本讲在函数空间的重演。
+        而<router-link to="/mathphys/heat">傅里叶展开</router-link>就是"按特征基拆开、各过各的日子"。
+        整套解法是本讲在函数空间的重演——那两讲都在站内、都从零讲起，
         学到那里时，请务必回来重读"破局"一节。
       </p>
       <p>

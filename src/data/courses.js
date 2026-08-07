@@ -66,6 +66,8 @@ export const linearAlgebraConcepts = [
     question: '《九章算术》没有字母 x、y，凭什么能解三元方程组？',
     era: '公元前 1 世纪 — 1810',
     figures: '《九章算术》 · 高斯',
+    prereqs: [],
+    baseline: '中学的二元一次方程组、加减消元',
   },
   {
     slug: 'determinant',
@@ -75,6 +77,7 @@ export const linearAlgebraConcepts = [
     question: '为什么 ad − bc = 0 的那一刻，方程组恰好出问题？',
     era: '1683 — 1750',
     figures: '关孝和 · 莱布尼茨 · 克莱姆',
+    prereqs: [{ slug: 'elimination', why: '行列式生来就是为了预判消元的结局' }],
   },
   {
     slug: 'linear-map',
@@ -84,6 +87,7 @@ export const linearAlgebraConcepts = [
     question: '矩阵乘法"行乘列"这么别扭的规则，是谁规定的？',
     era: '1858 — 1878',
     figures: '凯莱 · 西尔维斯特',
+    prereqs: [{ slug: 'determinant', why: '"压扁"与面积倍率在本讲兑现成 $\\det(AB)=\\det A\\cdot\\det B$' }],
   },
   {
     slug: 'vector-space',
@@ -93,6 +97,10 @@ export const linearAlgebraConcepts = [
     question: '函数、多项式、数列，凭什么也算"向量"？',
     era: '1844 — 1888',
     figures: '格拉斯曼 · 皮亚诺',
+    prereqs: [
+      { slug: 'elimination', why: '"维数配得齐"的证明，发动机是"方程比未知数少必有非零解"' },
+      { slug: 'linear-map', why: '"不过原点的直线不是空间"与"平移不是线性变换"是同一件事' },
+    ],
   },
   {
     slug: 'eigen',
@@ -102,6 +110,11 @@ export const linearAlgebraConcepts = [
     question: '斐波那契数列的通项里，为什么会冒出黄金比例？',
     era: '1743 — 1904',
     figures: '欧拉 · 拉格朗日 · 柯西',
+    prereqs: [
+      { slug: 'linear-map', why: '特征向量就是"被变换后方向不变"的方向' },
+      { slug: 'determinant', why: '$\\det(A-\\lambda I)=0$ 用的正是"压扁"判据' },
+      { slug: 'vector-space', why: '配不配得齐一组特征基，问的是维数' },
+    ],
   },
 ]
 
@@ -359,7 +372,7 @@ export const courses = [
     prereqCourses: [],
     concepts: linearAlgebraConcepts,
     intro:
-      '线性代数的教科书上来就是行列式和矩阵的运算规则，却不说这些规则为什么长这样。历史的顺序恰好相反：先有<strong>解方程组的记账技巧</strong>（消元），记账表用得多了才有了名字（矩阵），研究记账表才发现它的真身是<strong>变换</strong>，最后才把"能相加、能数乘"这件事本身抽象成<strong>向量空间</strong>。抽象不是从天而降的，是一层层被逼出来的。',
+      '这门课<strong>不假设你学过线性代数，也不需要微积分</strong>——会解中学的二元一次方程组，就能从第一讲一路读到特征值；矩阵、向量这些词都会在它们该出场的地方现场介绍。教科书上来就是行列式和矩阵的运算规则，却不说这些规则为什么长这样。历史的顺序恰好相反：先有<strong>解方程组的记账技巧</strong>（消元），记账表用得多了才有了名字（矩阵），研究记账表才发现它的真身是<strong>变换</strong>，最后才把"能相加、能数乘"这件事本身抽象成<strong>向量空间</strong>。抽象不是从天而降的，是一层层被逼出来的。',
     timelineTitle: '两千年时间线',
     timeline: [
       {

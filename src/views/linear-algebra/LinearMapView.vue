@@ -3,6 +3,7 @@ import ConceptPage from '../../components/ConceptPage.vue'
 import MathBlock from '../../components/MathBlock.vue'
 import MathInline from '../../components/MathInline.vue'
 import RevealBox from '../../components/RevealBox.vue'
+import QuizBox from '../../components/QuizBox.vue'
 import MatrixTransformDemo from '../../demos/MatrixTransformDemo.vue'
 </script>
 
@@ -16,6 +17,9 @@ import MatrixTransformDemo from '../../demos/MatrixTransformDemo.vue'
     </p>
     <MathBlock tex="(AB)_{ij} = \sum_{k} a_{ik} \, b_{kj}" />
     <p>
+      （先把记号读出声：<MathInline tex="(AB)_{ij}" /> 是乘积表里第 i 行第 j 列的那个数；
+      <MathInline tex="\Sigma_k" /> 是"连加"速记——让 k 从 1 数到头，把每个
+      <MathInline tex="a_{ik}b_{kj}" /> 加起来。读得出声，也照样不解气。）
       为什么不学加法那样对应元素相乘（那多自然）？谁规定的行乘列？
       而且这条规则还带着一身怪癖：<strong>顺序不能换</strong>（<MathInline tex="AB \neq BA" />）、
       <strong>形状还得对得上</strong>（<MathInline tex="m\times n" /> 只能乘
@@ -27,7 +31,8 @@ import MatrixTransformDemo from '../../demos/MatrixTransformDemo.vue'
       <div class="story-title">📜 1858 年 · 凯莱给记账表发身份证</div>
       <p>
         英国律师出身的数学家<strong>凯莱</strong>研究坐标变换（形如
-        <MathInline tex="x' = ax + by,\ y' = cx + dy" /> 的"替换"）时，
+        <MathInline tex="x' = ax + by,\ y' = cx + dy" /> 的"替换"——
+        这里的撇号只是"新坐标"的记号，跟导数毫无关系）时，
         决定把替换的系数抽出来当作<strong>一个独立的对象</strong>来运算，
         写出了《矩阵论回忆录》。他定义两个矩阵的乘积时没有丝毫犹豫地选择了"行乘列"——
         因为他要的根本不是"两张数表相乘"，而是<strong>两次替换先后执行的合成结果</strong>。
@@ -38,6 +43,9 @@ import MatrixTransformDemo from '../../demos/MatrixTransformDemo.vue'
         早在两千年前就有了，<router-link to="/linear-algebra/determinant">第二讲</router-link>的行列式
         也早了 170 年——<strong>矩阵是这门课里最晚拿到身份证的那个</strong>。
         先有表、先有判别数，最后才有人说"这张表本身是个东西"。
+        连名字都带着这段历史：matrix（矩阵）一词是凯莱的挚友<strong>西尔维斯特</strong>
+        1850 年造的，取拉丁语"母体"之意——在他眼里这张表是"能生出行列式的母体"，
+        名字里就刻着第二讲的胎记。
       </p>
     </div>
 
@@ -45,7 +53,10 @@ import MatrixTransformDemo from '../../demos/MatrixTransformDemo.vue'
     <p>
       第一讲里矩阵是方程组的记账表，那只是它的童年。成年的矩阵是另一种东西：
       <strong>一条把整张平面搬来搬去的指令</strong>。指令内容极简——你甚至不用记住每个点去哪，
-      只需记住两个基向量的去向：
+      只需记住两个基向量的去向（<MathInline tex="\boldsymbol{e}_1=(1,0)" />、
+      <MathInline tex="\boldsymbol{e}_2=(0,1)" /> 就是上一讲认过的<strong>标准基</strong>：
+      横、竖两支单位箭头。记号也先认好：方括号里<strong>竖着写的一列数就是一个向量的坐标</strong>，
+      竖写只为看清"它是矩阵的一列"；箭头 <MathInline tex="\mapsto" /> 读作"被送到"）：
     </p>
     <MathBlock tex="\boldsymbol{e}_1 = \begin{bmatrix}1\\0\end{bmatrix} \mapsto \begin{bmatrix}a\\c\end{bmatrix}, \quad \boldsymbol{e}_2 = \begin{bmatrix}0\\1\end{bmatrix} \mapsto \begin{bmatrix}b\\d\end{bmatrix} \quad\Longrightarrow\quad A = \begin{bmatrix} a & b \\ c & d \end{bmatrix}" />
     <div class="insight">
@@ -172,6 +183,17 @@ import MatrixTransformDemo from '../../demos/MatrixTransformDemo.vue'
         面积倍率与顺序无关，形状却大不相同。）
       </p>
     </RevealBox>
+    <QuizBox
+      quiz-id="linear-map-q1"
+      question="矩阵乘法为什么不交换（$AB \neq BA$）？根子在哪？"
+      hint="矩阵乘法是在给什么东西记账？"
+      :options="[
+        { t: '因为乘法记的是「动作的先后合成」，而动作有先后之分', why: '对。AB 读作「先做 B、再做 A」——先拉伸再旋转与先旋转再拉伸，本来就是两套动作（折叠框里那个 (0,2) 对 (0,1) 的反例）。不交换不是代数怪癖，是现实世界「先穿袜子还是先穿鞋」的忠实记录。' },
+        { t: '因为「行乘列」这个算法碰巧不对称，换个更好的定义就交换了', why: '方向反了：算法长这样，恰恰因为它必须给「动作合成」记账——那笔账是从需求里算出来的（贰节折叠框全程推过），不是设计者的口味。任何忠实记录动作合成的乘法都不可能交换，因为动作合成本身不交换。' },
+        { t: '只是教科书没找到好记号，本质上还是交换的', why: '不是记号问题：AB 与 BA 可以是两个实实在在不同的矩阵，作用在同一个向量上给出不同的点——(0,2) 和 (0,1) 谁也变不成谁。有些矩阵对碰巧交换（比如两个旋转），但那是例外不是规则。' },
+      ]"
+      :answer="0"
+    />
 
     <h2><span class="sec-no">叁</span>亲眼看指令如何变形整张平面</h2>
     <p>
@@ -185,14 +207,19 @@ import MatrixTransformDemo from '../../demos/MatrixTransformDemo.vue'
     <div class="definition">
       <div class="def-title">📐 定义（线性变换及其矩阵表示）</div>
       <p>
-        映射 <MathInline tex="T: \mathbb{R}^n \to \mathbb{R}^m" /> 称为<strong>线性变换</strong>，若对任意向量
-        <MathInline tex="\boldsymbol{u}, \boldsymbol{v}" /> 与数 <MathInline tex="k" />：
+        映射 <MathInline tex="T: \mathbb{R}^n \to \mathbb{R}^m" /> 称为<strong>线性变换</strong>
+        （<MathInline tex="\mathbb{R}^n" /> 指"n 个坐标凑成的向量"的全体；
+        长箭头 <MathInline tex="\to" /> 标明"吃哪种向量、吐哪种向量"，
+        与前面单个向量去向的短箭头 <MathInline tex="\mapsto" /> 分工不同），
+        若对任意向量 <MathInline tex="\boldsymbol{u}, \boldsymbol{v}" /> 与数 <MathInline tex="k" />：
       </p>
       <MathBlock tex="T(\boldsymbol{u} + \boldsymbol{v}) = T(\boldsymbol{u}) + T(\boldsymbol{v}), \qquad T(k\boldsymbol{u}) = k\, T(\boldsymbol{u})" />
       <p>
         <strong>定理</strong>：每个线性变换唯一对应一个 <MathInline tex="m \times n" /> 矩阵，其第 j 列为
         <MathInline tex="T(\boldsymbol{e}_j)" />；且变换的复合对应矩阵的乘积：
-        <MathInline tex="T_A \circ T_B = T_{AB}" />。
+        <MathInline tex="T_A \circ T_B = T_{AB}" />
+        （<MathInline tex="\circ" /> 读"复合"——先做右边的 <MathInline tex="T_B" />、
+        再做左边的 <MathInline tex="T_A" />，跟矩阵乘积的读法一致，都从右往左）。
       </p>
     </div>
     <p>两条公理逐词拆解：</p>
@@ -227,7 +254,8 @@ import MatrixTransformDemo from '../../demos/MatrixTransformDemo.vue'
         三个判断，想完再点开。
       </template>
       <p>
-        <strong>① 是线性的。</strong>验加法：
+        <strong>① 是线性的。</strong>验加法（这里的下标 1、2 给"两个不同的向量"编号，
+        与基向量 <MathInline tex="\boldsymbol{e}_1, \boldsymbol{e}_2" /> 的下标不是一回事）：
       </p>
       <MathBlock tex="T\bigl((x_1,y_1)+(x_2,y_2)\bigr) = \bigl(2(x_1{+}x_2)+(y_1{+}y_2),\ (x_1{+}x_2)-(y_1{+}y_2)\bigr)" />
       <p>
@@ -247,6 +275,7 @@ import MatrixTransformDemo from '../../demos/MatrixTransformDemo.vue'
       <p>
         <MathInline tex="3 \neq 4" />，不合格。<strong>更根本的理由只有一行</strong>：
         任何线性变换都必须把原点送回原点，因为
+        （注意式中粗体 <MathInline tex="\boldsymbol{0}" /> 是零<em>向量</em>、细体 0 是数零）
       </p>
       <MathBlock tex="T(\boldsymbol{0}) = T(0 \cdot \boldsymbol{0}) = 0 \cdot T(\boldsymbol{0}) = \boldsymbol{0}" />
       <p>
@@ -274,20 +303,75 @@ import MatrixTransformDemo from '../../demos/MatrixTransformDemo.vue'
         变成线性问题（<router-link to="/calculus/derivative">导数</router-link>就是最著名的那次）。
       </p>
     </RevealBox>
+    <QuizBox
+      quiz-id="linear-map-q2"
+      question="中学的一次函数 $y = kx + b$（$b \neq 0$），是不是线性变换？"
+      hint="拿定义的两条去验，别凭「名字里有个线」下结论。"
+      :options="[
+        { t: '不是：它过不了数乘关——本质上是「y = kx 再平移」，而平移挪动了原点', why: '对。验一下：T(2x) = 2kx + b，而 2T(x) = 2kx + 2b，b ≠ 0 时两者不等。「线性」这个数学名词比中学的「一次函数」严格：必须过原点。名字撞车是历史遗留，别让它骗了你。' },
+        { t: '是：它的图象是一条直线，这不就是「线性」吗', why: '图象是直线只保证「不弯曲」，可线性变换还要求「不挪原点」——T(0) = 0 是定义的直接推论。y = kx + b 在 x = 0 处给出 b ≠ 0，第一关就倒下。图形学里的平移要靠齐次坐标绕道，绕的正是这道门槛。' },
+        { t: '是不是取决于 k：k ≠ 0 就是线性的', why: 'k 管的是「压不压扁」（可逆性），跟线性无关。真正的分水岭在 b：b = 0 时 y = kx 对任何 k（包括 0）都是线性的；b ≠ 0 时对任何 k 都不是。' },
+      ]"
+      :answer="0"
+    />
 
     <h2><span class="sec-no">伍</span>买到了什么：一副看变换的眼镜</h2>
+
+    <h3>浏览器每一帧动画背后：CSS transform 就是这一讲</h3>
+    <p>
+      在网页上写一句 <code>transform: rotate(30deg)</code>，元素就转了 30 度；
+      手机相册里双指旋转照片、游戏里镜头一转——屏幕上千万个点整齐地挪去新位置。
+      逐个点去记"该去哪"显然不可能，浏览器和显卡用的正是本讲的名片法则：
+      <strong>只存两个基向量的去向，一切点的去向自动锁死</strong>。
+    </p>
+    <p>
+      具体到 <code>rotate(30deg)</code>：按刚才和角公式折叠框里的旋转名片，
+      <MathInline tex="\boldsymbol{e}_1 \mapsto (\cos 30^\circ, \sin 30^\circ) = (0.866,\ 0.5)" />、
+      <MathInline tex="\boldsymbol{e}_2 \mapsto (-0.5,\ 0.866)" />。
+      元素上任何一个点，比如 <MathInline tex="(2, 0)" />，去向就是
+      <MathInline tex="2 \times (0.866, 0.5) = (1.732,\ 1)" />——一次"用分量组合两列"。
+      浏览器内部把一切写成 <code>matrix(a, b, c, d, e, f)</code>：
+      前四个数正是本讲的矩阵（按列排放），后两个是平移量——
+      肆节说平移不是线性变换，工程师的对策就是把它单独挂在车尾。
+    </p>
+    <p>
+      <strong>真正的性能戏法在"复合 = 乘积"。</strong>一个元素往往叠着好几层动作：
+      先转 30°、再横向拉长 2 倍、外面容器又转了一下……
+      笨办法是让每个点挨个经历每层动作；浏览器的做法是<strong>先把几张名片乘成一张</strong>——
+      比如"转 30° 再横向拉 2 倍"合成为
+      <MathInline tex="\begin{bmatrix} 1.732 & -1 \\ 0.5 & 0.866 \end{bmatrix}" />
+      （拿 <MathInline tex="(2,0)" /> 验算：直接乘这张合成名片得
+      <MathInline tex="(3.464,\ 1)" />，与先转后拉两步走的结果一致）——
+      然后千万个点<strong>每个只乘一次</strong>。动作再多，每点的开销恒定。
+      3D 游戏引擎每帧对几百万顶点做的正是同一件事，只是矩阵升到了 4×4。
+    </p>
+    <p>
+      <strong>条件不成立会怎样？</strong>试试 <code>transform: matrix(1, 1, 1, 1, 0, 0)</code>——
+      两列相同，det = 0，整个元素被压扁成一条 45° 的细线。浏览器不报错、照样执行：
+      <router-link to="/linear-algebra/determinant">上一讲</router-link>的"压扁事故"，
+      你可以在任何网页的开发者工具里亲手复现。而被压扁的元素再也"拉不回来"——
+      压扁丢掉的信息谁也还原不了，这正是可逆性从第一讲一路讲到这里的原因。
+    </p>
+    <QuizBox
+      quiz-id="linear-map-q3"
+      question="写下乘积 $R(\alpha)R(\beta)$ 作用在一个向量上。先转的是 α 还是 β？"
+      hint="矩阵挨着向量的那一个先动手。"
+      :options="[
+        { t: '先转 β——写在右边的矩阵先作用，因为它离向量最近', why: '对。R(α)R(β)v 从右往左读：v 先交给 R(β)，结果再交给 R(α)。旋转碰巧交换（转椅子先 30° 后 40° 与先 40° 后 30° 一样），所以这里顺序错了也看不出来——可一旦混进拉伸，写反顺序就是实打实的 bug，图形代码里最常见的一类。' },
+        { t: '先转 α——公式从左往右读，左边的先做', why: '恰好相反：矩阵作用写成 Av，矩阵在向量左边，所以一串乘积里「挨着向量的」（最右）先动手。这跟函数复合 f(g(x)) 先算 g 是同一个约定——∘ 和矩阵乘法都从右往左读。' },
+        { t: '无所谓，反正结果一样', why: '对纯旋转碰巧成立（旋转彼此交换），但这是特权不是通则：把其中一个换成拉伸，AB 与 BA 立刻分家——贰节那个 (0,2) 对 (0,1) 的反例就是证据。约定「从右往左」正是为了在不交换的世界里不出错。' },
+      ]"
+      :answer="0"
+    />
+
     <ul>
       <li>
-        <strong>微积分的导数，本质是一个矩阵</strong>：一元函数的导数是
-        <router-link to="/calculus/derivative">"局部把曲线看成直线"</router-link>的斜率；
+        <strong>微积分的导数，本质是一个矩阵</strong>（写给已读过微积分的读者；还没读的记一句就够：
+        那门课的核心动作"局部用直线冒充曲线"，到多元时冒充者正是本讲的矩阵）：
         多元函数 <MathInline tex="f: \mathbb{R}^n \to \mathbb{R}^m" /> 在一点的导数，
         就是"局部把 f 看成线性变换"的那个矩阵——雅可比矩阵。
         <router-link to="/linear-algebra/determinant">上一讲</router-link>的雅可比行列式，
         正是这个矩阵的 det；
-      </li>
-      <li>
-        <strong>计算机图形学</strong>：屏幕上每一次旋转、缩放、投影都是矩阵作用；连续动作合成一个矩阵，
-        千万个顶点只需各乘一次——"复合 = 乘积"直接变成了性能优化；
       </li>
       <li>
         <strong>下一讲的跳板</strong>：既然矩阵的本事是"作用在向量上"，那么"向量"一定得是坐标数组吗？
@@ -345,8 +429,9 @@ import MatrixTransformDemo from '../../demos/MatrixTransformDemo.vue'
       </p>
     </RevealBox>
     <div class="insight">
-      <div class="insight-title">🔗 与你学过的课程连一连</div>
+      <div class="insight-title">🔗 这副眼镜往后看向哪：站内连一连</div>
       <p>
+        以下几处全在站内、全部从零讲起：
         <strong>复变函数</strong>：复数乘法 <MathInline tex="z \mapsto wz" /> 是"旋转 + 伸缩"
         （<router-link to="/complex/imaginary">第一讲</router-link>），
         写成实矩阵恰是 <MathInline tex="\begin{bmatrix} a & -b \\ b & a \end{bmatrix}" /> 这种特殊形状——
@@ -358,7 +443,7 @@ import MatrixTransformDemo from '../../demos/MatrixTransformDemo.vue'
         <router-link to="/numerical/linear-system">数值分析第五讲</router-link>再把它变成能算的判据；
         <strong>数学物理方程</strong>：<router-link to="/mathphys/separation">分离变量法</router-link>
         之所以管用，是因为求导本身就是个线性变换（<MathInline tex="(f+g)' = f' + g'" />），
-        而解方程就是在找这个变换的特殊方向（<b>本站那一讲从零讲起，不需要先修</b>）。
+        而解方程就是在找这个变换的特殊方向。
       </p>
     </div>
   </ConceptPage>

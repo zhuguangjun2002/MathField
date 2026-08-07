@@ -3,6 +3,7 @@ import ConceptPage from '../../components/ConceptPage.vue'
 import MathBlock from '../../components/MathBlock.vue'
 import MathInline from '../../components/MathInline.vue'
 import RevealBox from '../../components/RevealBox.vue'
+import QuizBox from '../../components/QuizBox.vue'
 import DeterminantDemo from '../../demos/DeterminantDemo.vue'
 import DetAreaCutDemo from '../../demos/DetAreaCutDemo.vue'
 </script>
@@ -59,13 +60,15 @@ import DetAreaCutDemo from '../../demos/DetAreaCutDemo.vue'
       <p>
         1683 年，日本江户的<strong>关孝和</strong>在《解伏题之法》中给出了从方程组系数算判别式的方法；
         十年后（1693），<strong>莱布尼茨</strong>在给洛必达的信里独立写下了同样的东西，
-        还为此发明了双下标记号 <MathInline tex="a_{ij}" />。1750 年<strong>克莱姆</strong>发表用行列式直接写解的公式
+        还为此发明了双下标记号 <MathInline tex="a_{ij}" />——读作"第 i 行第 j 列的那个数"，
+        两个下标就是行号与列号，这套记法沿用至今。1750 年<strong>克莱姆</strong>发表用行列式直接写解的公式
         （即"克莱姆法则"），行列式从此成为 18 世纪代数的头号明星。
         注意时间线的怪事：<strong>行列式比矩阵概念早了约 170 年</strong>——先有判别数，后有那张表的名分。
       </p>
     </div>
     <p>
-      但一个尴尬始终悬着：三阶行列式 6 项、四阶 24 项、n 阶 <MathInline tex="n!" /> 项，
+      但一个尴尬始终悬着：三阶行列式 6 项、四阶 24 项、n 阶 <MathInline tex="n!" /> 项
+      （<MathInline tex="n!" /> 读"n 的阶乘"，就是从 1 连乘到 n：<MathInline tex="4! = 1\times2\times3\times4 = 24" />），
       展开式越写越像咒语（<MathInline tex="10" /> 阶就是三百六十多万项）。
       <strong>这个数到底"是"什么？为什么它恰好掌管方程组的生死？</strong>
       教科书直接给展开式，等于只发了咒语不给解释。
@@ -73,9 +76,15 @@ import DetAreaCutDemo from '../../demos/DetAreaCutDemo.vue'
 
     <h2><span class="sec-no">贰</span>破局：它不是算式，是面积的缩放因子</h2>
     <p>
-      钥匙是换一双眼睛。把矩阵的两列看成平面上的两个向量
+      钥匙是换一双眼睛，而新眼睛需要一件新道具——<strong>向量</strong>。
+      把一对数 <MathInline tex="(a, c)" /> 画成一支箭头：从原点出发，指向坐标为
+      <MathInline tex="(a, c)" /> 的那个点。这支箭头就叫一个向量，用黑体字母
+      <MathInline tex="\boldsymbol{u}" /> 当名字。它有两重身份——"一对坐标"和
+      "一段带方向的位移"——两种读法随时切换，哪种顺手用哪种。
+      现在把矩阵 <MathInline tex="\begin{pmatrix}a&b\\c&d\end{pmatrix}" />
+      的每一<strong>列</strong>竖着读成一个向量：
       <MathInline tex="\boldsymbol{u} = (a, c)" />、<MathInline tex="\boldsymbol{v} = (b, d)" />，
-      它们张成一个平行四边形。用初中几何硬算这块面积（大矩形减去四周的边角料），得到的正是
+      两支箭头张成一个平行四边形。用初中几何硬算这块面积（大矩形减去四周的边角料），得到的正是
     </p>
     <MathBlock tex="S = ad - bc" />
     <p>
@@ -102,7 +111,9 @@ import DetAreaCutDemo from '../../demos/DetAreaCutDemo.vue'
         <strong>第一步：把平行四边形放进外接矩形。</strong>四个顶点是
         <MathInline tex="(0,0)" />、<MathInline tex="\boldsymbol{u}=(a,c)" />、
         <MathInline tex="\boldsymbol{u}+\boldsymbol{v}=(a+b,\ c+d)" />、
-        <MathInline tex="\boldsymbol{v}=(b,d)" />。
+        <MathInline tex="\boldsymbol{v}=(b,d)" />
+        （对角那个顶点是两支箭头首尾相接走到的地方，坐标就是分量各自相加——
+        记号 <MathInline tex="\boldsymbol{u}+\boldsymbol{v}" /> 说的就是这个动作，叫向量加法）。
         最小的外接矩形就是 <MathInline tex="[0,a+b]\times[0,c+d]" />，面积
       </p>
       <MathBlock tex="(a+b)(c+d) = ac + ad + bc + bd" />
@@ -154,7 +165,9 @@ import DetAreaCutDemo from '../../demos/DetAreaCutDemo.vue'
     </div>
     <p>
       "det = 0 就是两列共线"这句话，代数上一行就能验：若
-      <MathInline tex="\boldsymbol{v} = k\boldsymbol{u}" />，即
+      <MathInline tex="\boldsymbol{v} = k\boldsymbol{u}" />
+      （<MathInline tex="k\boldsymbol{u}" /> 是"数乘"：把箭头拉长 k 倍，分量各乘 k——
+      所以这句话就是"v 与 u 同一条直线"），即
       <MathInline tex="(b,d) = (ka, kc)" />，那么
     </p>
     <MathBlock tex="ad - bc = a(kc) - (ka)c = 0" />
@@ -167,6 +180,17 @@ import DetAreaCutDemo from '../../demos/DetAreaCutDemo.vue'
       那 <MathInline tex="n!" /> 项的展开式呢？它只是这块"体积"在坐标下的计算公式，
       是仆人不是主人。真正定义行列式的是三条朴素的几何常识——见第肆节。
     </p>
+    <QuizBox
+      quiz-id="determinant-q1"
+      question="det = 0 的那一刻，方程组到底出了什么事？"
+      hint="压扁之后，两条方程还剩几条不同的「证词」？右端管不管这事？"
+      :options="[
+        { t: '失去唯一解——可能无解、也可能无穷多解，取决于右端配不配合', why: '对。压扁 = 两列共线 = 两条方程实为同一方向：右端也成同样比例，两条线重合（无穷多解）；右端不配合，两条平行线永不相交（无解）。det 只看系数表，管得了「有没有唯一解」，管不到「到底是哪种」——上一讲说的「系数表管命运、右端管有无」正是这件事。' },
+        { t: '方程组一定无解', why: '只对了一半。反例：x + y = 2 与 2x + 2y = 4，det = 1×2 − 1×2 = 0，可第二条就是第一条的两倍——两线重合，解有无穷多个。det = 0 是「唯一解没了」，不是「解没了」。' },
+        { t: '方程组一定有无穷多解', why: '另一半反例：x + y = 2 与 x + y = 3，det 同样为 0，但两条平行线永不相交——无解。同一张压扁的系数表，右端一变就在「无解」与「无穷多解」之间切换。' },
+      ]"
+      :answer="0"
+    />
 
     <h2><span class="sec-no">叁</span>亲手压扁一个平行四边形</h2>
     <p>
@@ -180,17 +204,23 @@ import DetAreaCutDemo from '../../demos/DetAreaCutDemo.vue'
       <div class="def-title">📐 定义（行列式的公理刻画）</div>
       <p>
         行列式是唯一一个满足以下三条的函数 <MathInline tex="\det: (\boldsymbol{v}_1, \dots, \boldsymbol{v}_n) \mapsto \mathbb{R}" />
-        （把矩阵看作 n 个列向量）：
+        （把矩阵看作 n 个列向量；记号 <MathInline tex="\mapsto" /> 读"映到"，
+        <MathInline tex="\mathbb{R}" /> 是全体实数——整行的意思是"吃进 n 个列向量，吐出一个实数"）：
       </p>
       <p>
         ① <strong>多重线性</strong>：固定其余列，det 对每一列都是线性的；<br />
         ② <strong>交替性</strong>：两列相同时 <MathInline tex="\det = 0" />（由此可推出交换两列变号）；<br />
-        ③ <strong>归一化</strong>：<MathInline tex="\det(I) = 1" />。
+        ③ <strong>归一化</strong>：<MathInline tex="\det(I) = 1" />（I 是<strong>单位矩阵</strong>：
+        对角线全 1、其余全 0 的那张表）。
       </p>
     </div>
     <p>三条公理没有一条是凭空立法，全是"有向体积"的翻译：</p>
     <ul>
-      <li><strong>多重线性</strong>——某条边拉长 2 倍，体积翻倍；某条边是两向量之和，体积可拆开分别算；</li>
+      <li>
+        <strong>多重线性</strong>——某条边拉长 2 倍，体积翻倍；某条边是两向量之和，体积可拆开分别算。
+        （"线性"在这里就指这两条：<em>可倍乘、可拆和</em>——这个词的完整身份，
+        <router-link to="/linear-algebra/linear-map">下一讲</router-link>正名；）
+      </li>
       <li><strong>交替性</strong>——两条边重合，体积当然是 0；交换两条边，定向翻转，符号改变；</li>
       <li><strong>归一化</strong>——单位正方体的体积规定为 1，这是"度量衡"。</li>
     </ul>
@@ -205,7 +235,10 @@ import DetAreaCutDemo from '../../demos/DetAreaCutDemo.vue'
       label="对答案 / 看完整拆解"
     >
       <template #hint>
-        先自己动笔：把两个列向量按标准基拆开——
+        先自己动笔。先认两支特殊箭头：<MathInline tex="\boldsymbol{e}_1 = (1,0)" />、
+        <MathInline tex="\boldsymbol{e}_2 = (0,1)" />（横、竖两个单位向量，合称<strong>标准基</strong>），
+        任何向量都能由它们配出来——<MathInline tex="\boldsymbol{u} = a\boldsymbol{e}_1 + c\boldsymbol{e}_2" />
+        就是"横走 a 步、竖走 c 步"。把两个列向量都这样拆开：
         <MathInline tex="\boldsymbol{u} = a\boldsymbol{e}_1 + c\boldsymbol{e}_2" />、
         <MathInline tex="\boldsymbol{v} = b\boldsymbol{e}_1 + d\boldsymbol{e}_2" />。
         用公理 ① 把 <MathInline tex="\det(\boldsymbol{u},\boldsymbol{v})" /> 逐列展开，
@@ -241,7 +274,9 @@ import DetAreaCutDemo from '../../demos/DetAreaCutDemo.vue'
         活下来的只有下标互不相同的那些——也就是
         <MathInline tex="1,2,\ldots,n" /> 的一个<strong>排列</strong>，
         而排列恰好有 <MathInline tex="n!" /> 个。每一项的符号则由"把这个排列换回自然顺序要交换几次"决定
-        （偶数次为正、奇数次为负）。
+        （偶数次为正、奇数次为负）。写成式子（<MathInline tex="\Sigma" /> 是"连加"速记，
+        这里让排列 σ 跑遍全部 <MathInline tex="n!" /> 种；<MathInline tex="\operatorname{sgn}" />
+        就是刚说的正负号）：
       </p>
       <MathBlock tex="\det A = \sum_{\sigma} \operatorname{sgn}(\sigma)\, a_{1\sigma(1)}a_{2\sigma(2)}\cdots a_{n\sigma(n)}" />
       <p>
@@ -263,12 +298,62 @@ import DetAreaCutDemo from '../../demos/DetAreaCutDemo.vue'
       为什么矩阵乘法非得定义成那副别扭的行乘列样子，
       <router-link to="/linear-algebra/linear-map">下一讲</router-link>正式揭晓。
     </p>
+    <QuizBox
+      quiz-id="determinant-q2"
+      question="那条 $n!$ 项的大展开式，对行列式来说是「定义」还是「推论」？"
+      hint="刚才那个折叠框里，展开式是从哪儿长出来的？"
+      :options="[
+        { t: '推论——三条几何公理唯一确定了 det，展开式是被推出来的计算公式', why: '对。项数 n!（排列的个数）、每一项的正负号（交换次数的奇偶），全部由公理机械地生出来，没有一处需要另行规定。逻辑顺序是「常识在前、咒语在后」——教科书只是把讲授顺序倒了过来。' },
+        { t: '定义——教科书都是从展开式讲起的', why: '讲授顺序不等于逻辑顺序。把展开式当定义也能自圆其说，但代价是三条常识全都降格为「有待验证的性质」，而且你永远说不清那些正负号为什么长那样——这正是「靠背」的来历。' },
+        { t: '都算——数学里选哪个当定义无所谓', why: '选哪头当地基，效果天差地别：几何公理当定义时，展开式的每个细节（项数、符号）都有出处；反过来拿咒语当定义，一切直觉都成了巧合。定义的选择是教学与理解的分水岭，不是无所谓的口味。' },
+      ]"
+      :answer="0"
+    />
 
     <h2><span class="sec-no">伍</span>买到了什么：一个到处出现的缩放因子</h2>
+
+    <h3>每一帧 3D 游戏都在做的判定：背面剔除</h3>
+    <p>
+      打开任何一款 3D 游戏：屏幕上的世界由几百万个小三角形拼成，每秒重画 60 次。
+      可其中将近一半三角形<strong>背对着相机</strong>——箱子的背面、山坡的另一侧——画了也看不见。
+      逐帧把它们挑出来扔掉（术语叫<strong>背面剔除</strong>），绘制量直接砍半。
+      问题是：怎么"快速"判断一个三角形朝前还是朝后？
+    </p>
+    <p>
+      <strong>为什么绕道行列式？</strong>图形学的约定是：建模时每个三角形的三个顶点按<strong>逆时针</strong>次序记录。
+      投影到屏幕后，朝向相机的三角形保持逆时针，背对的则翻成顺时针——
+      于是"正面还是背面"变成了"屏幕上三个点 A、B、C 是逆时针还是顺时针"。
+      而这正是本讲"有向"两个字管的事：从 A 出发的两条边
+      <MathInline tex="\boldsymbol{u} = B - A" />、<MathInline tex="\boldsymbol{v} = C - A" />
+      张成的平行四边形，<strong>det 的符号就是绕向</strong>。
+    </p>
+    <p>
+      拿具体数字走一遍：<MathInline tex="A(2,1)" />、<MathInline tex="B(5,2)" />、
+      <MathInline tex="C(3,4)" />。两条边是 <MathInline tex="\boldsymbol{u} = (3,1)" />、
+      <MathInline tex="\boldsymbol{v} = (1,3)" />，于是
+    </p>
+    <MathBlock tex="\det = 3\times3 - 1\times1 = 8 \gt 0 \quad\Longrightarrow\quad \text{逆时针，正面，画}" />
+    <p>
+      把 B、C 互换（相当于从背后看同一个三角形），det 变成 −8——顺时针，背面，扔。
+      顺带白捡一件：<MathInline tex="|\det|/2 = 4" /> 正是这个三角形的面积
+      （测绘员手算多边形面积的"鞋带公式"，就是把图形切成三角形后逐个算这个 det）。
+      <strong>你的手机每一秒钟，大约要做上亿次这样的 <MathInline tex="ad-bc" /></strong>——
+      本讲这个两千年后才被看懂的"判别数"，如今是图形硬件里最忙碌的算式之一。
+    </p>
+    <p>
+      <strong>条件不成立会怎样？</strong>det ≈ 0 时三点几乎共线——三角形被压扁成一条缝，
+      图形学称"退化三角形"，正是本讲"压扁事故"的工程版。麻烦在于浮点误差会让这类三角形的
+      det 在正负之间抖动，画面上表现为狭长面片的闪烁。所以引擎不问"det 是不是 0"，
+      而是设一条容差线——叁节 demo 读数区那个 0.08 阈值，就是同一个工程动作的缩影；
+      "怎么跟接近 0 的数打交道"这门手艺，整个属于
+      <router-link to="/numerical/float-error">数值分析</router-link>。
+    </p>
+
     <ul>
       <li>
-        <strong>叉积</strong>：<MathInline tex="|\boldsymbol{u} \times \boldsymbol{v}|" />
-        是 u、v 张成的平行四边形面积——叉积的行列式记忆法不是巧合，它就是行列式的三维分身；
+        <strong>三维的面积工具</strong>：物理和工程里有个叫"叉积"的运算，模长恰是
+        u、v 张成的平行四边形面积——遇见它时你会认出，它的计算口诀就是一个行列式，
+        本讲概念的三维分身（没见过也不要紧，这里只是打个招呼）；
       </li>
       <li>
         <strong>克莱姆法则</strong>：理论上优雅，数值上却是灾难——n 阶要算
@@ -297,6 +382,12 @@ import DetAreaCutDemo from '../../demos/DetAreaCutDemo.vue'
         （提示：把新行拆成两项，其中一项的两行成比例。）想清楚了，消元就成了算行列式的工具。
       </template>
       <p>
+        <strong>第零步：先搭一句桥。</strong>公理是对<strong>列</strong>说的，消元动的却是<strong>行</strong>。
+        好在行列式"行列平权"——对行同样满足那三条。二阶当场验：把
+        <MathInline tex="ad-bc" /> 的行、列互换（<MathInline tex="b, c" /> 对调位置），
+        式子纹丝不动。一般情形的证明本课不展开，先记下"对行的操作与对列的操作，账目相同"。
+      </p>
+      <p>
         <strong>第一步：关键性质——"加另一行的倍数"完全不改变行列式。</strong>
         设新的第 i 行是 <MathInline tex="r_i + k\,r_j" />，用多重线性拆成两块：
       </p>
@@ -322,7 +413,8 @@ import DetAreaCutDemo from '../../demos/DetAreaCutDemo.vue'
       </p>
       <MathBlock tex="\det A = 3 \times \tfrac53 \times \tfrac{12}{5} = 12" />
       <p>
-        按余子式展开核对：<MathInline tex="3(9-2) - 2(6-1) + 1(4-3) = 21 - 10 + 1 = 12" />，一致。
+        拿肆节那条展开式核对（三阶恰好 <MathInline tex="3! = 6" /> 项）：
+        <MathInline tex="27 + 2 + 4 - 3 - 12 - 6 = 12" />，一致。
       </p>
       <p>
         <strong>回味：这是<router-link to="/linear-algebra/elimination">上一讲</router-link>白送的红利。</strong>
@@ -334,9 +426,11 @@ import DetAreaCutDemo from '../../demos/DetAreaCutDemo.vue'
       </p>
     </RevealBox>
     <p>
-      最后是这个概念在别的课里最重要的一次现身。你在多元微积分里换元时，
-      积分号下总会莫名其妙冒出一个因子——极坐标是 <MathInline tex="r" />、球坐标是
-      <MathInline tex="\rho^2\sin\varphi" />。那些因子不是背下来的口诀，<strong>它们就是本讲这个 det</strong>。
+      最后一站是选读，写给<strong>已经读过微积分课</strong>的读者
+      （还没读过？放心跳过整个折叠框，不影响本讲任何内容——等你在站内修完微积分再回来，
+      它会等在这）。多元换元时积分号下总会莫名其妙冒出一个因子——极坐标是
+      <MathInline tex="r" />、球坐标是 <MathInline tex="\rho^2\sin\varphi" />。
+      那些因子不是背下来的口诀，<strong>它们就是本讲这个 det</strong>。
     </p>
     <RevealBox
       title="🔍 极坐标那个凭空出现的 r，就是本讲的行列式"
@@ -382,8 +476,9 @@ import DetAreaCutDemo from '../../demos/DetAreaCutDemo.vue'
       </p>
     </RevealBox>
     <div class="insight">
-      <div class="insight-title">🔗 与你学过的课程连一连</div>
+      <div class="insight-title">🔗 这个缩放因子往后通到哪：站内连一连</div>
       <p>
+        以下几处全在站内、全部从零讲起，走到自然会撞见：
         <strong>微积分</strong>：二重积分换元的雅可比行列式就是本讲的 det（上面刚算过），
         而它成立的前提——<router-link to="/calculus/derivative">局部即线性</router-link>——
         是导数那一讲的核心观点；
@@ -401,5 +496,16 @@ import DetAreaCutDemo from '../../demos/DetAreaCutDemo.vue'
         真正该看的是条件数。
       </p>
     </div>
+    <QuizBox
+      quiz-id="determinant-q3"
+      question="det 越大，矩阵是不是离「压扁」越远、越健康？"
+      hint="把整个矩阵乘以 0.1，det 变多少？方程组变难了吗？"
+      :options="[
+        { t: '不是：把矩阵整体乘 0.1，det 缩成原来的百分之一（二阶），方程组难度却纹丝不动', why: '对。det 是个绝对量，会被整体缩放随意糊弄——单位从米换成厘米，det 就暴涨一万倍，可方程组还是那个方程组。「离压扁多远」得用相对的尺子量，那把尺子叫条件数，数值分析第五讲的主角。' },
+        { t: '是：det 大说明面积放得大，自然离 0 远', why: '「离 0 远」在绝对数值上成立，但说明不了健康：det = 0.0001 的矩阵可能好得很（只是单位小），det = 1000 的矩阵也可能病得不轻（两列夹角其实极小，全靠长度撑出来的面积）。方向几乎平行才是病根，det 的大小看不出这个。' },
+        { t: '只要 det ≠ 0 就都一样健康', why: '「接近压扁」有程度之分：两列夹角 0.01° 的矩阵理论上可逆，实际算起来误差被放大成千上万倍——在浮点数的世界里它和压扁没什么两样。「多接近才算病」正是条件数要回答的问题。' },
+      ]"
+      :answer="0"
+    />
   </ConceptPage>
 </template>

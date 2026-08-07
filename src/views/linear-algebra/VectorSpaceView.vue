@@ -3,6 +3,7 @@ import ConceptPage from '../../components/ConceptPage.vue'
 import MathBlock from '../../components/MathBlock.vue'
 import MathInline from '../../components/MathInline.vue'
 import RevealBox from '../../components/RevealBox.vue'
+import QuizBox from '../../components/QuizBox.vue'
 import SpanDemo from '../../demos/SpanDemo.vue'
 </script>
 
@@ -13,12 +14,19 @@ import SpanDemo from '../../demos/SpanDemo.vue'
       19 世纪的数学家陆续注意到一件怪事：完全不同的领域里，反复上演着同一套剧情。
     </p>
     <ul>
-      <li>几何里，两个箭头可以相加（平行四边形法则）、可以拉长缩短；</li>
+      <li>几何里，两个箭头可以相加（首尾相接）、可以拉长缩短——前三讲一直在用；</li>
       <li>
-        代数里，两个多项式可以相加、可以乘常数；解微分方程时，两个解加起来还是解、
-        解乘常数还是解（"叠加原理"）；
+        代数里，两个多项式可以相加、可以乘常数：
+        <MathInline tex="(x^2+1) + (2x-3) = x^2+2x-2" />，规矩和数字加法一模一样；
       </li>
-      <li>分析里，两个函数、两个数列，同样能加、能数乘——傅里叶还发现波形可以像配菜一样叠加。</li>
+      <li>
+        声音里，两个波形叠在一起还是波形——和弦是几个音的叠加，
+        降噪耳机放出反相的波把噪声抵消，都是"函数相加"这一个动作；
+      </li>
+      <li>
+        方程里也有同样的剧情：很多方程的两个解加起来还是解、解乘常数还是解
+        （物理书上叫"叠加原理"——现在不必懂它，站内数理方程课会正面撞上；此处只需认出剧情又重演了）。
+      </li>
     </ul>
     <p>
       每个领域都在各自证明几乎一样的定理：什么时候几个对象"互相独立"、最少需要几个对象才能拼出全体、
@@ -70,9 +78,10 @@ import SpanDemo from '../../demos/SpanDemo.vue'
       <template #hint>
         先自己想一个更基本的问题：平面上能不能找到<strong>三个线性无关</strong>的向量？
         直觉说不能。<strong>但理由是什么？</strong>
-        （提示：假设有三个，把其中一个用另外两个的坐标写出来，会得到一个几个方程、几个未知数的齐次方程组？
-        再想想<router-link to="/linear-algebra/elimination">第一讲</router-link>说过，
-        方程比未知数少的齐次方程组必有非零解。）想清楚再点开。
+        （提示：右端全为零的方程组叫<strong>齐次</strong>方程组。
+        用<router-link to="/linear-algebra/elimination">第一讲</router-link>的消元想一想：
+        齐次方程组里方程比未知数<em>少</em>时，消完元是不是必定剩下自由变量？
+        自由变量取个非零值，会得到什么样的解？）想清楚再点开。
       </template>
       <p>
         <strong>第一步：核心引理——"能张成的人少，无关的人就不能多"。</strong>
@@ -99,7 +108,10 @@ import SpanDemo from '../../demos/SpanDemo.vue'
       </p>
       <MathBlock tex="\sum_j c_j \boldsymbol{w}_j = \sum_j c_j \sum_i a_{ij}\boldsymbol{u}_i = \sum_i \Bigl(\underbrace{\sum_j a_{ij}c_j}_{=\,0}\Bigr)\boldsymbol{u}_i = \boldsymbol{0}" />
       <p>
-        中间那个括号正是 <MathInline tex="A\boldsymbol{c}" /> 的第 i 个分量，等于 0。
+        （中间那步"交换求和次序"没有任何魔法：一共 <MathInline tex="m \times n" />
+        个小项，先按 j 归堆再加、还是先按 i 归堆再加，总和当然一样——
+        就像一张表格按行数一遍和按列数一遍，数出的总数相同。）
+        重排后括号里正是 <MathInline tex="A\boldsymbol{c}" /> 的第 i 个分量，等于 0。
         于是我们用<strong>不全为零</strong>的系数拼出了零向量——
         这与"w 线性无关"直接矛盾。所以 <MathInline tex="n \le m" />。
       </p>
@@ -111,12 +123,24 @@ import SpanDemo from '../../demos/SpanDemo.vue'
       <MathBlock tex="n_1 \le n_2 \quad\text{且}\quad n_2 \le n_1 \qquad\Longrightarrow\qquad n_1 = n_2" />
       <p>
         <strong>回味：维数之所以配得上"空间的属性"这个说法，靠的是这条两头夹的论证。</strong>
-        而论证的发动机，是第一讲那句朴素的观察——<em>方程比未知数少，就一定有非零解</em>。
+        而论证的发动机，是刚才第三步用消元当场证出的朴素事实——
+        <em>齐次方程组里方程比未知数少，就一定有非零解</em>。
         <strong>整座抽象大厦的第一块承重砖，是那张两千年前的算筹方阵。</strong>
         （顺带回答提示里的问题：平面上确实不可能有三个线性无关的向量，
         取 <MathInline tex="m=2,\ n=3" /> 代进去即可。）
       </p>
     </RevealBox>
+    <QuizBox
+      quiz-id="vector-space-q1"
+      question="一个函数，凭什么也能叫「向量」？"
+      hint="会员资格清单上查的是什么——长相，还是本事？"
+      :options="[
+        { t: '因为资格审查只查运算：函数能相加、能乘常数，且守那 8 条规矩——够格入会', why: '对。「向量」从此不是一种东西而是一种资格，跟长不长得像箭头无关。这个身份转换买到的是批发价定理：凡是只用加法、数乘和 8 条规矩证出的结论，函数版自动成立——伍节的傅里叶级数就是最大的一笔分红。' },
+        { t: '因为函数的图象也可以想象成一支很长的箭头', why: '不需要这种想象，想象也帮不上忙——数列、多项式、随机变量都长得不像箭头，照样入会。入会条件是白纸黑字的运算检查，不是形象类比；靠类比理解抽象，走两步就会摔。' },
+        { t: '只是个方便的比喻，严格说函数不是向量', why: '不是比喻，是定义的字面含义：在「全体连续函数 + 逐点加法 + 数乘」这个空间里，每个函数就是一个向量。伍节里「傅里叶系数 = 函数在一组正交基下的坐标」这句话，全靠这个字面含义撑腰——比喻可撑不起定理。' },
+      ]"
+      :answer="0"
+    />
 
     <h2><span class="sec-no">叁</span>亲手看"张成"如何跳变</h2>
     <p>
@@ -130,9 +154,18 @@ import SpanDemo from '../../demos/SpanDemo.vue'
       <div class="def-title">📐 定义（向量空间，皮亚诺 1888）</div>
       <p>
         集合 V 配上加法 <MathInline tex="\boldsymbol{u} + \boldsymbol{v}" /> 与数乘
-        <MathInline tex="k\boldsymbol{u}" />，若两种运算不出界（结果仍在 V 中），且满足 8 条公理——
-        加法交换、加法结合、有零向量、有负向量、数乘结合、单位数乘 <MathInline tex="1\cdot\boldsymbol{u}=\boldsymbol{u}" />、
-        两条分配律——则称 V 为<strong>向量空间</strong>。
+        <MathInline tex="k\boldsymbol{u}" />，若两种运算不出界（结果仍在 V 中），
+        且满足 8 条公理，则称 V 为<strong>向量空间</strong>。8 条逐一写开（u, v, w 是任意成员，k, l 是任意数）：
+      </p>
+      <p>
+        ① 加法交换 <MathInline tex="\boldsymbol{u}+\boldsymbol{v} = \boldsymbol{v}+\boldsymbol{u}" />；
+        ② 加法结合 <MathInline tex="(\boldsymbol{u}+\boldsymbol{v})+\boldsymbol{w} = \boldsymbol{u}+(\boldsymbol{v}+\boldsymbol{w})" />；
+        ③ 有零向量 <MathInline tex="\boldsymbol{u}+\boldsymbol{0} = \boldsymbol{u}" />；
+        ④ 有负向量 <MathInline tex="\boldsymbol{u}+(-\boldsymbol{u}) = \boldsymbol{0}" />；
+        ⑤ 数乘结合 <MathInline tex="k(l\boldsymbol{u}) = (kl)\boldsymbol{u}" />；
+        ⑥ 单位数乘 <MathInline tex="1\cdot\boldsymbol{u}=\boldsymbol{u}" />；
+        ⑦ 分配律一 <MathInline tex="k(\boldsymbol{u}+\boldsymbol{v}) = k\boldsymbol{u}+k\boldsymbol{v}" />；
+        ⑧ 分配律二 <MathInline tex="(k+l)\boldsymbol{u} = k\boldsymbol{u}+l\boldsymbol{u}" />。
       </p>
     </div>
     <p>
@@ -145,7 +178,8 @@ import SpanDemo from '../../demos/SpanDemo.vue'
       label="对答案 / 看完整拆解"
     >
       <template #hint>
-        先自己判断这三个集合是不是向量空间（用通常的加法与数乘）：
+        先自己判断这三个集合是不是向量空间（用通常的加法与数乘；
+        记号 <MathInline tex="\{(x,y) : \text{条件}\}" /> 读作"满足冒号后条件的所有点组成的集合"）：
         ① 平面上第一象限的全体点 <MathInline tex="\{(x,y) : x \ge 0,\ y \ge 0\}" />；
         ② 全体<strong>次数恰好等于 2</strong> 的多项式；
         ③ 平面上一条不过原点的直线，比如 <MathInline tex="\{(x,y) : x + y = 1\}" />。
@@ -197,7 +231,8 @@ import SpanDemo from '../../demos/SpanDemo.vue'
     <ul>
       <li>
         "有人多余"的直接说法是：某个 <MathInline tex="\boldsymbol{v}_i" /> 能被其他人拼出来，
-        <MathInline tex="\boldsymbol{v}_i = \sum_{j \neq i} a_j \boldsymbol{v}_j" />。移项即得一个
+        <MathInline tex="\boldsymbol{v}_i = \sum_{j \neq i} a_j \boldsymbol{v}_j" />
+        （下标 <MathInline tex="j \neq i" /> 表示"对除 i 之外的全部编号求和"）。移项即得一个
         <strong>系数不全为零</strong>的零组合——两种说法完全等价；
       </li>
       <li>
@@ -205,6 +240,17 @@ import SpanDemo from '../../demos/SpanDemo.vue'
         还顺带优雅处理了"单个零向量自己就相关"这类边角情形。教科书选绕口的那句，是为了好用，不是为了难懂。
       </li>
     </ul>
+    <QuizBox
+      quiz-id="vector-space-q2"
+      question="三个向量线性相关，是不是说其中必有两个互成倍数（共线）？"
+      hint="试试 $(1,0)$、$(0,1)$、$(1,1)$ 这三个：两两共线吗？相关吗？"
+      :options="[
+        { t: '不是：可能两两都不共线，但第三个落进了前两个张成的平面', why: '对。(1,0)、(0,1)、(1,1) 两两方向都不同，可 v₃ = v₁ + v₂——集体有冗余。「相关」查的是全体有没有多余的人，不是两两之间有没有重影。demo 里三根看着散开的箭头共面，正是这一幕：换个视角才露馅。' },
+        { t: '是：相关就是有人跟别人方向重合', why: '只在两个向量时才对——两向量相关确实等价于共线。三个及以上，冗余可以「摊」在所有人身上：谁也不跟谁重合，但有一位是其余人的组合。把两向量的经验推广到多向量，是本讲最常见的翻车点。' },
+        { t: '是，向量越多越是如此', why: '恰恰相反：向量越多，「集体冗余而两两清白」的方式越多。平面里随便抓三个向量必相关（维数只有 2），可它们通常两两都不共线——反例俯拾即是。' },
+      ]"
+      :answer="0"
+    />
 
     <h2><span class="sec-no">伍</span>买到了什么：整栋大楼的产权证</h2>
     <p>
@@ -261,6 +307,49 @@ import SpanDemo from '../../demos/SpanDemo.vue'
         <strong>系数表管形状，右端管有无</strong>，两句话现在都有了精确含义。
       </p>
     </RevealBox>
+
+    <h3>屏幕上的一千六百万色：RGB 就是一个三维向量空间</h3>
+    <p>
+      打开任何取色器：一个颜色就是三个数，比如橙色是 <MathInline tex="(255, 128, 0)" />。
+      屏幕的每个像素里躺着红、绿、蓝三盏小灯，这三个数是各自的亮度。
+      现在拿会员资格清单来审查"颜色"：<strong>能加吗？</strong>能——两束光叠在一起，
+      分量各自相加（舞台上红光叠绿光得黄光，物理事实）。<strong>能数乘吗？</strong>能——
+      调亮一倍就是分量同乘 2。八条规矩逐条成立。<strong>颜色够格入会：
+      它们构成一个向量空间，纯红 (1,0,0)、纯绿 (0,1,0)、纯蓝 (0,0,1) 是一组基，
+      你的 RGB 值就是颜色在这组基下的坐标。</strong>
+      连"维数是 3"都不是工程师拍脑袋：人眼恰好有三种视锥细胞——
+      "颜色空间是三维的"是一条生理事实的数学表述。
+    </p>
+    <p>
+      这套语言立刻能干活。<strong>换基</strong>：广色域屏幕（P3）和普通屏幕（sRGB）
+      选的三种基色不同——同一个颜色换屏显示时，系统内部用一个 3×3 矩阵把坐标换算过去，
+      正是"同一空间、两组基"的换算。<strong>压扁</strong>：把彩色照片转黑白，用的是加权和
+      <MathInline tex="Y = 0.299R + 0.587G + 0.114B" />（权重和恰为 1）——
+      一个把三维压到一维的线性变换；不同颜色可以有相同的灰度，
+      信息真的丢了，这是<router-link to="/linear-algebra/determinant">第二讲</router-link>压扁事故的日常版。
+      <strong>降维</strong>：红绿色盲少一类视锥细胞，三维颜色被投到二维——
+      正常人分得清的红与绿，在那张二维投影上坐标几乎重合，
+      "线性相关"的生理版；色盲测试图挑的正是"三维里分得开、投影后挤在一起"的颜色对。
+    </p>
+    <p>
+      <strong>条件不成立会怎样？</strong>屏幕每个分量只有 0 到 255：两个亮橙
+      <MathInline tex="(200,180,0) + (100,100,0) = (300,280,0)" />，出界了。
+      所以严格说，屏幕能显示的只是颜色空间里一个有界的"盒子"——
+      加法会捅破天花板，肆节"运算不出界"那行小字在这里天天出事。
+      工程对策是 HDR 流程：先回到不设上限的线性空间把账算完，最后一步才压回盒子，
+      否则亮部叠加处处削顶变形。第一象限那个反例，原来是每台手机里的日常。
+    </p>
+    <QuizBox
+      quiz-id="vector-space-q3"
+      question="两个合法颜色相加冒出了 $(300, 280, 0)$，超出 255。这说明什么？"
+      hint="出问题的是「运算」，还是「地盘」？"
+      :options="[
+        { t: '屏幕颜色只是向量空间里一个有界盒子——加法出界，「运算不出界」的检查在盒子上失败', why: '对。数学模型（任意亮度组合的三维空间）资格完好，出事的是工程限制 [0,255]³ 这个盒子。所以图像算法先在不设上限的线性空间里算，最后才截断——把「模型」和「盒子」分开，正是抽象定义的用处。' },
+        { t: '说明颜色的加法定义错了，应该改成取平均', why: '取平均是另一种有用的运算（调色刷子干的事），但它不是光的物理叠加——两束光同时打在墙上，能量就是相加。运算没定义错，是承载它的盒子有边界；改运算去迁就盒子，物理就不认账了。' },
+        { t: '说明颜色根本不构成向量空间，伍节这段白讲了', why: '构成空间的是理想化的「全体光强组合」（分量不设上限），审查通过的是它；0–255 是显示器的工程围栏。模型合格与盒子有界是两件事——混为一谈，就等于因为教室坐不下就宣布「学生的全体」不存在。' },
+      ]"
+      :answer="0"
+    />
     <p>接下来是几张更远的产权证：</p>
     <ul>
       <li>
@@ -270,7 +359,7 @@ import SpanDemo from '../../demos/SpanDemo.vue'
         这就是"初等变换不改变秩"的几何原因：换说法不换事实，够到的地方当然还是那些；
       </li>
       <li>
-        <strong>微分方程的免费定理</strong>：二阶线性齐次方程
+        <strong>微分方程的免费定理</strong>（写给已读过微积分的读者，没读过跳过这条即可）：二阶线性齐次方程
         <MathInline tex="y'' + p y' + q y = 0" /> 的解空间恰好是 <strong>2 维</strong>——
         所以通解一定是"两个独立特解的组合"，一个不多一个不少。
         为什么正好是 2？因为解由初值 <MathInline tex="\bigl(y(0),\,y'(0)\bigr)" /> 唯一决定
@@ -281,7 +370,9 @@ import SpanDemo from '../../demos/SpanDemo.vue'
       </li>
       <li>
         <strong>函数空间</strong>：全体连续函数构成一个（无穷维）向量空间。
-        在这里还能引入"垂直"，于是傅里叶级数露出真身——下面单独讲。
+        在这里还能引入"垂直"，于是傅里叶级数露出真身——下面单独讲
+        （那个折叠框要动用积分：还没读过微积分课的话先跳过，
+        修完<router-link to="/calculus/integral">积分讲</router-link>再回来收这份大礼）。
       </li>
     </ul>
     <RevealBox
@@ -340,12 +431,13 @@ import SpanDemo from '../../demos/SpanDemo.vue'
         这件中学几何常识，被搬进了函数空间。
         正弦函数族是这个空间里的一组正交基，傅里叶系数就是函数在这组基下的坐标——
         <router-link to="/mathphys/heat">数理方程热传导讲</router-link>的主武器，
-        产权证在本讲办好（<b>本站那一讲从零讲起，不需要先修</b>）。
+        产权证在本讲办好。
       </p>
     </RevealBox>
     <div class="insight">
-      <div class="insight-title">🔗 与你学过的课程连一连</div>
+      <div class="insight-title">🔗 这张会员卡还能在哪刷：站内连一连</div>
       <p>
+        以下几处全在站内、全部从零讲起：
         <strong>概率论</strong>：随机变量能加、能数乘，全体方差有限的随机变量构成一个向量空间。
         在里面把内积定义成 <MathInline tex="\langle X, Y\rangle = \mathrm{Cov}(X,Y)" />，
         于是"长度"就是标准差、"夹角余弦"就是

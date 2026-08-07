@@ -26,7 +26,48 @@ const MATRICES = {
 const mKey = ref('symmetric')
 const theta = ref(20) // v 的方向角（度）
 
-const M = computed(() => MATRICES[mKey.value].m)
+// ―― 挑战模式：五道写死的判定题（先凭 tr、det 心算，再扫圈验证）――
+// 每道都验算过：λ² − (tr A)λ + det A 的判别式决定 2 / 1 / 0 条实特征方向
+const CHALLENGE = [
+  { m: [0, 1, 1, 0], ans: 2, why: '镜像：λ = ±1，特征线在 45° 与 135°' },
+  { m: [3, 1, 0, 3], ans: 1, why: '(λ−3)² 重根，但方向只解出一条' },
+  { m: [1, -1, 1, 1], ans: 0, why: 'λ²−2λ+2 判别式为负，实数里无解' },
+  { m: [2, 0, 0, -1], ans: 2, why: 'λ = 2 与 −1 躺在对角线上，两条轴' },
+  { m: [1, 1, 1, 0], ans: 2, why: '斐波那契矩阵！两根正是 φ 与 ψ' },
+]
+const challenge = ref(false)
+const round = ref(0)
+const picked = ref(null) // 本题已选的答案（null = 未答）
+const score = ref(0)
+
+function startChallenge() {
+  challenge.value = true
+  round.value = 0
+  picked.value = null
+  score.value = 0
+  theta.value = 20
+}
+
+function quitChallenge() {
+  challenge.value = false
+  picked.value = null
+}
+
+function answer(n) {
+  if (picked.value !== null) return
+  picked.value = n
+  if (n === CHALLENGE[round.value].ans) score.value += 1
+}
+
+function nextRound() {
+  if (round.value < CHALLENGE.length - 1) {
+    round.value += 1
+    picked.value = null
+    theta.value = 20
+  }
+}
+
+const M = computed(() => (challenge.value ? CHALLENGE[round.value].m : MATRICES[mKey.value].m))
 
 const v = computed(() => {
   const t = (theta.value * Math.PI) / 180
@@ -141,20 +182,54 @@ usePlot(
   <DemoFrame title="扫描特征方向：什么时候 Av 与 v 同一条线">
     <canvas ref="canvas" class="demo-canvas"></canvas>
     <template #controls>
-      <label class="ctrl">
+      <label class="ctrl" v-if="!challenge">
         <span class="ctrl-label">矩阵</span>
         <select v-model="mKey" class="ctrl-select">
           <option v-for="(m, k) in MATRICES" :key="k" :value="k">{{ m.label }}</option>
         </select>
       </label>
       <ControlSlider label="v 的方向角 θ" v-model="theta" :min="0" :max="360" :step="1" :display="(x) => x + '°'" />
+      <div class="ctrl">
+        <button v-if="!challenge" class="challenge-btn" type="button" @click="startChallenge">
+          ⚔️ 开始挑战（5 题）
+        </button>
+        <template v-else>
+          <template v-if="picked === null">
+            <button class="challenge-btn" type="button" @click="answer(2)">2 条</button>
+            <button class="challenge-btn" type="button" @click="answer(1)">1 条</button>
+            <button class="challenge-btn" type="button" @click="answer(0)">0 条</button>
+          </template>
+          <button
+            v-else-if="round < CHALLENGE.length - 1"
+            class="challenge-btn is-on"
+            type="button"
+            @click="nextRound"
+          >
+            下一题 →
+          </button>
+          <button class="challenge-btn" type="button" @click="quitChallenge">退出挑战</button>
+        </template>
+      </div>
     </template>
     <template #readout>
-      v 与 Av 的夹角偏差 sin = <b>{{ fmt(sinAngle, 3) }}</b>
-      <template v-if="aligned">
-        &nbsp;—— <b style="color: #2f7d4f">共线！特征值 λ ≈ {{ fmt(lambda) }}</b>
+      <template v-if="challenge">
+        <span class="challenge-badge">第 {{ round + 1 }}/5 题 · 已对 {{ score }}</span>&ensp;
+        <MathInline
+          :tex="'A = \\begin{pmatrix}' + M[0] + '&' + M[1] + '\\\\' + M[2] + '&' + M[3] + '\\end{pmatrix}'"
+        />&ensp;
+        <template v-if="picked === null">几条实特征方向？（先心算 tr、det，再扫圈验证）</template>
+        <template v-else-if="picked === CHALLENGE[round].ans">
+          ✅ 对！<br />{{ CHALLENGE[round].why }}
+        </template>
+        <template v-else>❌ 答案是 {{ CHALLENGE[round].ans }} 条<br />{{ CHALLENGE[round].why }}</template>
       </template>
-      <template v-else>&nbsp;（{{ MATRICES[mKey].hint }}）</template>
+      <template v-else>
+        v 与 Av 的夹角偏差 sin = <b>{{ fmt(sinAngle, 3) }}</b>
+        <template v-if="aligned">
+          &nbsp;—— <b style="color: #2f7d4f">共线！特征值 λ ≈ {{ fmt(lambda) }}</b>
+        </template>
+        <template v-else>&nbsp;（{{ MATRICES[mKey].hint }}）</template>
+      </template>
     </template>
     <template #note>
       <p><b>两个旋钮分别是什么</b></p>
@@ -207,6 +282,15 @@ usePlot(
         金色椭圆还有个额外的读法：<strong>特征方向正是"椭圆的半径与原方向对齐"的地方</strong>。
         第一档里椭圆的长轴短轴就落在 45°/135° 上，长短半轴恰好是两个特征值 3 和 1；
         第三档里"椭圆"根本还是个圆（旋转不改变任何长度），处处一样长，也就处处谈不上对齐。
+      </p>
+      <p>
+        <b>挑战模式的规则</b>：点「开始挑战」后连出五道判定题（题目写死在程序里，谁玩都是同样五道、
+        同样顺序），每道给你一个新矩阵，问它有<strong>几条实特征方向：2、1 还是 0</strong>。
+        建议先别拖 θ——凭正文那条速算规律
+        <MathInline tex="\lambda^2 - (\operatorname{tr}A)\lambda + \det A = 0" />
+        心算判别式（两个不同实根 → 2 条；重根 → 通常 1 条，还得像剪切那样验一下方向；
+        负判别式 → 0 条），选定答案后再扫一圈 θ 数绿色，亲眼对账。
+        第五题是个老朋友——认出它是谁，本讲就算真读完了。
       </p>
     </template>
   </DemoFrame>
