@@ -3,6 +3,7 @@ import ConceptPage from '../../components/ConceptPage.vue'
 import MathBlock from '../../components/MathBlock.vue'
 import MathInline from '../../components/MathInline.vue'
 import RevealBox from '../../components/RevealBox.vue'
+import QuizBox from '../../components/QuizBox.vue'
 import BayesDemo from '../../demos/BayesDemo.vue'
 </script>
 
@@ -13,6 +14,9 @@ import BayesDemo from '../../demos/BayesDemo.vue'
       上一讲的概率是"开赌前"算好的。可现实中的不确定性从来不是一锤子买卖：
       医生看到检测结果、法官听到新证词、天文学家收到新观测——<strong>拿到新信息之后，
       原来算的概率还作数吗？该怎么改？</strong>
+      这不是纸面问题：拿到一份"阳性"体检报告的人，十个里有九个会把
+      "这检测九成准"听成"我九成有病"——读完本讲你会亲手算出，这两句话能差出十倍，
+      而且法庭上真的有人为这个混淆坐了三年牢。
     </p>
     <p>
       18 世纪的说法把这叫"逆概率"问题：正向的概率好算——已知袋里黑白球各半，摸出黑球的概率是 1/2；
@@ -41,7 +45,11 @@ import BayesDemo from '../../demos/BayesDemo.vue'
       <p>
         原来 A 的概率是"A 的面积占全图的比例"；得知 B 发生后，图缩成了 B，
         A 只剩下与 B 重叠的部分——新概率 = <strong>重叠面积 ÷ B 的面积</strong>。
-        这就是 <MathInline tex="P(A \mid B) = P(AB)/P(B)" /> 的全部含义：分母 P(B) 不是凭空出现的，
+        这就是 <MathInline tex="P(A \mid B) = P(AB)/P(B)" /> 的全部含义
+        （记号认一下：<strong>竖线读作"在……条件下"</strong>，<MathInline tex="P(A\mid B)" />
+        是"已知 B 发生时 A 的概率"；并置写法 <MathInline tex="P(AB)" /> 是
+        "A 与 B <strong>同时</strong>发生"的简写，就是上一讲的 <MathInline tex="P(A\cap B)" />）。
+        分母 P(B) 不是凭空出现的，
         它是"新世界的总面积"，除以它是在新世界里重新校准量尺。
       </p>
     </div>
@@ -76,6 +84,17 @@ import BayesDemo from '../../demos/BayesDemo.vue'
       下面的动画把这 1000 个人画出来，三根滑杆可以随便改——
       特别值得试的是把患病率拉高（比如高危人群复查），同一份检测的含金量会立刻大变。
     </p>
+    <QuizBox
+      quiz-id="bayes-q1"
+      question="「这种检测的灵敏度是 90%」和「你阳性，所以九成有病」——这两句话是一回事吗？"
+      hint="两句话的竖线，条件各写在哪一边？"
+      :options="[
+        { t: '不是一回事：前者是 P(阳|病)，后者是 P(病|阳)——条件与结论互换了位置', why: '对。刚数过的一千人里，P(阳|病) = 9/10，P(病|阳) 却只有 9/98 ≈ 9.2%——差十倍。两个数共享同一块「又病又阳」的重叠，但除以的分母完全不同（病人总数 vs 阳性总数）。把它们混为一谈，就是本讲要防的那次方向颠倒。' },
+        { t: '是一回事：检测越准，阳性就越说明有病，说的是同一件事', why: '「检测准」只管一半。另一半是基数：990 个健康人哪怕只有 9% 被误报，也能生产 89 个假阳性，把 9 个真病人淹没。P(病|阳) 由准确度和患病率共同决定——漏掉任何一个，结论就能差出一个数量级。' },
+        { t: '差不多，最多差几个百分点', why: '实际差了十倍（90% 对 9.2%）。而且方向可以任意悬殊：把患病率换成十万分之一，P(病|阳) 会掉到千分之一——同一台九成准的检测。这不是修正项，是两个不同的问题。' },
+      ]"
+      :answer="0"
+    />
 
     <h2><span class="sec-no">叁</span>亲手数一数一千个人</h2>
     <BayesDemo />
@@ -87,6 +106,10 @@ import BayesDemo from '../../demos/BayesDemo.vue'
       <MathBlock tex="P(A \mid B) = \frac{P(AB)}{P(B)}" />
       <p><strong>贝叶斯公式</strong>：把分子按乘法公式展开、分母按全概率公式展开，得</p>
       <MathBlock tex="P(A \mid B) = \frac{P(B \mid A)\, P(A)}{P(B \mid A)\, P(A) + P(B \mid \bar{A})\, P(\bar{A})}" />
+      <p>
+        （新记号只有一个：<MathInline tex="\bar{A}" /> 头上的横杠读"非 A"——
+        A 不发生这件事，上一讲集合语言里的"补"。）
+      </p>
     </div>
     <p>
       "展开一下就得到"这句话该兑现——而且展开的过程只有两行，
@@ -147,7 +170,8 @@ import BayesDemo from '../../demos/BayesDemo.vue'
         拿刚才的体检验一遍：先验几率是 <MathInline tex="10:990 = 1:99" />；
         似然比是 <MathInline tex="0.9 / 0.09 = 10" />；
         后验几率就是 <MathInline tex="10:99" />，化成概率
-        <MathInline tex="10/109 \approx 9.2\%" />——和数人头的答案一致。
+        <MathInline tex="10/109 \approx 9.2\%" />（几率 a:b 换回概率，永远是
+        <MathInline tex="a/(a+b)" />——"有"占"有加无"的份额）——和数人头的答案一致。
         <strong>请记住这个"乘倍数"的形状</strong>，
         伍节那桩冤案的全部问题，就是有人只报了倍数、绝口不提先验。
       </p>
@@ -168,11 +192,29 @@ import BayesDemo from '../../demos/BayesDemo.vue'
         动画里深红除以（深红+金色），就是这个式子的人数版；
       </li>
       <li>
+        <strong>顺手定义独立性</strong>：若 <MathInline tex="P(A|B) = P(A)" />——
+        知道 B 发生<em>完全不改变</em>对 A 的判断——就称 A 与 B <strong>独立</strong>；
+        代进乘法公式立得等价形式 <MathInline tex="P(AB) = P(A)P(B)" />。
+        只有独立时，"同时发生"的概率才能拿两个概率<strong>直接相乘</strong>。
+        这个"才能"字字千钧——伍节那桩冤案的第一层错，就错在这里；
+      </li>
+      <li>
         <strong>先验 P(A) 无处可逃</strong>：想从 P(B|A) 换算出 P(A|B)，必须掏出 P(A)。
         检测准不准是实验室的事，患病率高不高是流行病学的事，两者缺一不可——
         这也是贝叶斯方法三百年来争议的焦点：先验从哪来？（拉普拉斯的回答：没有信息时就均匀分。）
       </li>
     </ul>
+    <QuizBox
+      quiz-id="bayes-q2"
+      question="「独立」和「互斥」，哪个才允许你把两个概率直接相乘？"
+      hint="互斥说的是「不能同时发生」——那 P(AB) 是多少？"
+      :options="[
+        { t: '独立才许相乘：P(AB) = P(A)P(B) 正是独立的定义；互斥反而意味着 P(AB) = 0', why: '对。互斥是「你死我活」（同时发生的概率为零），独立是「互不通气」（知道一个不改变另一个）——两者几乎是反义词：互斥的两件事（概率都非零时）必定不独立，因为知道 A 发生立刻排除了 B。把「不相干」的日常直觉当成相乘的许可证，是冤案的第一层错。' },
+        { t: '互斥才许相乘：两件事互不干扰嘛', why: '「互不干扰」描述的其实是独立。互斥恰恰是最强的干扰：A 一发生，B 的概率直接归零。互斥对应的运算是加法（P(A 或 B) = P(A)+P(B)），不是乘法。' },
+        { t: '都可以，反正差别不大', why: '差别是 0 与非 0 的差别：互斥时 P(AB) = 0，独立时 P(AB) = P(A)P(B) > 0。冤案里那个 (1/8543)² 之所以站不住，就是因为同一家庭的两次猝死既不互斥也不独立——共享的基因与环境让第二次的条件概率远高于第一次。' },
+      ]"
+      :answer="0"
+    />
 
     <h2><span class="sec-no">伍</span>买到了什么：一台信念更新的机器</h2>
 
@@ -204,7 +246,8 @@ import BayesDemo from '../../demos/BayesDemo.vue'
     <p>
       <strong>第一层错：把相乘当成了理所当然。</strong>
       <MathInline tex="(1/8543)^2" /> 这个平方，用的是<strong>独立性</strong>——
-      而独立性是本讲末尾要定义的一个<strong>很强的假设</strong>，不是默认状态。
+      肆节刚刚定义过：只有"第一个孩子的事完全不改变对第二个的判断"时，才许相乘。
+      它是一个<strong>很强的假设</strong>，不是默认状态。
       同一个家庭的两个孩子共享基因、共享居住环境、共享同一套育儿习惯，
       凭什么认为第一个孩子猝死这件事完全不改变对第二个的判断？
       后续研究恰恰相反：<strong>家里已经发生过一次婴儿猝死，第二次的风险会明显升高</strong>。
@@ -273,11 +316,32 @@ import BayesDemo from '../../demos/BayesDemo.vue'
       <strong>DNA 证据的分量完全取决于它之外还有什么</strong>——
       而这句话，正是本讲第肆节"先验 P(A) 无处可逃"那一条的法庭版。
     </p>
+    <p>
+      <strong>这台机器什么时候要格外小心？</strong>它的输出永远只有输入那么可靠，
+      而三个输入里最软的一环是<strong>先验</strong>。患病率有流行病学数据可查，
+      "一位母亲谋杀两个孩子的先验"却只能靠估计——希尔估出 4.5 到 9 倍的区间，
+      正说明这类数字自带弹性。负责任的用法不是假装先验精确，
+      而是<strong>把先验的合理范围整个代进去，看结论翻不翻转</strong>：
+      本案里无论取 4.5 还是 9，天平都指向无罪，结论对先验不敏感，这才立得住；
+      若结论随先验大幅摇摆，那它说明的是"证据还不够"，而不是机器失灵。
+    </p>
+    <QuizBox
+      quiz-id="bayes-q3"
+      question="把检测灵敏度从 90% 拉满到 100%（病人一个不漏），阳性报告的含金量 P(病|阳) 会大涨吗？"
+      hint="阳性人群那间屋子里，占绝对多数的是谁？"
+      :options="[
+        { t: '几乎不涨：从 9/98 变成 10/99 ≈ 10.1%——瓶颈在 89 个假阳性，不在那 1 个漏诊', why: '对（demo 的三组写死配置正演了这一幕）。屋里 98 人中 89 个是被误报的健康人，把漏掉的 1 个病人找回来只让分子从 9 变 10。真正的杠杆是压误报率：9% 降到 1%，含金量立刻蹿到五成——这就是「这类系统的设计难点是压误报，不是提灵敏度」的算术出处。' },
+        { t: '会大涨：检测完美了，阳性当然可信', why: '「病人一个不漏」和「阳性没有冤枉」是两种不同的完美。拉满灵敏度只修前者；假阳性军团（990 × 9% ≈ 89 人）纹丝不动，他们才是稀释含金量的主力。' },
+        { t: '会涨到 100%：完美检测意味着报告绝对可靠', why: '100% 灵敏度只保证「病人必阳」，不保证「阳者必病」——误报率还在。想让 P(病|阳) 到 100%，需要的是误报率为零，那是另一个（而且难得多的）指标。' },
+      ]"
+      :answer="0"
+    />
 
     <h3>还买到了什么</h3>
     <ul>
       <li>
-        <strong>垃圾邮件过滤</strong>：P(垃圾 | 出现"中奖"二字) ∝ P(出现"中奖" | 垃圾) × P(垃圾)——
+        <strong>垃圾邮件过滤</strong>：P(垃圾 | 出现"中奖"二字) ∝ P(出现"中奖" | 垃圾) × P(垃圾)
+        （∝ 读"正比于"——左右只差那个被约掉的公共分母）——
         上世纪 90 年代末拯救了整个电子邮件生态的朴素贝叶斯分类器，就是这一行公式；
       </li>
       <li>
@@ -285,9 +349,8 @@ import BayesDemo from '../../demos/BayesDemo.vue'
         贝叶斯公式就是"用数据更新模型信念"的通用法则——后验 ∝ 似然 × 先验，整个统计推断的一半建在上面；
       </li>
       <li>
-        <strong>独立性有了精确说法</strong>：若 <MathInline tex="P(A|B) = P(A)" />（知道 B 不改变对 A 的判断），
-        称 A、B 独立，等价于 <MathInline tex="P(AB) = P(A)P(B)" />。
-        下一讲起"独立"将是每个定理的标配假设——它的含义就在这里：<strong>信息互不相通</strong>；
+        <strong>独立性从此常驻</strong>：肆节定义的独立（<MathInline tex="P(A|B)=P(A)" />），
+        下一讲起将是每个定理的标配假设——它的含义就一句话：<strong>信息互不相通</strong>；
       </li>
       <li>
         <strong>基率谬误疫苗</strong>：上面那两桩案子只是最有名的例子。
@@ -298,15 +361,15 @@ import BayesDemo from '../../demos/BayesDemo.vue'
       </li>
     </ul>
     <div class="insight">
-      <div class="insight-title">🔗 与你学过的课程连一连</div>
+      <div class="insight-title">🔗 这台更新机器往后通到哪：站内连一连</div>
       <p>
         <strong>上一讲</strong>：<router-link to="/probability/points-problem">点数问题</router-link>算的是
         "开赌前"的概率，本讲算的是"看到几局之后"的概率——费马那棵树只要剪掉不符合已知战况的枝，
         剩下的就是条件概率；
-        <strong>数值分析</strong>：贝叶斯公式的分母（全概率）在高维模型里是个积分，
-        算不动它催生了 MCMC、变分推断等一大家族数值方法——
-        它们本质上是拿<router-link to="/probability/lln">大数定律</router-link>去逼近那个积分；
-        <strong>线性代数</strong>：马尔可夫链的转移矩阵每一行都是条件概率，
+        <strong>本课第 4 讲</strong>：现代统计里贝叶斯公式的分母常常大到算不动，
+        实际做法是"抽样代替求和"——凭什么抽样抽得准？答案是
+        <router-link to="/probability/lln">大数定律</router-link>；
+        <strong>线性代数</strong>（写给已读过站内线代课的读者）：马尔可夫链的转移矩阵每一行都是条件概率，
         "长期停留在哪"由它的<router-link to="/linear-algebra/eigen">特征向量</router-link>决定——
         那一讲 PageRank 的概率论出身在此；
         <strong>下一讲</strong>：本讲的"缩圈重算"要求分母

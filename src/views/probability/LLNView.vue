@@ -3,6 +3,7 @@ import ConceptPage from '../../components/ConceptPage.vue'
 import MathBlock from '../../components/MathBlock.vue'
 import MathInline from '../../components/MathInline.vue'
 import RevealBox from '../../components/RevealBox.vue'
+import QuizBox from '../../components/QuizBox.vue'
 import LLNDemo from '../../demos/LLNDemo.vue'
 </script>
 
@@ -52,9 +53,10 @@ import LLNDemo from '../../demos/LLNDemo.vue'
       </p>
     </div>
     <p>
-      直觉上为什么次数多了会稳？因为<strong>涨落互相抵消</strong>：单次骰子的偏差可达 ±2.5，
-      但 n 次平均的方差是单次的 1/n（独立性在此发力）——偏差的典型尺寸按
-      <MathInline tex="1/\sqrt{n}" /> 缩小。
+      直觉上为什么次数多了会稳？因为<strong>涨落互相抵消</strong>：单次骰子的偏差可达 ±2.5
+      （掷出 1 或 6 时离均值 3.5 的距离），但 n 次平均的<strong>方差</strong>
+      （"典型涨落大小的平方"，肆节正式定义，先这么用）是单次的 1/n（独立性在此发力）——
+      偏差的典型尺寸按 <MathInline tex="1/\sqrt{n}" /> 缩小。
     </p>
     <p>
       "切比雪夫用三行不等式把这个直觉变成了证明"——<strong>这三行值得看</strong>，
@@ -66,8 +68,9 @@ import LLNDemo from '../../demos/LLNDemo.vue'
       label="对答案 / 看完整拆解"
     >
       <template #hint>
-        先自己动笔：方差 <MathInline tex="\sigma^2 = \int (x-\mu)^2 f(x)\,dx" />
-        是对<strong>整条实轴</strong>积的，而被积式处处非负。
+        先认两个希腊字母：μ 读"缪"，是期望的惯用名；σ 读"西格玛"，是典型涨落的惯用名。
+        方差 <MathInline tex="\sigma^2 = \int (x-\mu)^2 f(x)\,dx" /> 就是把
+        "偏差的平方 × 密度"沿<strong>整条实轴</strong>加总，而被积式处处非负。
         如果我只在"离 μ 远于 ε"的那部分区域上积，结果会变大还是变小？
         再想想：在那片区域上，<MathInline tex="(x-\mu)^2" /> 至少有多大？
       </template>
@@ -76,6 +79,10 @@ import LLNDemo from '../../demos/LLNDemo.vue'
         被积式非负，所以缩小积分区域只会让结果变小：
       </p>
       <MathBlock tex="\sigma^2 = \int_{-\infty}^{\infty} (x-\mu)^2 f(x)\,dx \;\ge\; \int_{|x-\mu| \ge \varepsilon} (x-\mu)^2 f(x)\,dx" />
+      <p>
+        （右边积分号下标里写的不是区间而是条件：<MathInline tex="|x-\mu| \ge \varepsilon" />
+        表示"只在离 μ 至少 ε 远的那部分数轴上加总"——普通积分把区间换成一片区域，仅此而已。）
+      </p>
       <p>
         <strong>第二行：在剩下的区域里，把 <MathInline tex="(x-\mu)^2" /> 换成它的下界。</strong>
         那片区域上处处有 <MathInline tex="|x-\mu| \ge \varepsilon" />，
@@ -95,7 +102,11 @@ import LLNDemo from '../../demos/LLNDemo.vue'
       </p>
       <p>
         <strong>第四步：大数定律白送。</strong>先算样本均值的方差。
-        独立变量的方差可加，而常数提出求和号要平方：
+        要用两条运算规则：<strong>独立变量的方差可加</strong>
+        （本讲当作家当直接收下——它由期望的运算规则两行可推，关键在"不独立时会多出交叉项"，
+        这正是下面回味里要敲的那记警钟）；<strong>常数提出来要平方</strong>
+        （<MathInline tex="\mathrm{Var}(cX) = c^2\,\mathrm{Var}(X)" />：
+        偏差被拉伸 c 倍，平方后就是 <MathInline tex="c^2" /> 倍）：
       </p>
       <MathBlock tex="\mathrm{Var}(\bar X_n) = \mathrm{Var}\Bigl(\frac1n\sum_{i=1}^n X_i\Bigr) = \frac{1}{n^2}\sum_{i=1}^n \mathrm{Var}(X_i) = \frac{1}{n^2}\cdot n\sigma^2 = \frac{\sigma^2}{n}" />
       <p>
@@ -116,7 +127,7 @@ import LLNDemo from '../../demos/LLNDemo.vue'
         <strong>顺带把 N 算出来，看看这个界有多松。</strong>
         上式给出"要多少次"的答案：
         <MathInline tex="n \ge \sigma^2/(\varepsilon^2\delta)" />
-        （δ 是允许的失败概率）。掷骰子 <MathInline tex="\sigma^2 = 35/12 \approx 2.92" />，
+        （这里的 δ 是"允许的失败概率"——与微积分 ε-δ 里那个横向半径只是撞了字母，含义无关）。掷骰子 <MathInline tex="\sigma^2 = 35/12 \approx 2.92" />，
         要求均值落进 <MathInline tex="3.5 \pm 0.1" /> 的把握达到 99%，
         切比雪夫说要掷 <strong>29167</strong> 次。可实际模拟表明
         <strong>1937 次</strong>就够了（二十万次重复实验，达标频率 98.98%）——
@@ -126,6 +137,17 @@ import LLNDemo from '../../demos/LLNDemo.vue'
         那正是<router-link to="/probability/clt">下一讲</router-link>的事。
       </p>
     </RevealBox>
+    <QuizBox
+      quiz-id="lln-q1"
+      question="一张彩票的期望是 50 元。这是否意味着「玩得够多，你总会拿到 50」？"
+      hint="单次抽奖的可能结果只有 100 和 0——50 在哪？"
+      :options="[
+        { t: '不是：任何一次你都拿不到 50；期望说的是长期平均会贴近 50，而且「贴近」还只是大概率的', why: '对。期望是分布的重心，不是承诺——它甚至可以是一个永远取不到的值。大数定律补上的那半句同样克制：不是「必然贴近」，是「以任意高的把握贴近」。把期望读成保底，是赌徒和理财广告共享的第一误区。' },
+        { t: '是：这就是大数定律的内容——玩得多就能拿到期望', why: '差了两个字：拿到的是「平均」而非每次，得到的是「大概率」而非必然。而且伍节会展示更狠的一课：单次期望为负时，「玩得够多」恰恰是输光的保证——大数定律从不许诺翻本。' },
+        { t: '不是，因为期望这个数算错了——一半 100 一半 0，怎么会值 50', why: '算没错：50 = 100×½ + 0×½ 正是按概率加权的平均。你的不适感其实指向正确的方向——「值 50」需要一个兑现机制，而那正是大数定律要证明的事：长期平均真的会贴过去。' },
+      ]"
+      :answer="0"
+    />
     <p>亲眼看看：</p>
 
     <h2><span class="sec-no">叁</span>亲眼看六条轨迹归队</h2>
@@ -142,7 +164,9 @@ import LLNDemo from '../../demos/LLNDemo.vue'
     <div class="definition">
       <div class="def-title">📐 定理（弱大数定律）</div>
       <p>
-        设 <MathInline tex="X_1, X_2, \dots" /> 独立同分布，期望为 μ。则样本均值
+        设 <MathInline tex="X_1, X_2, \dots" /> <strong>独立同分布</strong>
+        （互不通气——上一讲定义的独立，且每个都按同一个分布取值：
+        "同一台骰子反复掷"的数学化），期望为 μ。则样本均值
         <MathInline tex="\bar{X}_n = \frac1n \sum_{i=1}^n X_i" /> <strong>依概率</strong>收敛于 μ：对任意
         <MathInline tex="\varepsilon > 0" />，
       </p>
@@ -165,6 +189,17 @@ import LLNDemo from '../../demos/LLNDemo.vue'
         金融市场"分散投资失灵"的时刻，就是独立性假设塌方的时刻。
       </li>
     </ul>
+    <QuizBox
+      quiz-id="lln-q2"
+      question="大数定律说样本均值「依概率」收敛。它是否保证：随便哪一条具体的投掷序列，均值最终都会进 ε 带并且不再出来？"
+      hint="「次次都是 6」这条邪门序列，被定理开除出宇宙了吗？"
+      :options="[
+        { t: '不保证：极限套在概率外面——邪门序列仍然存在，只是它们的总概率被压向零', why: '对。「依概率收敛」是三种收敛里较弱的一种：它只说「第 n 步还在带外」这件事的概率趋于 0，不对任何单条轨迹作担保。对单条轨迹的「以概率 1」版本（强大数定律）是 20 世纪另花力气补证的——措辞的分寸就是定理的分寸。' },
+        { t: '保证：n 足够大后每条轨迹都稳稳待在带内', why: '许不出这种口：理论上存在次次掷出 6 的序列，它的均值永远是 6。定理没有开除它，只是算出它（和一切邪门序列合起来）的概率为零。「必然」与「概率为 1」在无穷世界里是两回事——上一讲单点概率的裂缝，在这里再现。' },
+        { t: '保证进带，但不保证不再出来', why: '前半句也保证不了——「进带」本身就只是大概率事件。正确的读法一个量词都不能松：对每个固定的 n，「均值在带外」的概率随 n 趋于 0。全部内容仅此而已，而对一切实际用途，这已经够了。' },
+      ]"
+      :answer="0"
+    />
 
     <h2><span class="sec-no">伍</span>买到了什么：期望不是全部，但几乎是全部</h2>
 
@@ -184,6 +219,13 @@ import LLNDemo from '../../demos/LLNDemo.vue'
     </p>
     <MathBlock tex="\sqrt{0.01 \times 0.99} \times 100\ \text{万} \approx 9.95\ \text{万} \quad\Longrightarrow\quad \frac{\text{标准差}}{\text{期望}} \approx 50" />
     <p>
+      （那个 <MathInline tex="\sqrt{p(1-p)}" /> 是"发生记 1、不发生记 0"变量的标准差，
+      两行可推：<MathInline tex="E[X] = p" />，而 <MathInline tex="X^2 = X" /> 故
+      <MathInline tex="E[X^2] = p" />，于是
+      <MathInline tex="\mathrm{Var} = E[X^2] - E[X]^2 = p - p^2 = p(1-p)" />；
+      再乘上单位赔付额 100 万。）
+    </p>
+    <p>
       <strong>波动是期望的五十倍</strong>——这种生意没人敢做。
       但卖 n 张之后，期望按 n 涨，标准差只按
       <MathInline tex="\sqrt n" /> 涨，两者的比值按
@@ -198,7 +240,8 @@ import LLNDemo from '../../demos/LLNDemo.vue'
       而"够多"这两个字的定量含义，就写在 <MathInline tex="1/\sqrt n" /> 里。
     </p>
     <p>
-      直接算破产风险也是同一回事。把上面的参数代进去（出险数服从二项分布，
+      直接算破产风险也是同一回事。把上面的参数代进去（出险数服从<strong>二项分布</strong>——
+      就是第 1 讲那张 <MathInline tex="\binom{n}{k} p^k (1-p)^{n-k}" /> 权重表的正式名字，
       赔付超过保费即亏损），逐档算下来：
     </p>
     <MathBlock tex="\begin{array}{c|cccc} n & 1000 & 10^4 & 10^5 \\ \hline \text{年度亏损概率} & 20.8\% & 2.2\% & \approx 10^{-8} \end{array}" />
@@ -225,7 +268,9 @@ import LLNDemo from '../../demos/LLNDemo.vue'
       <p>
         <strong>但真正致命的不是那 2.7%，是本金有限。</strong>
         赌客等不到"长期"——他会先归零。带 100 元、每次押 1 元红黑，
-        想赢到某个目标再走，成功概率是（赌徒破产问题的经典结果）：
+        想赢到某个目标再走，成功概率是（"赌徒破产问题"的经典结果——
+        推导用的递推超出本讲篇幅，但数字不必信我：让计算机按规则替你赌几百万次，
+        模拟频率与下表逐列相符）：
       </p>
       <MathBlock tex="\begin{array}{c|ccc} \text{目标} & 101\ \text{元} & 110\ \text{元} & 200\ \text{元} \\ \hline \text{成功概率} & 94.7\% & 58.1\% & 0.45\% \end{array}" />
       <p>
@@ -244,17 +289,37 @@ import LLNDemo from '../../demos/LLNDemo.vue'
         赌场不需要每一局都赢，它只需要你一直玩下去。
       </p>
     </div>
+    <p>
+      赌桌边还流传着一个跟大数定律攀亲戚的迷信，正好在这里当面拆穿。
+      轮盘连开十次红，赌客蜂拥去押黑——"红开太多了，该轮到黑找平衡了"。
+      <strong>这叫赌徒谬误，而大数定律恰恰不是这么工作的。</strong>
+      轮盘没有记忆，第十一次开红的概率还是 18/37；频率的归队<strong>靠的是稀释，不是补偿</strong>——
+      前十次的偏差不会被"反向运气"抵消，只会被后面成千上万次投掷<strong>摊薄</strong>：
+      十次全红造成的超额，除以一万次之后只剩千分之一，谁也不用还这笔账。
+      定律管的是比例的长期走势，从不安排任何一次的结果。
+    </p>
+    <QuizBox
+      quiz-id="lln-q3"
+      question="轮盘连开十次红。按大数定律，下一把是不是该押黑？"
+      hint="频率归队靠的是补偿，还是稀释？"
+      :options="[
+        { t: '不是：轮盘无记忆，下一把红的概率照旧；频率归队靠后续大量投掷把偏差摊薄，不靠反向补偿', why: '对。大数定律对「下一把」只字未提——它管的是长期比例。十次全红的偏差不需要谁来还：除以未来的一万次，它自动缩成尘埃。把「长期摊薄」误读成「短期找平」，就是赌徒谬误的全部内容。' },
+        { t: '是：红黑最终要各占一半，黑已经欠了十把，该还了', why: '「最终各半」说的是比例而非笔数：红比黑的绝对次数差完全可以越拉越大（比如 5010 对 4990），比例却照样归队。轮盘既不记账也不还账——每一把都是全新的 18/37。' },
+        { t: '是，但理由相反：连开十次红说明轮盘偏了，应该继续押红', why: '这至少是个可检验的假设（贝叶斯式的想法：用数据更新对轮盘的判断），但十次远不够立案——公平轮盘连开十红的概率约千分之一，赌场每天开几千局，天天都会出现。样本不够时，「轮盘坏了」的似然比撬不动先验。' },
+      ]"
+      :answer="0"
+    />
 
     <h3>还买到了什么</h3>
     <ul>
       <li>
         <strong>蒙特卡洛方法</strong>：想算一个算不动的积分？把它写成某个期望，扔随机数模拟取均值——
-        大数定律保证收敛，误差按 <MathInline tex="1/\sqrt{n}" /> 缩小且<strong>与维数无关</strong>。
-        这是高维积分的救命稻草，也直接变成了解偏微分方程的一种办法：
+        大数定律保证收敛，误差按 <MathInline tex="1/\sqrt{n}" /> 缩小且<strong>与维数无关</strong>——
+        高维积分的救命稻草。站内后面的课会两次撞见它：
         <router-link to="/mathphys/laplace">数理方程第 4 讲</router-link>用它算过一块金属板的温度
-        （从一个点放五十万次随机游走，结果与解方程逐位相符）；
-        <router-link to="/numerical/quadrature">数值分析求积讲</router-link>说的"维数灾难"，
-        正是它的用武之地；
+        （从一个点放五十万次随机游走，结果与解方程逐位相符），
+        <router-link to="/numerical/quadrature">数值分析求积讲</router-link>会讲清
+        它专治的那种"维数一高、格点法当场爆炸"的困境——都是后话，先记伏笔；
       </li>
       <li>
         <strong>圣彼得堡悖论的警钟</strong>：掷硬币直到出正面，第 k 次才出就赔 <MathInline tex="2^k" />——这游戏期望无穷大，
@@ -270,7 +335,7 @@ import LLNDemo from '../../demos/LLNDemo.vue'
       </li>
     </ul>
     <div class="insight">
-      <div class="insight-title">🔗 与你学过的课程连一连</div>
+      <div class="insight-title">🔗 这份保证书往后管到哪：站内连一连</div>
       <p>
         <strong>微积分</strong>：本讲从头到尾是<router-link to="/calculus/limit">极限理论</router-link>的随机翻版——
         期望是<router-link to="/calculus/integral">积分</router-link>、大数定律是 ε-N 攻防、
@@ -279,9 +344,9 @@ import LLNDemo from '../../demos/LLNDemo.vue'
         直接用的是<router-link to="/probability/distribution">分布函数讲</router-link>的家当；
         <strong>数值分析</strong>：<router-link to="/numerical/quadrature">数值积分</router-link>的
         蒙特卡洛路线、随机算法的误差分析，理论根基全在这一页；
-        <strong>线性代数</strong>：那句"独立性正是在方差可加这一步用掉的"，
-        几何上就是"正交向量的长度平方可加"——勾股定理的概率版
-        （不相关的随机变量在 <MathInline tex="L^2" /> 里真的互相垂直）。
+        <strong>线性代数</strong>（写给已读过站内线代课的读者）：那句"独立性正是在方差可加这一步用掉的"，
+        几何上就是"正交向量的长度平方可加"——勾股定理的概率版：
+        不相关的随机变量，在把随机变量当向量的那个空间里真的互相垂直。
       </p>
     </div>
   </ConceptPage>

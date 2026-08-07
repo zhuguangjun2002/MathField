@@ -3,6 +3,7 @@ import ConceptPage from '../../components/ConceptPage.vue'
 import MathBlock from '../../components/MathBlock.vue'
 import MathInline from '../../components/MathInline.vue'
 import RevealBox from '../../components/RevealBox.vue'
+import QuizBox from '../../components/QuizBox.vue'
 import PointsProblemDemo from '../../demos/PointsProblemDemo.vue'
 </script>
 
@@ -25,7 +26,7 @@ import PointsProblemDemo from '../../demos/PointsProblemDemo.vue'
         帕斯卡写信给图卢兹的法官<strong>费马</strong>，两人你来我往数封信，各自用不同方法算出了同一个答案：
         赌注应按 <strong>3:1</strong> 分给领先者。费马的办法直截了当：赌局虽然停了，
         但<strong>假想把剩下的局赌完</strong>，把未来所有等可能的结局一一列举，数一数各自的赢面。
-        帕斯卡则发明了递推法（一步步倒推每个局面的价值），还为此把"帕斯卡三角"运用得出神入化。
+        帕斯卡则发明了递推法（一步步倒推每个局面的价值），还为此把"帕斯卡三角"（那张"每个数是肩上两数之和"的三角形数表）运用得出神入化。
         概率论没有漫长的史前史——<strong>它就诞生在这几封信里</strong>。
       </p>
     </div>
@@ -86,6 +87,10 @@ import PointsProblemDemo from '../../demos/PointsProblemDemo.vue'
       </p>
       <MathBlock tex="P(\text{甲胜}) = \frac{3}{4}, \qquad P(\text{乙胜}) = \frac{1}{4} \quad\Longrightarrow\quad \text{赌注按 } 3:1 \text{ 分}" />
       <p>
+        （一个从此用到课程结束的记号顺势登场：<strong>P 读作"……的概率"，括号里写事件</strong>。
+        <MathInline tex="P(\text{甲胜}) = 3/4" /> 就读"甲胜这件事的概率是四分之三"。）
+      </p>
+      <p>
         <strong>"多赌的那几局"要紧在哪儿？</strong>它们对结果<strong>毫无影响</strong>——
         甲第一局就赢了的话，第二局赌不赌都改变不了他已经赢了这个事实。
         费马添上它们，纯粹是为了<strong>把所有路径修剪成同样长</strong>，
@@ -96,11 +101,19 @@ import PointsProblemDemo from '../../demos/PointsProblemDemo.vue'
       <p>
         <strong>第四步：一般情形。</strong>甲还需 a 胜、乙还需 b 胜时，
         最多再赌 <MathInline tex="a + b - 1" /> 局，共
-        <MathInline tex="2^{a+b-1}" /> 条等长路径，甲赢的是"其中至少 a 局归甲"的那些：
+        <MathInline tex="2^{a+b-1}" /> 条等长路径（每局两种走向，连乘出来的路径数）。
+        数"至少 a 局归甲"的路径要用一个新记号：从 n 局里挑出 k 局归甲，挑法总数记作
+        <MathInline tex="\binom{n}{k}" />，读"n 选 k"，叫<strong>组合数</strong>——
+        比如 3 局里挑 2 局给甲，有"前两局 / 后两局 / 头尾两局"共 3 种，所以
+        <MathInline tex="\binom{3}{2} = 3" />（它有通用公式，本讲用到的都数得过来）。
+        再配上连加速记 <MathInline tex="\Sigma" />（让 k 从 a 一路数到 a+b−1，逐项相加），
+        赢面就能一口气写下：
       </p>
       <MathBlock tex="P(\text{甲胜}) = \frac{1}{2^{\,a+b-1}} \sum_{k=a}^{a+b-1} \binom{a+b-1}{k}" />
       <p>
-        组合数就这样第一次走进了概率论。
+        拿刚才那局核一遍：a = 1、b = 2 时公式给
+        <MathInline tex="\bigl(\binom{2}{1} + \binom{2}{2}\bigr)/2^2 = (2+1)/4 = 3/4" />——
+        与数叶子的结果一字不差。组合数就这样第一次走进了概率论。
         上面的动画就是这个公式的可视化——拖两根滑杆，
         它把整棵树画出来并替你数红色叶子。
         <strong>而帕斯卡走的是另一条路</strong>：他不列举，而是<strong>从终局往回倒推</strong>——
@@ -118,6 +131,17 @@ import PointsProblemDemo from '../../demos/PointsProblemDemo.vue'
       "一正一反"其实是两种结局（甲正乙反、甲反乙正）合并的，真概率是 2/4。
       <strong>等可能不能拍脑袋认定，要拆到不能再拆的基本结局才算数。</strong>下面亲手数一次。
     </p>
+    <QuizBox
+      quiz-id="points-problem-q1"
+      question="掷两枚一模一样的硬币。达朗贝尔说结局有三种——两正、两反、一正一反——各占 1/3。错在哪？"
+      hint="「一正一反」这一项，和「两正」是同样粗细的一项吗？"
+      :options="[
+        { t: '「一正一反」其实是两个基本结局合并的（这枚正那枚反、这枚反那枚正），清单粗细不均', why: '对。真概率是 1/4、1/4、2/4。等可能不能拍脑袋认定，要拆到不能再拆；费马把比赛「补齐赌完」也是同一个动作——把清单修剪成每项同样粗细，数个数才合法。' },
+        { t: '错在硬币一模一样，本来就分不清谁正谁反', why: '分不分得清是观察者的事，硬币自己「分得清」：两枚硬币是两个物体，各自落地各有历史（慢镜头下看得明明白白）。概率数的是可能发生的历史，不是照片上可分辨的样子。' },
+        { t: '没错，1/3 也是一种合理的口径', why: '概率不由口味决定：真去掷四千次，「一正一反」会出现两千次上下，而不是一千三百次——1/3 会被数据当场否决。「频率终将站在正确的概率一边」正是第 4 讲大数定律的内容。' },
+      ]"
+      :answer="0"
+    />
 
     <h2><span class="sec-no">叁</span>亲手分一次赌注</h2>
     <PointsProblemDemo />
@@ -130,6 +154,11 @@ import PointsProblemDemo from '../../demos/PointsProblemDemo.vue'
         且各结果<strong>等可能</strong>。事件 A 是 Ω 的子集，其概率定义为
       </p>
       <MathBlock tex="P(A) = \frac{|A|}{|\Omega|} = \frac{\text{A 包含的基本结局数}}{\text{全部基本结局数}}" />
+      <p>
+        （记号认一下：<MathInline tex="\Omega" /> 读"欧米伽"，就是"全部结局的那份完整清单"；
+        <MathInline tex="|A|" /> 这对竖线在这里<strong>不是绝对值</strong>，
+        读作"集合 A 的成员个数"。）
+      </p>
     </div>
     <p>逐词拆解，每个成分都在防一个历史陷阱：</p>
     <ul>
@@ -142,11 +171,22 @@ import PointsProblemDemo from '../../demos/PointsProblemDemo.vue'
         达朗贝尔的 1/3 错在清单没拆到底，混进了"粗细不均"的结局；
       </li>
       <li>
-        <strong>事件 = 子集</strong>——这个不起眼的选择意义深远：事件的"或、且、非"变成了集合的并、交、补，
+        <strong>事件 = 子集</strong>——这个不起眼的选择意义深远：事件的"或、且、非"变成了集合的并（<MathInline tex="A \cup B" />）、交（<MathInline tex="A \cap B" />，下一讲还会把它简写成并置的 <MathInline tex="AB" />）、补，
         概率的运算从此有语法可依。1933 年柯尔莫哥洛夫的公理化（第三讲细说）保留的正是这套骨架，
         只是把"数个数"换成了更一般的"量长度"。
       </li>
     </ul>
+    <QuizBox
+      quiz-id="points-problem-q2"
+      question="费马把早已分出胜负的比赛「接着赌完」。这个看似荒谬的动作，改变甲的赢面了吗？"
+      hint="甲第一局就赢了的话，第二局的结果还能推翻什么吗？"
+      :options="[
+        { t: '没有——多赌的局不影响谁赢；它只把所有路径修剪成等长，让「数个数」变得合法', why: '对。补齐前后甲的赢面都是 3/4，变的只是清单的形状：从三条长短不一的路，变成四条等长等可能的路。「往清单里塞不影响结果的事件、换取等可能」是概率论第一个真正的技巧。' },
+        { t: '改变了——多赌两局，乙就多了翻盘的机会', why: '翻不了：甲第一局一赢，整场胜负已定，后面赌出什么都推翻不了既成事实。把树画出来逐叶核对，「甲甲」与「甲乙」两片叶子都归甲——多赌的那局只是把「甲」这条短路一分为二，总份额没动。' },
+        { t: '没改变，所以这一步纯属多此一举，删掉也行', why: '删掉就退回「甲 / 乙甲 / 乙乙」那张长短不一的清单——直接数个数会数出 2/3 的错账。这一步是让清单等可能的关键工序：帕斯卡起初也觉得荒谬，跟费马专门争论过，最后服了。' },
+      ]"
+      :answer="0"
+    />
 
     <h2><span class="sec-no">伍</span>买到了什么：从赌桌到整个不确定世界</h2>
 
@@ -160,8 +200,12 @@ import PointsProblemDemo from '../../demos/PointsProblemDemo.vue'
     <p>
       <strong>而它顺手回答了一个体育迷都有的疑问：为什么大赛都要打多局？</strong>
       直觉说"多打几场更能看出真实水平"，但到底能看出多少，是可以算的。
-      把上面那个公式里的"每局各占一半"放松成"甲每局胜率 p"，
-      甲赢下"先胜 N 局"这个赛制的概率就是
+      把上面那个公式里的"每局各占一半"放松成"甲每局胜率 p"。
+      代价是路径不再等可能，得逐条称重：一条"甲赢 k 局、输掉其余"的具体路径，
+      发生的机会是 p 连乘 k 次、再把 (1−p) 连乘其余次，即
+      <MathInline tex="p^k (1-p)^{\,2N-1-k}" />；这样的路径共有
+      <MathInline tex="\binom{2N-1}{k}" /> 条。把"甲至少赢 N 局"的各档加总，
+      甲赢下"先胜 N 局"赛制的概率就是
     </p>
     <MathBlock tex="P = \sum_{k=N}^{2N-1} \binom{2N-1}{k}\, p^k (1-p)^{\,2N-1-k}" />
     <p>
@@ -206,6 +250,17 @@ import PointsProblemDemo from '../../demos/PointsProblemDemo.vue'
         <strong>但骨架仍然是费马那一句：列出未来的所有走向，算一算你占几分之几。</strong>
       </p>
     </div>
+    <QuizBox
+      quiz-id="points-problem-q3"
+      question="把每分胜率 p 调到整整 50%，网球那台四层放大器会输出什么？"
+      hint="两位选手此刻完全对称——互换他们的名字，表格该变吗？"
+      :options="[
+        { t: '四列全是 50%——放大器只放大差距，绝不凭空制造差距', why: '对。两人完全对称时，互换名字整张表必须原样不动，唯一自洽的输出就是 50%。表格实算也正是如此——这既是模型的自检，也是放大器的本性：输入零差距，输出零差距。' },
+        { t: '会略高于 50%——打了那么多分，总该放大出点什么', why: '放大器放大的是「输入的差距」，输入是零就无物可放。若表格在 p = 50% 时给出 52%，那把两人名字互换后同一张表就得给出 48%——自相矛盾。对称性是比计算更快的裁判。' },
+        { t: '会低于 50%——比赛越长消耗越大，胜率应该下滑', why: '「消耗」在这个模型里根本没被建模——模型只有一个恒定的 p。这恰是正文「代价也要说清」那段的要点：模型只回答模型之内的问题；体力、势头要进结论，得先进模型。' },
+      ]"
+      :answer="0"
+    />
 
     <h3>还买到了什么</h3>
     <ul>
@@ -227,7 +282,7 @@ import PointsProblemDemo from '../../demos/PointsProblemDemo.vue'
       </li>
     </ul>
     <div class="insight">
-      <div class="insight-title">🔗 与你学过的课程连一连</div>
+      <div class="insight-title">🔗 这门课往后怎么走：站内连一连</div>
       <p>
         <strong>概率论教科书的第一章</strong>为什么总在讲排列组合和古典概型？因为那就是学科出生时的样子。
         但你也已经看见它的局限：靠"数个数"定义概率，必须<strong>有限、等可能</strong>——

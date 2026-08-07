@@ -7,6 +7,46 @@ import ControlSlider from '../components/ControlSlider.vue'
 const aNeed = ref(1) // 甲还差几局获胜
 const bNeed = ref(2) // 乙还差几局获胜
 
+// ―― 挑战模式：五道写死的分账题（先心算，再数叶子对账）――
+// 全部 9 档答案已逐一枚举验算：见 #note 的规则说明
+const CHALLENGE = [
+  { a: 2, b: 2, opts: ['1/2', '2/3', '3/4'], ans: 0, why: '两人对称，答案只能是对半——树上红蓝叶子恰好各半' },
+  { a: 1, b: 3, opts: ['3/4', '7/8', '5/6'], ans: 1, why: '乙要连赢三局才翻盘，8 条路里只有 1 条——甲拿 7/8' },
+  { a: 2, b: 1, opts: ['1/4', '1/3', '1/2'], ans: 0, why: '就是默认档的镜像：乙差 1、甲差 2，甲只占 1/4' },
+  { a: 2, b: 3, opts: ['3/4', '11/16', '2/3'], ans: 1, why: '16 条等长路里甲赢 11 条——分母是 2⁴，分不出 3 的倍数' },
+  { a: 3, b: 2, opts: ['5/16', '1/4', '1/3'], ans: 0, why: '上一题的镜像：16 条里甲只赢 5 条' },
+]
+const challenge = ref(false)
+const round = ref(0)
+const picked = ref(null)
+const score = ref(0)
+
+function startChallenge() {
+  challenge.value = true
+  round.value = 0
+  picked.value = null
+  score.value = 0
+  aNeed.value = CHALLENGE[0].a
+  bNeed.value = CHALLENGE[0].b
+}
+function quitChallenge() {
+  challenge.value = false
+  picked.value = null
+}
+function answer(i) {
+  if (picked.value !== null) return
+  picked.value = i
+  if (i === CHALLENGE[round.value].ans) score.value += 1
+}
+function nextRound() {
+  if (round.value < CHALLENGE.length - 1) {
+    round.value += 1
+    picked.value = null
+    aNeed.value = CHALLENGE[round.value].a
+    bNeed.value = CHALLENGE[round.value].b
+  }
+}
+
 const depth = computed(() => aNeed.value + bNeed.value - 1)
 const total = computed(() => 2 ** depth.value)
 
@@ -93,12 +133,53 @@ usePlot(
   <DemoFrame title="点数分配：数一数未来所有的等可能结局">
     <canvas ref="canvas" class="demo-canvas"></canvas>
     <template #controls>
-      <ControlSlider label="甲还差几局" v-model="aNeed" :min="1" :max="3" :step="1" />
-      <ControlSlider label="乙还差几局" v-model="bNeed" :min="1" :max="3" :step="1" />
+      <ControlSlider label="甲还差几局" v-model="aNeed" :min="1" :max="3" :step="1" :disabled="challenge" />
+      <ControlSlider label="乙还差几局" v-model="bNeed" :min="1" :max="3" :step="1" :disabled="challenge" />
+      <div class="ctrl">
+        <button v-if="!challenge" class="challenge-btn" type="button" @click="startChallenge">
+          ⚔️ 开始挑战（5 题）
+        </button>
+        <template v-else>
+          <template v-if="picked === null">
+            <button
+              v-for="(o, i) in CHALLENGE[round].opts"
+              :key="o"
+              class="challenge-btn"
+              type="button"
+              @click="answer(i)"
+            >
+              {{ o }}
+            </button>
+          </template>
+          <button
+            v-else-if="round < CHALLENGE.length - 1"
+            class="challenge-btn is-on"
+            type="button"
+            @click="nextRound"
+          >
+            下一题 →
+          </button>
+          <button class="challenge-btn" type="button" @click="quitChallenge">退出挑战</button>
+        </template>
+      </div>
     </template>
     <template #readout>
-      未来共 2<sup>{{ depth }}</sup> = <b>{{ total }}</b> 种等可能结局，其中甲最终获胜
-      <b>{{ aWinLeaves }}</b> 种 —— 赌注应分给甲 <b style="color: #b23a2f">{{ shareText }}</b>
+      <template v-if="challenge">
+        <span class="challenge-badge">第 {{ round + 1 }}/5 题 · 已对 {{ score }}</span>&ensp;
+        <template v-if="picked === null">
+          甲还差 {{ CHALLENGE[round].a }} 局、乙还差 {{ CHALLENGE[round].b }} 局——赌注该分给甲几分之几？
+        </template>
+        <template v-else-if="picked === CHALLENGE[round].ans">
+          ✅ 对！甲分 {{ CHALLENGE[round].opts[CHALLENGE[round].ans] }}<br />{{ CHALLENGE[round].why }}
+        </template>
+        <template v-else>
+          ❌ 答案是 {{ CHALLENGE[round].opts[CHALLENGE[round].ans] }}<br />{{ CHALLENGE[round].why }}
+        </template>
+      </template>
+      <template v-else>
+        未来共 2<sup>{{ depth }}</sup> = <b>{{ total }}</b> 种等可能结局，其中甲最终获胜
+        <b>{{ aWinLeaves }}</b> 种 —— 赌注应分给甲 <b style="color: #b23a2f">{{ shareText }}</b>
+      </template>
     </template>
     <template #note>
       <b>两个旋钮，合起来描述"从此刻起还要打成什么样"。</b>
@@ -113,6 +194,18 @@ usePlot(
       分钱看的不是过去的战绩，而是<b>未来的可能性</b>。另一个陷阱：如果"赌到分出胜负就停"，
       树叶就不再等可能（短路径的叶子概率更大）——达朗贝尔当年就是在这里栽的跟头：
       他数两枚硬币的结果"两正/两反/一正一反"共三种，就断定各占 1/3。等可能，从来不能拍脑袋。
+      <br /><br />
+      <b>照着做一遍</b>：把两根滑杆各拖一轮，九种组合的读数依次是——
+      对称档（差 1 对 1、差 2 对 2、差 3 对 3）全是 <b>1/2</b>；
+      甲差 1 时对乙差 2、差 3 分别是 <b>3/4、7/8</b>（乙要连赢才翻盘，每多差一局赢面减半地缩）；
+      镜像档甲差 2 对乙差 1 是 <b>1/4</b>、甲差 3 对乙差 1 是 <b>1/8</b>；
+      最有意思的是差 2 对 3 的 <b>11/16</b> 和差 3 对 2 的 <b>5/16</b>——
+      分母都是 2 的幂（等可能路径数），两数之和恰为 1（同一棵树换个立场数）。
+      <br /><br />
+      <b>挑战模式的规则</b>：点「开始挑战」连出五道分账题（题目写死在程序里，谁玩都一样），
+      滑杆交给题目锁定。先<b>心算或画小树</b>选答案，选完看图上的红蓝叶子亲手对账。
+      五题答案都从上面那九档里出，错项也都是「按已胜局数分」之类的历史错法——
+      三百七十年前整个欧洲都答错的题，看你五题能对几题。
     </template>
   </DemoFrame>
 </template>

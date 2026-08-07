@@ -127,6 +127,8 @@ export const probabilityConcepts = [
     question: '赌局中途散场，赌注按什么比例分给两个赌徒？',
     era: '1654 — 1657',
     figures: '帕斯卡 · 费马 · 惠更斯',
+    prereqs: [],
+    baseline: '中学的分数运算，会画树状图数路',
   },
   {
     slug: 'bayes',
@@ -136,6 +138,7 @@ export const probabilityConcepts = [
     question: '检测呈阳性，患病概率却不到一成——哪里出了错？',
     era: '1763 — 1812',
     figures: '贝叶斯 · 普莱斯 · 拉普拉斯',
+    prereqs: [{ slug: 'points-problem', why: '条件概率就是把费马那棵树剪掉不合已知战况的枝' }],
   },
   {
     slug: 'distribution',
@@ -145,6 +148,10 @@ export const probabilityConcepts = [
     question: '身高恰好等于 1.75000… 米的概率是 0，那"身高的分布"说的是什么？',
     era: '1733 — 1933',
     figures: '棣莫弗 · 拉普拉斯 · 柯尔莫哥洛夫',
+    prereqs: [
+      { slug: 'points-problem', why: '"数个数"在无穷多结局面前失灵，才逼出"量面积"' },
+      { slug: 'bayes', why: '伍节的体检案例要用似然比说话' },
+    ],
   },
   {
     slug: 'lln',
@@ -154,6 +161,7 @@ export const probabilityConcepts = [
     question: '扔一万次骰子，平均点数为什么总在 3.5 附近？"总"是多总？',
     era: '1657 — 1713',
     figures: '惠更斯 · 雅各布·伯努利',
+    prereqs: [{ slug: 'distribution', why: '切比雪夫那三行的最后一步，就是"密度在一片区域上的积分等于概率"' }],
   },
   {
     slug: 'clt',
@@ -163,6 +171,10 @@ export const probabilityConcepts = [
     question: '骰子的分布是平的，可 100 个骰子的平均数为什么是钟形的？',
     era: '1733 — 1810',
     figures: '棣莫弗 · 拉普拉斯 · 高斯',
+    prereqs: [
+      { slug: 'lln', why: '本讲的动作就是把大数定律的 ε 带按 $\\sigma/\\sqrt{n}$ 放大了看' },
+      { slug: 'distribution', why: '"依分布收敛"要用分布函数的语言表述' },
+    ],
   },
 ]
 
@@ -421,7 +433,7 @@ export const courses = [
     prereqCourses: ['calculus'],
     concepts: probabilityConcepts,
     intro:
-      '几千年来人类一直在掷骰子，却始终认为"运气"属于神明，不属于数学——直到 1654 年两个法国人为一场没赌完的赌局通了几封信。概率论是数学史上罕见的<strong>出生证齐全</strong>的分支：我们确切知道它诞生在哪一年、为了什么问题。这门课从那张赌桌讲起，看"运气"如何一步步变成可计算的对象，你教科书里那些测度味十足的定义（分布函数、期望、依概率收敛）各自是被什么麻烦逼出来的。',
+      '几千年来人类一直在掷骰子，却始终认为"运气"属于神明，不属于数学——直到 1654 年两个法国人为一场没赌完的赌局通了几封信。概率论是数学史上罕见的<strong>出生证齐全</strong>的分支：我们确切知道它诞生在哪一年、为了什么问题。这门课<strong>不假设你学过概率统计</strong>——前两讲只用中学的分数和数数，第三讲起会用到站内微积分课的积分。从那张赌桌讲起，看"运气"如何一步步变成可计算的对象，教科书里那些定义（分布函数、期望、依概率收敛）各自是被什么麻烦逼出来的。',
     timelineTitle: '三百年时间线',
     timeline: [
       {
