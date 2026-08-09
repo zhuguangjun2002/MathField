@@ -399,7 +399,139 @@ import EpsilonDeltaDemo from '../../demos/EpsilonDeltaDemo.vue'
       </p>
     </RevealBox>
     <p>
-      上面那个展开还能顺手还掉叁节欠的一笔账：<strong>ε 挑战里的 N，不逐项试也能直接算出来</strong>。
+      刚才那一路，靠的是把 <MathInline tex="(1+\tfrac1n)^n" /> 整个拆开逐项比较。
+      它胜在一次把<strong>递增</strong>和<strong>有上界</strong>两件事一起办了，
+      但也确实笨重。这两件事各还有一条短得多的路，而且第二条路会白送一个很有用的副产品。
+      先把要用的两把工具认一下——名字唬人，其实都是中学不等式。
+    </p>
+    <p>
+      <strong>第一把：均值不等式</strong>（也叫 AM-GM，A 是 arithmetic 算术，G 是 geometric 几何）。
+      一堆正数有两种"平均"：<strong>算术平均</strong>是加起来除以个数，
+      <strong>几何平均</strong>是乘起来再开相应次方根。拿 1 和 9 试：算术平均
+      <MathInline tex="(1+9)/2 = 5" />，几何平均 <MathInline tex="\sqrt{1\times 9} = 3" />。
+      不等式说的就是这个现象永远成立：
+    </p>
+    <MathBlock tex="\frac{x_1 + x_2 + \cdots + x_m}{m} \;\ge\; \sqrt[m]{x_1 x_2 \cdots x_m}" />
+    <p>
+      <strong>而且等号只在这 m 个数全相等时才成立</strong>——这一条待会儿要用来把"≥"升级成严格的"＞"。
+      两个数的情形一行就能验：<MathInline tex="a + b - 2\sqrt{ab} = (\sqrt a - \sqrt b)^2 \ge 0" />。
+      几何画面是：周长固定的长方形里，<strong>正方形的面积最大</strong>（越"不平均"，乘积越吃亏）。
+      一般 m 个数的证法有好几套（数学归纳、凸函数），这里就把它当一件已知工具用。
+    </p>
+    <p>
+      <strong>第二把：伯努利不等式。</strong>对任意 <MathInline tex="x \ge -1" /> 和正整数 m，
+    </p>
+    <MathBlock tex="(1+x)^m \;\ge\; 1 + mx" />
+    <p>
+      人话：<strong>把一个 m 次方压扁成一次式，而且压扁后只会更小</strong>。
+      试一下 <MathInline tex="1.02^3 = 1.061208" />，右边 <MathInline tex="1 + 3\times 0.02 = 1.06" />，
+      确实大于。它的来历也不神秘：<MathInline tex="x \ge 0" /> 时把左边按二项式展开，
+      <MathInline tex="1 + mx" /> 只是前两项，后面丢掉的全是非负的。
+      我们要证的东西恰好是"n 次方 vs 一次式"，所以这把工具方向正好。
+    </p>
+    <p>
+      两把工具就位。下面这个框里有三段推导，结论先摆在外面：
+    </p>
+    <ul>
+      <li>
+        <strong>AM-GM 一行证出递增</strong>——诀窍是拿 n 个
+        <MathInline tex="(1+\tfrac1n)" /> 再<strong>配上一个 1</strong>，
+        把 n 次方和 n+1 次方拉到同一个平台上比。
+      </li>
+      <li>
+        <strong>同一招用第二次，证出上界。</strong>给 <MathInline tex="a_n" /> 配一个搭档
+        <MathInline tex="b_n = (1+\tfrac1n)^{n+1}" />（就是多乘一个 <MathInline tex="1+\tfrac1n" />），
+        它是<strong>递减</strong>的。于是 e 被两头夹住：
+      </li>
+    </ul>
+    <MathBlock tex="a_n \;<\; e \;<\; b_n, \qquad b_n \le b_1 = \Bigl(1+\tfrac11\Bigr)^{2} = 4" />
+    <p>
+      上界 4 比前面的 3 松，但这条路白送两样东西：一是<strong>双边夹逼</strong>——
+      n = 100 时 <MathInline tex="a_{100} = 2.704814" />、<MathInline tex="b_{100} = 2.731862" />，
+      e 就夹在中间，这是不靠计算器也能框住 e 的办法；
+      二是两者之差 <MathInline tex="b_n - a_n = a_n/n < e/n" />，
+      这正是下面反算 N 时要用的那个误差上界的粗糙版。
+    </p>
+    <ul>
+      <li>
+        <strong>伯努利不等式给出第三条路</strong>，而且更精确：相邻两项之比
+        <MathInline tex="a_n/a_{n-1} \ge (n^3+1)/n^3" />，
+        右边明摆着大于 1，递增当场成立。收尾那个 <MathInline tex="n^3+1" /> 是白捡的巧合。
+      </li>
+    </ul>
+    <RevealBox
+      title="🔍 两条更短的路：均值不等式与伯努利不等式"
+      label="对答案 / 看完整拆解"
+    >
+      <template #hint>
+        先自己试第一条：把 n 个 <MathInline tex="(1+\tfrac1n)" /> 和一个 1 摆在一起，
+        一共 n+1 个数，对它们用 AM-GM——左边的几何平均是什么？右边的算术平均能不能化简成
+        <MathInline tex="1 + \tfrac{1}{n+1}" />？动笔算一下右边那个分数再点开。
+      </template>
+      <p>
+        <strong>路线一：AM-GM 证递增。</strong>取 n 个
+        <MathInline tex="(1+\tfrac1n)" />，外加一个 1，一共 n+1 个数。
+        几何平均是这 n+1 个数的乘积开 n+1 次方，算术平均是它们的和除以 n+1：
+      </p>
+      <MathBlock tex="\Bigl[\Bigl(1+\tfrac1n\Bigr)^{n}\cdot 1\Bigr]^{\frac{1}{n+1}} \;\le\; \frac{n\bigl(1+\tfrac1n\bigr) + 1}{n+1} = \frac{n+2}{n+1} = 1 + \frac{1}{n+1}" />
+      <p>
+        右边的化简只用到 <MathInline tex="n(1+\tfrac1n) = n + 1" />，加上那个配来的 1 就是 n+2。
+        现在两边同时取 n+1 次方（两边都是正数，不等号方向不变）：
+      </p>
+      <MathBlock tex="\Bigl(1+\frac1n\Bigr)^{n} \;\le\; \Bigl(1+\frac{1}{n+1}\Bigr)^{n+1}, \qquad \text{即}\quad a_n \le a_{n+1}" />
+      <p>
+        而且这 n+1 个数<strong>不全相等</strong>（配来的那个 1 和其余的
+        <MathInline tex="1+\tfrac1n" /> 不一样），所以 AM-GM 取严格不等号，
+        <MathInline tex="a_n < a_{n+1}" /> 是<strong>严格</strong>递增。一步到位，不用展开。
+      </p>
+      <p>
+        <strong>路线二：同一招证搭档递减。</strong>令
+        <MathInline tex="b_n = \bigl(1+\tfrac1n\bigr)^{n+1}" />。直接看它不方便，
+        改看它的倒数——因为倒数的形状和 <MathInline tex="a_n" /> 几乎一模一样，只是加号变减号：
+      </p>
+      <MathBlock tex="\frac{1}{b_n} = \Bigl(\frac{n}{n+1}\Bigr)^{n+1} = \Bigl(1-\frac{1}{n+1}\Bigr)^{n+1}" />
+      <p>
+        要证 <MathInline tex="b_n" /> 递减，只需证这个倒数<strong>递增</strong>。照抄路线一：
+        取 n+1 个 <MathInline tex="(1-\tfrac{1}{n+1})" />，再配一个 1，一共 n+2 个数，
+      </p>
+      <MathBlock tex="\Bigl[\Bigl(1-\tfrac{1}{n+1}\Bigr)^{n+1}\Bigr]^{\frac{1}{n+2}} \;\le\; \frac{(n+1)\bigl(1-\tfrac{1}{n+1}\bigr) + 1}{n+2} = \frac{n+1}{n+2} = 1 - \frac{1}{n+2}" />
+      <p>
+        右边那步化简是 <MathInline tex="(n+1)(1-\tfrac{1}{n+1}) = n" />，再加配来的 1 得 n+1。
+        两边取 n+2 次方，得到的正是下一项：
+      </p>
+      <MathBlock tex="\Bigl(1-\frac{1}{n+1}\Bigr)^{n+1} \;\le\; \Bigl(1-\frac{1}{n+2}\Bigr)^{n+2}, \qquad \text{即}\quad \frac{1}{b_n} \le \frac{1}{b_{n+1}}" />
+      <p>
+        倒数递增，本身就递减。于是对任意 n 都有
+        <MathInline tex="a_n < b_n \le b_1 = 4" />——<strong>上界到手</strong>。
+        （<MathInline tex="a_n < b_n" /> 是显然的：<MathInline tex="b_n" /> 就是
+        <MathInline tex="a_n" /> 多乘了一个大于 1 的数。）
+        而且因为 <MathInline tex="a_n" /> 递增、<MathInline tex="b_n" /> 递减、两者之差
+        <MathInline tex="b_n - a_n = a_n\cdot\tfrac1n \to 0" />，
+        它们从上下两侧同时收拢到同一个数——那个数就是 e。
+      </p>
+      <p>
+        <strong>路线三：伯努利不等式，纯代数。</strong>直接算相邻两项的比，
+        关键是把它凑成"1 减一个小量"的形状：
+      </p>
+      <MathBlock tex="\frac{a_n}{a_{n-1}} = \frac{\bigl(\frac{n+1}{n}\bigr)^{n}}{\bigl(\frac{n}{n-1}\bigr)^{n-1}} = \Bigl(\frac{n^2-1}{n^2}\Bigr)^{n-1}\cdot\frac{n+1}{n} = \Bigl(1-\frac{1}{n^2}\Bigr)^{n-1}\cdot\frac{n+1}{n}" />
+      <p>
+        中间那步是把分子拆出一个 <MathInline tex="\frac{n+1}{n}" /> 留在外面，
+        剩下的 <MathInline tex="\frac{n+1}{n}\cdot\frac{n-1}{n} = \frac{n^2-1}{n^2}" /> 正好配成 n−1 次方。
+        现在对前一半用伯努利（取 <MathInline tex="x = -1/n^2" />，
+        <MathInline tex="m = n-1" />）：
+      </p>
+      <MathBlock tex="\Bigl(1-\frac{1}{n^2}\Bigr)^{n-1} \ge 1 - \frac{n-1}{n^2} = \frac{n^2-n+1}{n^2}" />
+      <p>合起来，分子上会出现一个漂亮的巧合：</p>
+      <MathBlock tex="\frac{a_n}{a_{n-1}} \;\ge\; \frac{n^2-n+1}{n^2}\cdot\frac{n+1}{n} = \frac{(n^2-n+1)(n+1)}{n^3} = \frac{n^3+1}{n^3} \;>\; 1" />
+      <p>
+        <MathInline tex="(n^2-n+1)(n+1)" /> 展开后中间四项两两抵消，只剩
+        <MathInline tex="n^3+1" />（这正是立方和公式
+        <MathInline tex="a^3+b^3=(a+b)(a^2-ab+b^2)" /> 在 <MathInline tex="b=1" /> 时的样子）。
+        比值大于 1，递增。三条路殊途同归。
+      </p>
+    </RevealBox>
+    <p>
+      回到<strong>最前面那个二项式展开</strong>（不是刚才这两条捷径）——它还能顺手还掉叁节欠的一笔账：<strong>ε 挑战里的 N，不逐项试也能直接算出来</strong>。
       把展开再往下压一步，就得到一个干净的误差上界
     </p>
     <MathBlock tex="e - \Bigl(1+\frac1n\Bigr)^{n} \;<\; \frac{e}{2n}" />
@@ -477,6 +609,131 @@ import EpsilonDeltaDemo from '../../demos/EpsilonDeltaDemo.vue'
       <MathInline tex="1 + \tfrac1n" /> 这一步加法会把 <MathInline tex="1/n" /> 末尾的有效数字挤掉，
       再被 n 次方原样放大回来。这正是<router-link to="/numerical/float-error">数值分析第一讲</router-link>
       要讲的那件事：<strong>数学上等价的两个式子，交给浮点数算可以差出十万八千里</strong>。
+    </p>
+
+    <h3>e 的水有多深：这个数列还牵着四条线</h3>
+    <p>
+      复利这个数列看着朴素，往下挖每一层都还有东西。四件事顺带看清，也正好把这一讲的地基再夯一遍。
+    </p>
+    <p>
+      <strong>一、"单调有界必收敛"不是逻辑上白给的，它是实数的一条性质。</strong>
+      先注意一件事：上面每一个 <MathInline tex="a_n" /> 都是<strong>有理数</strong>——
+      <MathInline tex="(1+\tfrac1n)^n" /> 是分数的整数次方，算出来还是分数，
+      比如 <MathInline tex="a_3 = (4/3)^3 = 64/27" />。可它们挤向的那个 e，偏偏不是分数（下一条就证）。
+    </p>
+    <p>
+      这意味着，前面那句"递增又有上界，所以极限存在"，靠的并不是纯逻辑，
+      而是实数的一条性质：<strong>完备性</strong>。人话就是——<strong>数轴上没有洞</strong>，
+      任何一群越挤越紧的数，它们挤向的那个位置<em>一定有个实数坐在那里</em>。
+      这件事听着像废话，但它恰恰是有理数<strong>不</strong>具备的。
+    </p>
+    <p>
+      反过来验一遍就明白了（这是这条性质的反例）：假设你只活在有理数的世界里，
+      数轴上所有无理数的位置都是空的。那么 <MathInline tex="a_n" /> 照样单调、照样有界，
+      <strong>却根本没有极限可言</strong>——它想去的那个位置在那个世界里是个洞。
+      更眼熟的例子是 1, 1.4, 1.41, 1.414, 1.4142, …：每一项都是有理数，单调递增，
+      上界 2 摆在那儿，可它想去的地方是 <MathInline tex="\sqrt2" />，
+      而古希腊人早就证明了这个数不是分数。
+    </p>
+    <p>
+      所以极限理论真正的地基有两块：ε-N 这套语言（本讲肆节），
+      加上"实数把所有洞都填满了"这个构造。后者拖到 1872 年才由<strong>戴德金</strong>（用"分割"）
+      和<strong>康托尔</strong>（用"基本列"）各自补上——比柯西写下 ε-N 晚了半个世纪。
+      微积分的地基工程，是从上往下打的。
+    </p>
+    <p>
+      <strong>二、同一个 e，两种写法，快慢差着几个数量级。</strong>
+      上面那个上界证明里出现过 <MathInline tex="\sum 1/k!" />，它的和恰好也是 e。
+      于是你手上有了 e 的两种表达式，而它们的收敛速度天差地别：
+    </p>
+    <MathBlock tex="a_{10} = 2.593742\ldots \qquad\text{vs}\qquad \sum_{k=0}^{10}\frac{1}{k!} = 2.718281801\ldots" />
+    <p>
+      同样取 10 项，前者连小数点后第一位都没对上，后者已经准到第 7 位有效数字
+      （e = 2.718281828…）。原因在衰减速度：数列的误差按 <MathInline tex="1/n" /> 掉，
+      级数的误差按 <MathInline tex="1/n!" /> 掉。要把 e 算准到小数点后 6 位，
+      <strong>数列要摊到约 270 万项，级数只要 10 项</strong>。
+      "同一个数、换个写法就快上百万倍"这件事，正是
+      <router-link to="/numerical/float-error">数值分析</router-link>整门课的出发点——
+      也说明<strong>历史上第一个被发现的表达式，往往不是最好用的那个</strong>。
+    </p>
+    <p>
+      <strong>三、e 不是分数，而证明要走级数那条路。</strong>
+      1737 年<strong>欧拉</strong>用连分数首次证明了 e 是无理数；后来<strong>傅里叶</strong>给出一个
+      只用 <MathInline tex="\sum 1/k!" /> 的短证明，短到可以完整放进下面这个框。
+      值得留意的是：这个证明<strong>用不上</strong> <MathInline tex="(1+\tfrac1n)^n" /> 这个形式——
+      它的余项估不紧，几乎无从下手；而级数的余项能被
+      <MathInline tex="1/(n\cdot n!)" /> 死死卡住，一卡就出矛盾。
+      <strong>同一个数的两种写法，好用的场合也不一样。</strong>
+    </p>
+    <RevealBox
+      title="🔍 傅里叶的反证法：e 不是分数"
+      label="对答案 / 看完整拆解"
+    >
+      <template #hint>
+        先想一步：假设 <MathInline tex="e = p/q" />，那么
+        <MathInline tex="q!\cdot e" /> 是不是整数？再看
+        <MathInline tex="q!" /> 乘进级数的前 q+1 项，每一项
+        <MathInline tex="q!/k!\;(k \le q)" /> 是不是也都是整数？两边一减，剩下的那截被夹在哪两个数之间？
+      </template>
+      <p>
+        <strong>第一步：把级数从第 n 项截断，估一估剩下的尾巴。</strong>记
+        <MathInline tex="r_n = e - \sum_{k=0}^{n} 1/k!" />，把尾巴的每一项都放大——
+        分母 <MathInline tex="(n+2), (n+3), \ldots" /> 统统换成更小的 <MathInline tex="(n+1)" />，
+        尾巴就被一个等比级数罩住：
+      </p>
+      <MathBlock tex="r_n = \frac{1}{(n+1)!}\Bigl[1 + \frac{1}{n+2} + \cdots\Bigr] < \frac{1}{(n+1)!}\cdot\frac{1}{1-\frac{1}{n+1}} = \frac{1}{n\cdot n!}" />
+      <p>
+        并且 <MathInline tex="r_n > 0" />（尾巴每一项都是正的）。所以
+        <MathInline tex="0 < r_n < 1/(n\cdot n!)" />——n = 5 时这个界是 0.001667，实际
+        <MathInline tex="r_5 = 0.001615" />，卡得相当紧。
+      </p>
+      <p>
+        <strong>第二步：反证。</strong>假设 e 是分数，写成
+        <MathInline tex="e = p/q" />（p、q 是正整数）。因为 2 &lt; e &lt; 3，e 不可能是整数，所以
+        <MathInline tex="q \ge 2" />。现在取 n = q，两边同乘 <MathInline tex="q!" />：
+      </p>
+      <MathBlock tex="q!\,e = \underbrace{q!\sum_{k=0}^{q}\frac{1}{k!}}_{\text{每一项都是整数}} + \;q!\,r_q" />
+      <p>
+        逐块看它们是不是整数：
+      </p>
+      <ul>
+        <li>
+          左边 <MathInline tex="q!\,e = q!\cdot p/q = (q-1)!\,p" />，<strong>是整数</strong>；
+        </li>
+        <li>
+          右边第一块的每一项是 <MathInline tex="q!/k!" />，而 <MathInline tex="k \le q" />，
+          所以它等于 <MathInline tex="(k+1)(k+2)\cdots q" />，<strong>也是整数</strong>；
+        </li>
+        <li>
+          两个整数一减，<MathInline tex="q!\,r_q" /> <strong>只能是整数</strong>。
+        </li>
+      </ul>
+      <p>
+        <strong>第三步：撞墙。</strong>可是把第一步的界乘上 <MathInline tex="q!" />：
+      </p>
+      <MathBlock tex="0 \;<\; q!\,r_q \;<\; q!\cdot\frac{1}{q\cdot q!} = \frac{1}{q} \;\le\; \frac12" />
+      <p>
+        一个整数，被夹在 0 和 1/2 之间——<strong>没有这样的整数</strong>。矛盾。
+        所以 e 写不成分数。整个证明的力气全花在第一步那个余项估计上，
+        而那一步之所以做得到，是因为级数的分母是<strong>阶乘</strong>，掉得够快。
+      </p>
+    </RevealBox>
+    <p>
+      <strong>四、复利只是 e 的一个化身，它的真身在别处。</strong>
+      同样的证法能推广：把 <MathInline tex="(1+\tfrac1n)^n" /> 换成
+      <MathInline tex="(1+\tfrac{x}{n})^n" />，n 趋于无穷时收敛到 <MathInline tex="e^x" />。
+      但 e 真正的身份，要到<router-link to="/calculus/derivative">第二讲</router-link>学了导数
+      （"一个量变化得多快"）之后才看得清：<strong>在所有可能的底数里，
+      只有 e 这一个，让指数函数的增长速度<em>恰好等于它自己当下的大小</em></strong>。
+    </p>
+    <p>
+      而这句话，正是复利的原话。银行按本息总额算利息——你现在有多少，就按多少的比例往上长；
+      结算越频繁，越接近"每时每刻都在按当下的量增长"。
+      <strong>所以复利能凭空造出 e，根本不是巧合：它就是这条性质的日常版本。</strong>
+      这也解释了为什么 e 会在放射性衰变、细菌繁殖、电容充放电里反复出现——
+      凡是"变化率正比于当前量"的东西，背后都是同一个 e。
+      至于 <MathInline tex="e^x" /> 为什么等于 <MathInline tex="\sum x^k/k!" />（本讲用过的那个级数在
+      <MathInline tex="x=1" /> 的样子），要到<router-link to="/calculus/taylor">第五讲</router-link>才讲透。
     </p>
 
     <h3>0.999… 到底等不等于 1：一场吵了三十年的网络论战</h3>
