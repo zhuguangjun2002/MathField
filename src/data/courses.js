@@ -19,7 +19,7 @@ export const calculusConcepts = [
     era: '1629 — 1684',
     figures: '费马 · 牛顿 · 莱布尼茨',
     prereqs: [{ slug: 'limit', why: '导数就是一个极限' }],
-    baseline: '中学的直线斜率与函数图象',
+    baseline: '中学的直线斜率、函数图象与幂运算法则（$a^{x+h} = a^x a^h$）',
   },
   {
     slug: 'integral',

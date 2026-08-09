@@ -259,7 +259,104 @@ import SecantTangentDemo from '../../demos/SecantTangentDemo.vue'
       你脚下咔哒咔哒的那串震动，是一台差商计算器在一秒钟里打赢的几十场官司。
     </p>
 
-    <p>除了这件贴身的事，"变化率"这把刀还有几处马上要用到的去处：</p>
+    <h3>为什么偏偏是 e：一个自己是自己导数的函数</h3>
+    <p>
+      <router-link to="/calculus/limit">第一讲</router-link>末尾留了一句话没兑现：
+      复利那个数 <MathInline tex="e \approx 2.71828" /> 的真身不在银行里，
+      要学了导数才看得清。工具现在齐了，当场兑现。
+    </p>
+    <p>
+      问题是：<strong>指数函数</strong> <MathInline tex="a^x" />（a 是任意正的底数，
+      比如 <MathInline tex="2^x" />、<MathInline tex="3^x" />）的导数是什么？
+      别急着查表，就拿肆节那个定义硬算。先写出分子：
+    </p>
+    <MathBlock tex="a^{x+h} - a^{x} = a^{x}a^{h} - a^{x} = a^{x}\bigl(a^{h}-1\bigr)" />
+    <p>
+      只用到中学的幂运算法则 <MathInline tex="a^{x+h} = a^x \cdot a^h" />（底数相同、指数相加），
+      再把公因子 <MathInline tex="a^x" /> 提出来。除以 h，得到差商：
+    </p>
+    <MathBlock tex="\frac{f(x+h)-f(x)}{h} = a^{x}\cdot\frac{a^{h}-1}{h}" />
+    <p>
+      <strong>停在这里看一眼，最要紧的事已经发生了。</strong>右边裂成了两块：
+      左边那块 <MathInline tex="a^x" /> 就是函数<em>自己</em>，
+      右边那块 <MathInline tex="(a^h-1)/h" /> <strong>一个 x 都不含</strong>——
+      它只跟底数 a 和窗口 h 有关。所以让 h → 0 的时候，只有右边那块在动，
+      它收敛到一个<strong>只由底数 a 决定的常数</strong>，我们叫它 <MathInline tex="M(a)" />：
+    </p>
+    <MathBlock tex="(a^{x})' = M(a)\cdot a^{x}, \qquad M(a) = \lim_{h\to 0}\frac{a^{h}-1}{h}" />
+    <p>
+      <strong>注意我们还完全不知道 M(a) 等于多少，结论却已经到手了</strong>：
+      不管底数取几，指数函数的导数<strong>都正比于它自己</strong>。
+      这在整个函数世界里是很罕见的性质——<MathInline tex="x^2" /> 的导数是
+      <MathInline tex="2x" />，换了个物种；而 <MathInline tex="a^x" /> 求导之后
+      还是它自己，只是前面多了个系数。
+    </p>
+    <p>
+      那 <MathInline tex="M(a)" /> 到底是多少？先认清它的身份：把 x = 0 代进上式，
+      <MathInline tex="a^0 = 1" />，所以 <strong>M(a) 就是 <MathInline tex="a^x" /> 在 x = 0
+      处的斜率</strong>——曲线穿过 (0, 1) 时有多陡。拿 h 取很小的数试算两个底：
+    </p>
+    <MathBlock tex="M(2) = 0.693147\ldots \qquad M(3) = 1.098612\ldots" />
+    <p>
+      一个小于 1，一个大于 1。而底数从 2 连续地涨到 3 时，这个斜率也连续地涨——
+      <strong>那么中间必定有一个底数，恰好让 <MathInline tex="M(a) = 1" /></strong>。
+      对这个底数来说，系数消失了，导数就是它自己。
+    </p>
+    <p>
+      这个底数不用挨个试，能直接解出来。要让
+      <MathInline tex="(a^h-1)/h \to 1" />，就是要 <MathInline tex="a^h \approx 1 + h" />；
+      两边开 h 次方（也就是取 <MathInline tex="1/h" /> 次方）：
+    </p>
+    <MathBlock tex="a \approx (1+h)^{1/h} \quad\xrightarrow{\;h\,=\,1/n\;}\quad a = \Bigl(1+\frac1n\Bigr)^{n}" />
+    <p>
+      <strong>兜回来了——这正是第一讲那个复利数列。</strong>数字也对得上：
+      h = 0.1 时 <MathInline tex="(1.1)^{10} = 2.593742" />，h = 0.01 时
+      <MathInline tex="(1.01)^{100} = 2.704814" />，就是
+      <router-link to="/calculus/limit">第一讲</router-link>里 <MathInline tex="a_{10}" /> 和
+      <MathInline tex="a_{100}" /> 那两个数，一位不差。所以：
+    </p>
+    <div class="definition">
+      <div class="def-title">📐 e 的真正定义</div>
+      <p>
+        e 是使 <MathInline tex="M(a) = 1" /> 的那个唯一底数。等价地说，
+        <MathInline tex="y = e^x" /> 是<strong>唯一一个（相差常数倍以外的）自己等于自己导数</strong>的函数：
+      </p>
+      <MathBlock tex="\bigl(e^{x}\bigr)' = e^{x}" />
+    </div>
+    <p>
+      于是复利那件事的因果关系反过来了：<strong>不是复利造出了 e，而是 e 的这条性质在复利里露了个头</strong>。
+      银行按本息总额计息，说的就是"增长速度正比于当前拥有的量"；写成式子是
+      <MathInline tex="y' = y" />——一个<router-link to="/mathphys/pde-intro">微分方程</router-link>
+      （未知的不是一个数，而是一整个函数）。结算越频繁，越接近这个理想，
+      而这个方程的解正是 <MathInline tex="e^x" />。同样的道理，凡是
+      <strong>变化率正比于当前量</strong>的东西——放射性衰变、细菌繁殖、电容充放电、
+      热咖啡凉下来——背后都是同一个 e。
+    </p>
+    <p>
+      <strong>别的底数被淘汰了吗？</strong>没有，它们只是"时钟"快慢不同。
+      <MathInline tex="2^x" /> 的导数是 <MathInline tex="0.6931\cdot 2^x" />，
+      照样正比于自己，只是系数不是 1；而且
+      <MathInline tex="2^x = e^{0.6931x}" />（代 x = 5 验一下：两边都是 32），
+      所有指数函数都不过是 <MathInline tex="e^x" /> 换了个时间刻度。
+      最后一句：那个系数 <MathInline tex="M(a)" /> 有个你多半见过的名字——
+      <strong>自然对数 <MathInline tex="\ln a" /></strong>（<MathInline tex="M(2) = 0.693147" />
+      正是 <MathInline tex="\ln 2" />）。"自然"二字就是从这儿来的：
+      <strong>只有以 e 为底，求导时那个碍事的系数才会正好消失</strong>。
+    </p>
+    <QuizBox
+      quiz-id="derivative-q3"
+      question="上面算 $a^x$ 的导数时，还没求出 $M(a)$ 的值，就已经断定「指数函数的导数正比于它自己」。这个结论凭什么这么早就能下？"
+      hint="回头看差商裂成的那两块，问自己：哪一块跟 x 有关，哪一块无关？"
+      :options="[
+        { t: '因为 $(a^h-1)/h$ 这一块完全不含 x，整块可以当成常数提到外面', why: '对：正是「与 x 无关」这一点，让极限值哪怕未知也不影响结论——它只是个待定的比例系数。' },
+        { t: '因为指数函数的导数本来就等于它自己', why: '你把 e 的特权当成了所有底数的通性。$2^x$ 的导数是 $0.6931\\cdot 2^x$，并不等于它自己；「等于自己」只在 $a=e$ 时成立，而这恰恰是本节要找的那个特殊底数。' },
+        { t: '因为 h→0 时 $a^h-1$ 趋于 0，所以那一块也趋于 0', why: '分子确实趋于 0，可分母 h 同时也趋于 0——这是 0/0 型，不能直接说商是 0。真算出来 $M(2)=0.693$，离 0 远着呢。' },
+        { t: '因为指数函数增长得特别快', why: '「增长快」是对图象的形容，不是推导。快慢跟「导数是否正比于自身」没有关系——$x^{100}$ 涨得也很快，但它的导数是 $100x^{99}$，换了个物种。' },
+      ]"
+      :answer="0"
+    />
+
+    <p>除了车速表和 e 这两件事，"变化率"这把刀还有几处马上要用到的去处：</p>
     <ul>
       <li>
         <strong>物理</strong>：速度是位置对时间的导数，加速度是速度的导数，电流是电荷量的导数，
