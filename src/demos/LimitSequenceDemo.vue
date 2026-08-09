@@ -164,6 +164,13 @@ usePlot(
         <strong>两档都答得出 N，这就是"极限存在"；答得快慢差了两个数量级，那叫收敛速度</strong>——
         后者正是数值分析里"收敛阶"要量的东西。
       </p>
+      <p>
+        中间那档（复利）和振荡档同属 <MathInline tex="1/n" /> 这一级，只是又慢了一点：
+        同样把 ε 从 0.5 拖到 0.01，N 从 2 涨到 135。它的误差大约按
+        <MathInline tex="e/(2n)" /> 衰减，所以应答的 N 不用试也能算出来——
+        取 <MathInline tex="N = \lceil e/(2\varepsilon)\rceil" /> 必定合格
+        （ε = 0.05 时算出 28，这里扫出来的最小值是 27）。推导见本讲伍节。
+      </p>
     </template>
   </DemoFrame>
 </template>

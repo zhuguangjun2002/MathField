@@ -197,6 +197,13 @@ import EpsilonDeltaDemo from '../../demos/EpsilonDeltaDemo.vue'
     </p>
     <LimitSequenceDemo />
     <p>
+      读数区那个 N，是程序<strong>从第 1 项一路试到第 400 项</strong>试出来的，给的是<strong>最小</strong>的那个 N。
+      这里要提醒一句最容易误会的事：<strong>定义只要求"存在一个 N"，从没要求它最小</strong>。
+      复利那档 ε = 0.05 时答 27 对，答 28、答 100 也一样对，只是没那么精打细算。
+      而且真要应答时也不必像程序这样逐项试——这个数列可以<strong>直接从 ε 算出一个够用的 N</strong>，
+      用的还是中学不等式。本讲最后一节把复利数列拆开时，会当场反算一次。
+    </p>
+    <p>
       第二局：把"从第几项起"换成"离 a 多近以内"。拖动 δ 到超标，绿色曲线会变红——
       那就是对手赢了这一回合。
     </p>
@@ -391,6 +398,86 @@ import EpsilonDeltaDemo from '../../demos/EpsilonDeltaDemo.vue'
         <router-link to="/calculus/taylor">第五讲</router-link>以泰勒展开的身份正式登场。
       </p>
     </RevealBox>
+    <p>
+      上面那个展开还能顺手还掉叁节欠的一笔账：<strong>ε 挑战里的 N，不逐项试也能直接算出来</strong>。
+      把展开再往下压一步，就得到一个干净的误差上界
+    </p>
+    <MathBlock tex="e - \Bigl(1+\frac1n\Bigr)^{n} \;<\; \frac{e}{2n}" />
+    <p>
+      于是只要取 <MathInline tex="N = \lceil\, e/(2\varepsilon) \,\rceil" />，应答就<strong>保证</strong>合格。
+      ε = 0.05 时它给 N = 28，而动画从第 1 项硬扫到第 400 项，得到的最小值是 27——
+      <strong>反算只多报了一个，却一项都不用算</strong>。
+      这条上界还顺带量出了收敛有多慢：误差按 <MathInline tex="1/n" /> 掉，
+      精度每要多一位，项数就得乘以 10（ε 从 0.1 收到 0.01，N 从 14 涨到 136）。
+    </p>
+    <RevealBox
+      title="🔍 从 ε 反算 N：不逐项试，也能应答"
+      label="对答案 / 看完整拆解"
+    >
+      <template #hint>
+        接着上一个框的通项往下想：<MathInline tex="a_n" /> 的第 k 项，比 e 的第 k 项
+        <MathInline tex="1/k!" /> 少了一个折扣因子
+        <MathInline tex="(1-\tfrac1n)(1-\tfrac2n)\cdots(1-\tfrac{k-1}{n})" />。
+        试着估一估"打掉的这部分"最多有多大——提示：一个不超过 1 的数再乘上
+        <MathInline tex="(1-x)" />，最多只会再少 x。
+      </template>
+      <p>
+        <strong>第一步：把两个和摆在一起对齐。</strong>上一个框末尾说过
+        <MathInline tex="e = \sum_{k\ge 0} 1/k!" />，而同一个框第一步算出
+      </p>
+      <MathBlock tex="\Bigl(1+\frac1n\Bigr)^{n} = \sum_{k=0}^{n} \frac{1}{k!}\underbrace{\Bigl(1-\frac1n\Bigr)\cdots\Bigl(1-\frac{k-1}{n}\Bigr)}_{\text{折扣因子}}" />
+      <p>
+        逐项对照，<MathInline tex="a_n" /> 比 e 少的东西只有两笔：
+        <strong>①</strong> 第 k ≤ n 的那些项都被折扣因子打了折；
+        <strong>②</strong> 第 k > n 的项 <MathInline tex="a_n" /> 干脆没有。
+        分头估这两笔就行。
+      </p>
+      <p>
+        <strong>第二步：第一笔——每项最多打多少折。</strong>折扣因子是一串
+        <MathInline tex="(1-\tfrac{j}{n})" /> 连乘。每乘一个，因为前面乘出来的数不超过 1，
+        所以最多再少 <MathInline tex="j/n" />（人话：<MathInline tex="P \le 1" /> 时
+        <MathInline tex="P(1-x) = P - Px \ge P - x" />）。把 j 从 1 加到 k−1：
+      </p>
+      <MathBlock tex="1 - \Bigl(1-\frac1n\Bigr)\cdots\Bigl(1-\frac{k-1}{n}\Bigr) \;\le\; \frac{1+2+\cdots+(k-1)}{n} = \frac{k(k-1)}{2n}" />
+      <p>
+        所以第 k 项少掉的量不超过 <MathInline tex="\frac{1}{k!}\cdot\frac{k(k-1)}{2n}" />。
+        这里有个漂亮的约分：<MathInline tex="\frac{k(k-1)}{k!} = \frac{1}{(k-2)!}" />
+        （分子的 k 和 k−1 正好消掉阶乘最前面两个因子）。把 k 从 2 加到 n：
+      </p>
+      <MathBlock tex="\sum_{k=2}^{n} \frac{1}{k!}\cdot\frac{k(k-1)}{2n} = \frac{1}{2n}\sum_{k=2}^{n}\frac{1}{(k-2)!} \;\le\; \frac{1}{2n}\sum_{m=0}^{\infty}\frac{1}{m!} = \frac{e}{2n}" />
+      <p>
+        <strong>第三步：第二笔——缺掉的尾巴小到可以忽略。</strong>
+        <MathInline tex="\sum_{k>n} 1/k!" /> 里每往后一项至少除以 n+2，所以它比
+        <MathInline tex="2/(n+1)!" /> 还小：n = 10 时约 <MathInline tex="5\times 10^{-8}" />，
+        和第二步那个 <MathInline tex="e/20 \approx 0.136" /> 完全不是一个量级。
+      </p>
+      <p>
+        <strong>第四步：合起来。</strong>严格写是
+        <MathInline tex="e - a_n < \frac{e}{2n} + \frac{2}{(n+1)!}" />；
+        由于第二步的估计本身放粗了不少（放粗掉的余量比那条尾巴大得多），
+        直接用 <MathInline tex="e - a_n < e/(2n)" /> 也成立——n 从 1 到十万逐个验过，无一例外
+        （n = 27：真实误差 0.048688，上界 <MathInline tex="e/54 = 0.050339" />）。
+      </p>
+      <p>
+        <strong>第五步：反解 N。</strong>要让误差小于 ε，只需让上界小于 ε：
+      </p>
+      <MathBlock tex="\frac{e}{2n} \le \varepsilon \iff n \ge \frac{e}{2\varepsilon} \quad\Longrightarrow\quad N = \left\lceil \frac{e}{2\varepsilon} \right\rceil" />
+      <p>
+        ε = 0.05 代进去是 <MathInline tex="e/0.1 = 27.18" />，向上取整得 N = 28，
+        实测 <MathInline tex="|a_{28} - e| = 0.047" />，确实进带；
+        ε = 0.01 得 N = 136，动画硬扫的答案是 135。
+        动画上 ε 滑杆的全部 99 个档位都这么核对过：<strong>这个公式档档合格</strong>，
+        其中 13 档正好就是最小的 N，另外 86 档只多报 1。
+      </p>
+    </RevealBox>
+    <p>
+      最后提一个坑，你要是自己写个程序把上面这张误差表打出来，多半会撞上：
+      把 n 一路调大，误差<strong>不会</strong>老老实实照 <MathInline tex="e/(2n)" /> 继续往下掉，
+      n 到几万时就开始乱跳、甚至变号。毛病不在数学，在计算机——
+      <MathInline tex="1 + \tfrac1n" /> 这一步加法会把 <MathInline tex="1/n" /> 末尾的有效数字挤掉，
+      再被 n 次方原样放大回来。这正是<router-link to="/numerical/float-error">数值分析第一讲</router-link>
+      要讲的那件事：<strong>数学上等价的两个式子，交给浮点数算可以差出十万八千里</strong>。
+    </p>
 
     <h3>0.999… 到底等不等于 1：一场吵了三十年的网络论战</h3>
     <p>
