@@ -178,8 +178,13 @@
 - CLTDemo、DensityDemo 的"照着做一遍"处方仍缺（需实际跑 demo 取数）；
 - 数理方程 5 讲尚无 QuizBox（该课本就是零基础范本，正文不必改；每讲补 2-3 道即可）；
   数理第 5 讲壹节仍无年代（候选：1836-37 斯图姆–刘维尔、1753 丹尼尔·伯努利驻波之争）；
-- demo 挑战已做 5 个（EpsilonDelta、Eigen、PointsProblem、Residue、NewtonMethod）；
-  候选下一批：LimitSequenceDemo（对手出 ε 答 N）、SpanDemo（先猜共不共面再转视角）；
+- demo 挑战已做 6 个（EpsilonDelta、Eigen、PointsProblem、Residue、NewtonMethod、
+  **LimitSequence**（2026-08-09 新增：五关写死 zeno 0.15 / e 0.2 / osc 0.06 / e 0.07 / e 0.04，
+  答案 4、6、17、19、34；判定是「答出最小的 N」的整数相等，答大了单独给「合格但不最小」的提示；
+  挑战时藏掉自动算出的 N 竖线改画读者拖的那条，锁数列下拉与 ε 滑杆；
+  踩到两个坑：判定语过长致 readout 四档全溢出（badge 后加 `<br>` 并压缩文案），
+  以及 `answerN` 初值 1 低于滑杆 min=2 导致滑杆显示 2 而模型是 1））；
+  候选下一批：SpanDemo（先猜共不共面再转视角）；
 - QuizBox 已覆盖微积分/线代/概率/复变/数值共 25 讲 70 道。
 
 ---

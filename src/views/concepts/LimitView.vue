@@ -195,6 +195,12 @@ import EpsilonDeltaDemo from '../../demos/EpsilonDeltaDemo.vue'
       第一局出招的是数列，第二局出招的是函数。
       （上面的折叠框如果跳过了也不要紧，但那道"部分和"的拆解是这一讲的地基，回头补上更划算。）
     </p>
+    <p>
+      两个动画都带一个 <strong>⚔️ 开始挑战</strong> 按钮：点下去，对手会<strong>连出五招</strong>，
+      同时锁住它那一侧的滑杆，剩下的活交给你——
+      数列这局你要报出<strong>最小</strong>的 N，函数那局你要交出一个<strong>够小</strong>的 δ。
+      先随便拖着玩明白了再开挑战，不着急。
+    </p>
     <LimitSequenceDemo />
     <p>
       读数区那个 N，是程序<strong>从第 1 项一路试到第 400 项</strong>试出来的，给的是<strong>最小</strong>的那个 N。
