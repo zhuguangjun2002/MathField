@@ -61,7 +61,8 @@ def scan_vue(path):
     return hits
 
 def scan_courses():
-    """courses.js：只有 intro / timeline title,text / concept subtitle,question 接了 RichText。
+    """courses.js：只有 intro / timeline title,text / concept subtitle,question / baseline
+    以及 prereqs 的 why 接了 RichText（后两个是 2026-08-07 零基础字段，ConceptPage 里都过 RichText）。
     其余字段（如 title）里写 $...$ 会原样显示；反过来这些字段里出现 ^ _ √ 也没人渲染。"""
     p = ROOT / 'data' / 'courses.js'
     out = []
@@ -70,7 +71,7 @@ def scan_courses():
             out.append((i, 'no-katex', line.strip()))
         m = re.match(r"\s*(\w+):\s*'", line)
         if m and '$' in line and m.group(1) not in {
-                'intro', 'title', 'text', 'subtitle', 'question'}:
+                'intro', 'title', 'text', 'subtitle', 'question', 'baseline', 'why'}:
             out.append((i, 'dollar-in-unwired-field:' + m.group(1), line.strip()))
     return out
 
