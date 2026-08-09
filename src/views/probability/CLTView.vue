@@ -75,6 +75,18 @@ import CLTDemo from '../../demos/CLTDemo.vue'
     />
 
     <h2><span class="sec-no">叁</span>亲手把歪原料平均成钟形</h2>
+    <p>
+      这个动画不是让你看一眼"钟形果然出现了"就完事——它给了一把<strong>尺子</strong>：
+      读数区第二行的<strong>偏度</strong>，量的是直方图有多歪（钟形是 0，右边拖着长尾就是正数，
+      算法在动画下方的说明里）。有了这把尺子，"变成钟形"就从一句观感变成一个能盯着看的数。
+    </p>
+    <p>
+      先别急着拖 n：把下拉框里四种原料各看一眼 <MathInline tex="n = 1" /> 那一档，
+      那是原料<strong>本来的长相</strong>。然后挑最歪的那个（不均匀硬币），
+      把 n 依次拖到 1、4、16、64，只盯着偏度看——它每次<strong>对折</strong>。
+      <strong>钟形不是突然冒出来的，是歪斜被一点一点磨掉的</strong>，
+      而磨的速度慢得出乎意料：<MathInline tex="n = 30" /> 时偏度还有 0.479，离 0 远着呢。
+    </p>
     <CLTDemo />
 
     <h2><span class="sec-no">肆</span>严格定义</h2>

@@ -1,33 +1,38 @@
 <script setup>
 import { ref, computed } from 'vue'
-import { usePlot, makeView, drawAxes, plotFn, drawLabel, C, rng } from './plot.js'
+import { usePlot, makeView, drawAxes, plotFn, drawLabel, C, fmt, rng } from './plot.js'
 import DemoFrame from '../components/DemoFrame.vue'
 import ControlSlider from '../components/ControlSlider.vue'
 import MathInline from '../components/MathInline.vue'
 
+// gamma = 原料本身的偏度（一次抽取的偏度），CLT 说标准化均值的偏度应为 gamma/√n
 const DISTS = {
   dice: {
     label: '骰子（平的）',
     mu: 3.5,
     sigma: Math.sqrt(35 / 12),
+    gamma: 0,
     draw: (r) => Math.floor(r() * 6) + 1,
   },
   uniform: {
     label: '均匀 U(0,1)（平的）',
     mu: 0.5,
     sigma: 1 / Math.sqrt(12),
+    gamma: 0,
     draw: (r) => r(),
   },
   exp: {
     label: '指数分布（严重右偏）',
     mu: 1,
     sigma: 1,
+    gamma: 2,
     draw: (r) => -Math.log(1 - r()),
   },
   coin: {
     label: '不均匀硬币 P(1)=0.1（极偏）',
     mu: 0.1,
     sigma: 0.3,
+    gamma: (1 - 2 * 0.1) / Math.sqrt(0.1 * 0.9), // = 8/3
     draw: (r) => (r() < 0.1 ? 1 : 0),
   },
 }
@@ -50,6 +55,23 @@ const zs = computed(() => {
   }
   return arr
 })
+
+// 直方图的偏度：三阶中心矩 ÷ 标准差三次方。对称形状给 0，右边拖长尾给正数。
+const skew = computed(() => {
+  const a = zs.value
+  let m = 0
+  for (const z of a) m += z
+  m /= a.length
+  let m2 = 0
+  let m3 = 0
+  for (const z of a) {
+    const d = z - m
+    m2 += d * d
+    m3 += d * d * d
+  }
+  return m3 / a.length / Math.pow(m2 / a.length, 1.5)
+})
+const skewTheory = computed(() => DISTS[distKey.value].gamma / Math.sqrt(n.value))
 
 const BINS = 56
 const hist = computed(() => {
@@ -106,8 +128,10 @@ usePlot(
       <ControlSlider label="每个样本的抽取次数 n" v-model="n" :min="1" :max="64" :step="1" />
     </template>
     <template #readout>
-      红色：3000 个"n 次抽取的平均值"（已标准化）的直方图；蓝色：标准正态密度。
-      n = <b>{{ n }}</b>
+      红色：3000 个"n 次抽取的平均值"（已标准化）的直方图；蓝色：标准正态密度<br />
+      n = <b>{{ n }}</b> &nbsp;·&nbsp; 直方图偏度 = <b>{{ fmt(skew, 3) }}</b>
+      &nbsp;·&nbsp; 理论值 <MathInline tex="\gamma/\sqrt{n}" /> = <b>{{ fmt(skewTheory, 3) }}</b>
+      &nbsp;（原料偏度 <MathInline tex="\gamma" /> = {{ fmt(DISTS[distKey].gamma, 3) }}）
     </template>
     <template #note>
       <b>两个控件。</b><b>原料分布</b>是下拉框，选的是"每一次抽取"服从什么——
@@ -129,6 +153,30 @@ usePlot(
       <MathInline tex="n^{-1/2}" />，衰减得比二阶项慢得多，而原料的偏斜程度正是三阶矩。
       所以"要多大的 n"取决于三阶矩有多大——对称的骰子几下就成钟形，
       极偏硬币要拖到很大才勉强像样。
+      <br /><br />
+      <b>读数区第二行就是这句话的量化版，先说清那个"偏度"是什么。</b>
+      算法只有一句：把每个数据减去平均值，<b>三次方</b>之后再取平均，最后除以标准差的三次方
+      （除这一下只是为了把单位除掉，让它变成一个不带量纲的纯数）。
+      要害在三次方<b>保留正负号</b>：右边拖出去的长尾是很大的正偏差，三次方后被放得极大，
+      左边挤成一堆的小负偏差三次方后仍然很小，两边抵不平——<b>偏度为正就是"右边有长尾"</b>。
+      最低例子：那枚 P(1) = 0.1 的硬币，十次里九次开 0、只有一次开 1，
+      那个孤零零的 1 就是长尾，算出来偏度是 <MathInline tex="8/3 = 2.667" />；
+      而骰子六个面对称，正负偏差成对抵消，偏度正好是 0。
+      <b>钟形的偏度是 0，所以偏度离 0 有多远，就是"还差多少才是钟形"的一把尺子。</b>
+      <br /><br />
+      <b>照着做一遍：让"越偏越慢"变成一个数。</b>
+      选<b>不均匀硬币 P(1)=0.1</b>，把 n 依次拖到 1、4、16、64，只看读数区的偏度：
+      <b>2.6 → 1.302 → 0.656 → 0.342</b>。
+      <b>n 每乘 4，偏度就对折一次</b>——因为理论值是
+      <MathInline tex="\gamma/\sqrt{n}" />，n 翻四倍，<MathInline tex="\sqrt{n}" /> 才翻一倍。
+      这就是"钟形不是突然冒出来的"：歪斜是被
+      <MathInline tex="1/\sqrt{n}" /> 一点一点磨掉的，而这个速度慢得让人心焦。
+      顺手就能量出教科书那句"n ≥ 30 即可"在这个原料上有多不够用：<b>n = 30 时偏度还有 0.479</b>，
+      离 0 差着老远，画面上也确实还看得出右边那条尾巴。
+      换成<b>骰子</b>再拖一遍作对照：n = 1 时偏度就已经是 −0.023，
+      整条滑杆拖下来始终在 ±0.07 里晃——<b>原料本来就对称，压根没有歪斜要磨</b>。
+      （样本偏度和理论值不会分毫不差，3000 个样本自带随机误差：
+      比如指数分布 n = 16 时读数是 0.417，理论值 0.5。差的这一点就是抽样噪声，不是定理出了错。）
       <br /><br />
       <b>还有一个本图故意没收进下拉框的反例</b>：柯西分布的样本均值<b>永远</b>不变钟形，
       因为它方差无穷、定理的前提就不成立（肆节给了实测：平均一万个柯西样本，

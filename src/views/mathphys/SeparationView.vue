@@ -14,9 +14,39 @@ import SeparationDemo from '../../demos/SeparationDemo.vue'
       回望前三讲：<router-link to="/mathphys/wave">波动方程</router-link>靠达朗贝尔换元，<router-link to="/mathphys/heat">热方程</router-link>靠傅里叶级数，<router-link to="/mathphys/laplace">拉普拉斯方程</router-link>靠松弛迭代或复变魔法——
       三套兵器各自为战。但你可能已经嗅到共同的气息：<strong>正弦函数在每一讲都出现了</strong>。
       弦的驻波是正弦，热的衰减模式是正弦，圆盘上的调和函数展开还是三角函数。
-      这不是巧合——18 世纪的解法背后藏着一个统一的机械流程，傅里叶把它用成了体系，
-      19 世纪的斯图姆与刘维尔看清了它为什么灵。这一讲把这台机器拆给你看。
+      这不是巧合。而历史上更有意思的一点是：<strong>这套流程被人用了八十多年，
+      才终于有人回过头去问它凭什么灵</strong>。
     </p>
+    <div class="story">
+      <div class="story-title">📜 1753 — 1837 年 · 一招用了八十年，才有人问它为什么灵</div>
+      <p>
+        <strong>1753 年，丹尼尔·伯努利</strong>猜弦的振动可以写成"空间形状 × 时间节奏"，
+        得到一族正弦驻波（<router-link to="/mathphys/wave">第 2 讲</router-link>那场吵了半个世纪的架，
+        争的就是这族驻波够不够用）。
+      </p>
+      <p>
+        <strong>1780 年代，勒让德与拉普拉斯</strong>算行星的引力势，
+        把同一招搬到球面坐标下——这一次分离出来的<strong>不是正弦</strong>，
+        而是一族多项式（今天叫勒让德多项式）。它们照样彼此"不打架"，照样能把任意形状展开。
+        这是第一个暗示：<strong>主角也许根本不是正弦，而是某种"这个问题自带的固有形状"</strong>。
+      </p>
+      <p>
+        <strong>1807 年、1822 年，傅里叶</strong>把这招用在热方程上，
+        并且比伯努利多做了一件事：<router-link to="/mathphys/heat">把系数算了出来</router-link>。
+        到这时，三个完全不同的物理问题——弦、行星、热——被同一个套路各个击破。
+      </p>
+      <p>
+        <strong>可是凭什么？</strong>每次都是先"猜"一个乘积形状，猜完居然还真能解出来；
+        每次分离出来的那族函数，居然都恰好彼此正交、恰好够用。
+        八十年间这些都是<strong>一个方程一个方程碰出来的运气</strong>，没人证明过下一个方程也会这么听话。
+      </p>
+      <p>
+        <strong>1836 — 1837 年，斯图姆与刘维尔</strong>在刘维尔刚创办的那本
+        《纯粹与应用数学杂志》上连发数文，一次性回答了这个问题：
+        只要方程能写成某个统一的形状，那些"运气"就<strong>全部是定理</strong>——
+        不必再逐个去碰。这一讲要拆的就是这台机器。
+      </p>
+    </div>
     <div class="story">
       <div class="story-title">📜 方法：一个"自私"的猜测</div>
       <p>
@@ -168,7 +198,9 @@ import SeparationDemo from '../../demos/SeparationDemo.vue'
         <MathInline tex="X'(0) = X'(L) = 0" />），
         边界项照样为零，特征函数换成余弦，<strong>正交性一字不改地成立</strong>；
         换一根粗细不均的弦（系数随 x 变），特征函数变成谁也认不出的怪函数，
-        正交性<strong>依然成立</strong>。这就是斯图姆-刘维尔理论的分量：
+        正交性<strong>依然成立</strong>——壹节里勒让德那族多项式就是这么冒出来的：
+        换到球面上，"固有形状"不再是正弦，可它们照样两两正交。
+        这就是斯图姆-刘维尔理论的分量：
         它保证了"分解 → 独立演化 → 叠加"这套流程<strong>在远比正弦宽广的场合都能用</strong>，
         而不只是在教科书那根均匀弦上。
         <router-link to="/linear-algebra/eigen">线代第 5 讲</router-link>那条
@@ -178,8 +210,8 @@ import SeparationDemo from '../../demos/SeparationDemo.vue'
       </p>
     </RevealBox>
     <p>
-      这个视角在 1830 年代由<strong>斯图姆</strong>与<strong>刘维尔</strong>系统化（一般系数、一般边界条件下
-      特征值仍离散、特征函数仍正交完备），一百年后成为量子力学的现成语言：
+      壹节说的 1836 — 1837 年那几篇文章，系统化的正是这个视角（一般系数、一般边界条件下
+      特征值仍离散、特征函数仍正交完备）。而它一百年后成了量子力学的现成语言：
       薛定谔方程 <MathInline tex="\hat{H}\psi = E\psi" /> 正是特征值问题，
       "能级离散"与"弦只能发整数倍泛音"是同一个数学事实——<strong>量子化 = 边界条件筛选特征值</strong>。
     </p>

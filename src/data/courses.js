@@ -278,7 +278,7 @@ export const mathphysConcepts = [
     title: '分离变量法',
     subtitle: '三大方程的统一解法：在函数空间里对角化',
     question: '一个偏微分方程，怎么劈成一串各自为政的常微分方程？',
-    era: '1750 — 1830',
+    era: '1753 — 1837',
     figures: '伯努利 · 傅里叶 · 斯图姆 · 刘维尔',
   },
 ]
