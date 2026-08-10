@@ -141,6 +141,21 @@ export const calculusConcepts = [
     ],
     baseline: '指数与对数的运算法则、"半衰期"这个词',
   },
+
+  {
+    slug: 'gradient',
+    path: '/calculus/gradient',
+    title: '多元函数与梯度',
+    subtitle: '山坡上往哪边走最陡',
+    question: '温度 $T(x,y)$ 有两个自变量，它的"导数"该是几个数？',
+    era: '1743 — 1847',
+    figures: '欧拉 · 柯西 · 哈密顿',
+    prereqs: [
+      { slug: 'chain-rule', why: '方向导数是把复合函数沿一条直线切一刀，靠链式法则算出来的' },
+      { slug: 'extremum', why: '多元极值就是把"令导数为零"换成"令梯度为零"，陷阱只多不少' },
+    ],
+    baseline: '等高线地图怎么看、向量的点积 $\\boldsymbol{a}\\cdot\\boldsymbol{b}=|\\boldsymbol{a}||\\boldsymbol{b}|\\cos\\varphi$',
+  },
 ]
 
 export const linearAlgebraConcepts = [
