@@ -156,6 +156,22 @@ export const calculusConcepts = [
     ],
     baseline: '等高线地图怎么看、向量的点积 $\\boldsymbol{a}\\cdot\\boldsymbol{b}=|\\boldsymbol{a}||\\boldsymbol{b}|\\cos\\varphi$',
   },
+
+  {
+    slug: 'multiple-integral',
+    path: '/calculus/multiple-integral',
+    title: '多重积分与换元',
+    subtitle: '把 $\\sqrt{\\pi}$ 变出来：换一套坐标，积不动的就积得动',
+    question: '$\\int e^{-x^2}\\mathrm{d}x$ 没有初等原函数，为什么它在整条实轴上的积分反而算得出来？',
+    era: '1769 — 1841',
+    figures: '欧拉 · 拉普拉斯 · 泊松 · 雅可比',
+    prereqs: [
+      { slug: 'integration-methods', why: '二维换元是一维换元的升级版，最后一步仍要用 $u=r^2$ 那种换元' },
+      { slug: 'gradient', why: '雅可比矩阵由四个偏导数组成，靠的是"局部线性近似"' },
+      { slug: 'determinant', why: '面积放大倍数就是行列式的绝对值，这条结论直接拿来用' },
+    ],
+    baseline: '极坐标（半径与角度）、弧长 = 半径 × 弧度',
+  },
 ]
 
 export const linearAlgebraConcepts = [
