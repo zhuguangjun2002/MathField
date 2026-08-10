@@ -349,6 +349,17 @@ import RiemannSumDemo from '../../demos/RiemannSumDemo.vue'
         一个是除法的极限，一个是加法的极限。它们之间竟然互为逆运算，
         这件事完全不显然，值得专门用<router-link to="/calculus/ftc">下一讲</router-link>来讲。
       </p>
+      <p>
+        <strong>而"切碎—求和—取极限"这把刀，往后还要反复用</strong>：换个冒充物就能量
+        <router-link to="/calculus/arc-length">长度、体积与曲率</router-link>
+        （矩形换成弦、换成圆盘）；
+        <router-link to="/calculus/multiple-integral">升到二维</router-link>之后，
+        它甚至能算出一个<strong>一维里根本积不出来</strong>的积分
+        （<MathInline tex="\int e^{-x^2}\mathrm{d}x = \sqrt{\pi}" /> 就是这么来的）；
+        至于"原函数到底怎么找"，
+        <router-link to="/calculus/integration-methods">换元与分部那一讲</router-link>
+        会把求导法则一条条倒过来读。
+      </p>
     </div>
   </ConceptPage>
 </template>

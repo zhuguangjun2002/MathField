@@ -387,8 +387,16 @@ import FTCDemo from '../../demos/FTCDemo.vue'
         而绝大多数被积函数找不到——于是又得退回
         <router-link to="/calculus/integral">上一讲</router-link>的定义去逼近，
         这就是<router-link to="/numerical/quadrature">数值积分</router-link>那一讲的全部动机；
-        <strong>下一讲</strong>：<router-link to="/calculus/taylor">泰勒展开</router-link>
+        <strong>紧接着的一讲</strong>：<router-link to="/calculus/integration-methods">换元与分部积分</router-link>
+        专门回答"原函数怎么找"——把每一条求导法则倒过来读；那里还会证明一件残酷的事：
+        <MathInline tex="\int e^{-x^2}\mathrm{d}x" /> 的原函数<strong>不存在</strong>于初等函数中
+        （刘维尔 1835），所以"找不到"有时不是本事问题；
+        <strong>再往后</strong>：<router-link to="/calculus/taylor">泰勒展开</router-link>
         会给出另一条出路——既然多项式好积分，那就先把函数换成多项式；
+        <strong>本定理的一条推论撑着整门课</strong>：
+        "两个原函数只差一个常数"（也就是不定积分那个 +C），
+        靠的是<router-link to="/calculus/extremum">中值定理那一讲</router-link>的
+        "导数恒为零 ⇒ 函数是常数"；
         <strong>复变函数</strong>：把这里的"两个端点之差"换成"绕一圈的回路"，
         就得到<router-link to="/complex/cauchy-integral">柯西积分定理</router-link>，
         再往前一步就是"数几个点就出答案"的<router-link to="/complex/residue">留数定理</router-link>。

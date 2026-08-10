@@ -411,10 +411,18 @@ import TaylorDemo from '../../demos/TaylorDemo.vue'
         <router-link to="/calculus/derivative">导数</router-link>和
         <router-link to="/calculus/integral">积分</router-link>用它回答了"多陡"与"多大"；
         <router-link to="/calculus/ftc">基本定理</router-link>证明二者互逆；
-        泰勒展开则把一切光滑函数化归为多项式。沿着这条路继续走：
-        多元微积分（<router-link to="/linear-algebra/linear-map">线性代数</router-link>接管局部近似，
-        导数升级成雅可比矩阵）、<router-link to="/mathphys/pde-intro">微分方程</router-link>
-        （把导数之间的关系当方程解，数学物理方程的正门）、
+        泰勒展开则把一切光滑函数化归为多项式。
+        <strong>但"无穷多项加起来"这句话本身还欠一个交代</strong>——
+        <router-link to="/calculus/series">无穷级数那一讲</router-link>补上它
+        （包括"收敛半径"是怎么算出来的，以及为什么条件收敛的级数换个顺序就换个答案）。
+        沿着这条路继续走：
+        <router-link to="/calculus/gradient">多元微积分</router-link>
+        （<router-link to="/linear-algebra/linear-map">线性代数</router-link>接管局部近似，
+        导数升级成梯度与雅可比矩阵）、
+        <router-link to="/calculus/ode">微分方程</router-link>
+        （把导数之间的关系当方程解，也是<router-link to="/mathphys/pde-intro">数学物理方程</router-link>的正门）、
+        <router-link to="/calculus/variational">变分法</router-link>
+        （把"挑一个数"升级成"挑一整条曲线"，物理学的半壁江山都写在这套语言里）、
         <router-link to="/complex/imaginary">复变函数</router-link>（幂级数的完全体，
         本讲那个欧拉公式就是它的门票）——欢迎随时回来，这个网站会继续陪你把它们一一讲清楚。
       </p>

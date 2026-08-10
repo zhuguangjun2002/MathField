@@ -796,7 +796,12 @@ import EpsilonDeltaDemo from '../../demos/EpsilonDeltaDemo.vue'
         <strong>复变函数</strong>：幂级数的<router-link to="/complex/continuation">收敛半径</router-link>，
         是本讲的 ε-N 语言搬到复平面后的产物；
         <strong>数学物理方程</strong>：傅里叶级数"收敛到"一个函数是什么意思，
-        答案还是本讲这套语言（<router-link to="/mathphys/heat">热传导讲</router-link>）。
+        答案还是本讲这套语言（<router-link to="/mathphys/heat">热传导讲</router-link>）；
+        <strong>本课内部</strong>：<router-link to="/calculus/series">无穷级数那一讲</router-link>
+        把"加无穷多项"直接定义成本讲的数列极限，而
+        <router-link to="/calculus/rigor">严格化那一讲</router-link>会交代
+        ε–δ 这套语言到底是被什么逼出来的——以及它换来的能力：
+        看懂一条<strong>处处连续却处处没有切线</strong>的曲线。
         这些课全都在本站，而且都从零讲起——顺着首页的学习路径走过去，
         每到一处你都会重新撞见本讲这套 ε 语言。极限不是第一章的过路考点，
         它是后面所有数学的公共地基。

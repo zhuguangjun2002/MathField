@@ -365,7 +365,7 @@ import SecantTangentDemo from '../../demos/SecantTangentDemo.vue'
         （站内数理方程课开篇就从它讲起）；
       </li>
       <li>
-        <strong>求极值（费马 1629，比牛顿还早）</strong>：山顶处切线必水平，所以极值点满足
+        <strong>求极值（费马 1629，比牛顿还早）</strong>（<router-link to="/calculus/extremum">专讲在这里</router-link>）：山顶处切线必水平，所以极值点满足
         <MathInline tex="f'(x) = 0" />。这句话不必靠图说服——设 a 是内部的极大值点，
         那么 <MathInline tex="f(a+h) \le f(a)" /> 对两侧都成立，于是差商
         <MathInline tex="\frac{f(a+h)-f(a)}{h}" /> 在 h &gt; 0 时分子非正、分母正，<strong>恒 ≤ 0</strong>；
@@ -391,6 +391,11 @@ import SecantTangentDemo from '../../demos/SecantTangentDemo.vue'
     <div class="insight">
       <div class="insight-title">🔗 这把刀往后通到哪：站内连一连</div>
       <p>
+        <strong>下一讲</strong>：光有定义还算不动 <MathInline tex="\sin(x^2)" /> 这种套娃函数，
+        <router-link to="/calculus/chain-rule">链式法则那一讲</router-link>把定义变成一套算法
+        （上面那句"证明要老老实实拆成两个差商相乘"，在那里兑现）；
+        紧接着<router-link to="/calculus/extremum">极值与中值定理</router-link>会把
+        上面这条"山顶处切线必水平"补成完整证明，并回答"局部凭什么管得住全局"；
         <strong>极限</strong>：导数从头到尾就是一个极限，<router-link to="/calculus/limit">第一讲</router-link>
         那套 ε-δ 语言在这里第一次真正派上用场；
         <strong>积分</strong>：<router-link to="/calculus/integral">第三讲</router-link>会从完全相反的方向
