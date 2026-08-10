@@ -73,6 +73,20 @@ export const calculusConcepts = [
     ],
   },
   {
+    slug: 'integration-methods',
+    path: '/calculus/integration-methods',
+    title: '积分的算法：换元与分部',
+    subtitle: '把每一条求导法则倒过来读',
+    question: '基本定理说"找到原函数就行"，可原函数到底怎么找？',
+    era: '1684 — 1835',
+    figures: '莱布尼茨 · 约翰·伯努利 · 洛必达 · 刘维尔',
+    prereqs: [
+      { slug: 'ftc', why: '"找原函数"这个任务是基本定理派下来的' },
+      { slug: 'chain-rule', why: '换元法就是链式法则倒过来读，分部积分就是乘积法则倒过来读' },
+    ],
+    baseline: '中学的三角恒等式（含降幂公式 $\\cos^2\\theta=\\frac{1+\\cos 2\\theta}{2}$）、对数的定义',
+  },
+  {
     slug: 'taylor',
     path: '/calculus/taylor',
     title: '泰勒展开',
