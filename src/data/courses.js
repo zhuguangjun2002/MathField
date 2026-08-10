@@ -22,6 +22,33 @@ export const calculusConcepts = [
     baseline: '中学的直线斜率、函数图象与幂运算法则（$a^{x+h} = a^x a^h$）',
   },
   {
+    slug: 'chain-rule',
+    path: '/calculus/chain-rule',
+    title: '求导的算法：链式法则',
+    subtitle: '从"能算"到"算得动"：一套机械可执行的规则',
+    question: '$\\sin(x^2)$ 的导数为什么是 $2x\\cos(x^2)$，而不是 $\\cos(x^2)$？',
+    era: '1675 — 1812',
+    figures: '莱布尼茨 · 牛顿 · 巴贝奇',
+    prereqs: [
+      { slug: 'derivative', why: '本讲是在给上一讲那台"定义机器"配算法，处处要用最佳线性近似' },
+    ],
+    baseline: '中学的函数复合记号 $f(g(x))$、矩形面积、勾股定理',
+  },
+  {
+    slug: 'extremum',
+    path: '/calculus/extremum',
+    title: '极值与中值定理',
+    subtitle: '"令导数为零"能走多远：从费马的怪招到最优化',
+    question: '费马 1629 年就会求极值，可那时导数还没被发明——他怎么做到的？',
+    era: '1629 — 1797',
+    figures: '费马 · 笛卡尔 · 罗尔 · 拉格朗日',
+    prereqs: [
+      { slug: 'derivative', why: '费马定理是从差商的符号夹出来的，全靠导数的定义' },
+      { slug: 'chain-rule', why: '救生员与易拉罐两道最优化题，求导时都要用链式法则' },
+    ],
+    baseline: '中学的二次函数顶点、勾股定理、正弦的定义',
+  },
+  {
     slug: 'integral',
     path: '/calculus/integral',
     title: '积分',
