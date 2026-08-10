@@ -10,6 +10,7 @@ const routes = [
   { path: '/calculus/integral', component: () => import('./views/concepts/IntegralView.vue') },
   { path: '/calculus/ftc', component: () => import('./views/concepts/FTCView.vue') },
   { path: '/calculus/integration-methods', component: () => import('./views/concepts/IntegrationMethodsView.vue') },
+  { path: '/calculus/arc-length', component: () => import('./views/concepts/ArcLengthView.vue') },
   { path: '/calculus/taylor', component: () => import('./views/concepts/TaylorView.vue') },
   { path: '/linear-algebra', component: () => import('./views/CourseView.vue') },
   { path: '/linear-algebra/elimination', component: () => import('./views/linear-algebra/EliminationView.vue') },

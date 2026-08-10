@@ -87,6 +87,20 @@ export const calculusConcepts = [
     baseline: '中学的三角恒等式（含降幂公式 $\\cos^2\\theta=\\frac{1+\\cos 2\\theta}{2}$）、对数的定义',
   },
   {
+    slug: 'arc-length',
+    path: '/calculus/arc-length',
+    title: '弧长、体积与曲率',
+    subtitle: '同一把刀：切碎、拿简单形状冒充、求和、取极限',
+    question: '圆的周长有公式，椭圆的周长为什么没有？',
+    era: '1615 — 1673',
+    figures: '开普勒 · 卡瓦列里 · 惠更斯',
+    prereqs: [
+      { slug: 'integral', why: '"切碎—求和—取极限"这把刀是那一讲造的，本讲只换冒充物' },
+      { slug: 'integration-methods', why: '弧长积分里那个根号，靠三角换元才算得动' },
+    ],
+    baseline: '勾股定理、圆的周长与面积公式、相似三角形',
+  },
+  {
     slug: 'taylor',
     path: '/calculus/taylor',
     title: '泰勒展开',
