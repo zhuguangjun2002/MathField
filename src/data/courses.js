@@ -172,6 +172,22 @@ export const calculusConcepts = [
     ],
     baseline: '极坐标（半径与角度）、弧长 = 半径 × 弧度',
   },
+
+  {
+    slug: 'rigor',
+    path: '/calculus/rigor',
+    title: '严格化：贝克莱的幽灵',
+    subtitle: '一百五十年间，微积分是"对的但说不清"',
+    question: '"无穷小"到底是不是零？如果不是，凭什么可以扔掉？',
+    era: '1734 — 1872',
+    figures: '贝克莱 · 柯西 · 魏尔斯特拉斯 · 戴德金',
+    prereqs: [
+      { slug: 'limit', why: '本讲要讲的正是那套 ε–δ 语言是被什么逼出来的' },
+      { slug: 'derivative', why: '"可导 = 放大后像直线"这个图像，本讲拿它当量尺' },
+      { slug: 'series', why: '魏尔斯特拉斯的反例是一个无穷级数，收敛性要用那一讲的判据' },
+    ],
+    baseline: '无需新知识；这是一讲回头算总账的课',
+  },
 ]
 
 export const linearAlgebraConcepts = [
