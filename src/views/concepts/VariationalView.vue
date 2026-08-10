@@ -235,7 +235,7 @@ import BrachistochroneDemo from '../../demos/BrachistochroneDemo.vue'
     <QuizBox
       quiz-id="variational-q2"
       question="推导欧拉-拉格朗日方程时，分部积分产生的边界项 $[\,\partial F/\partial y'\cdot\eta\,]_a^b$ 为什么可以扔掉？"
-      hint="扰动 $\eta$ 是任意的，但有一个限制。这个限制是从哪来的？"
+      hint="扰动 η 是任意的，但有一个限制。这个限制是从哪来的？"
       :options="[
         { t: '因为端点固定，所有候选曲线都必须过 A 和 B，所以扰动在两端必须为零', why: '对——这不是数学上的方便，而是问题本身的约束（滑道两头钉死）。反过来说：如果端点<b>不固定</b>（比如「滑到那条竖直线上任意一点即可」），边界项就不能扔，令它为零会给出额外的条件，叫<b>自然边界条件</b>——这正是变分法处理自由端点问题的方式。' },
         { t: '因为 $\\partial F/\\partial y^{\\prime}$ 在端点处总是零', why: '毫无理由——它是 F 对 $y^{\\prime}$ 的偏导数，在端点通常不为零。真正为零的是 $\\eta(a)$ 与 $\\eta(b)$。' },
