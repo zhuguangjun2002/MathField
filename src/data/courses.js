@@ -110,6 +110,22 @@ export const calculusConcepts = [
     figures: '泰勒 · 麦克劳林 · 拉格朗日 · 柯西',
     prereqs: [{ slug: 'derivative', why: '整讲都在反复求导' }],
   },
+
+  {
+    slug: 'series',
+    path: '/calculus/series',
+    title: '无穷级数',
+    subtitle: '加不完的和：什么时候"加到底"是有意义的',
+    question: '$1+\\frac12+\\frac13+\\cdots$ 一直加下去，会不会超过 100？',
+    era: '1350 — 1854',
+    figures: '奥雷姆 · 欧拉 · 柯西 · 黎曼',
+    prereqs: [
+      { slug: 'limit', why: '"无穷和"被定义成部分和数列的极限，全部搬回第一讲那套语言' },
+      { slug: 'taylor', why: '泰勒展开已经在用无穷和了，本讲补上它的许可证' },
+      { slug: 'integration-methods', why: '积分判别法要算 $\\int_1^\\infty x^{-p}$ 这类反常积分' },
+    ],
+    baseline: '中学的等比数列求和公式、对数的定义',
+  },
 ]
 
 export const linearAlgebraConcepts = [
