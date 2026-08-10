@@ -126,6 +126,21 @@ export const calculusConcepts = [
     ],
     baseline: '中学的等比数列求和公式、对数的定义',
   },
+
+  {
+    slug: 'ode',
+    path: '/calculus/ode',
+    title: '微分方程入门',
+    subtitle: '未知的不是一个数，是一整条曲线',
+    question: '牛顿第二定律 $F=ma$ 本身就是个方程，"解"出来是什么？',
+    era: '1671 — 1838',
+    figures: '牛顿 · 伯努利兄弟 · 马尔萨斯 · 韦吕勒',
+    prereqs: [
+      { slug: 'integration-methods', why: '分离变量就是两边积分，$\\int\\mathrm{d}y/y$ 是那一讲最常用的换元' },
+      { slug: 'derivative', why: '第二讲埋的"复利的本质是 $y\'=y$"，本讲才真正解出来' },
+    ],
+    baseline: '指数与对数的运算法则、"半衰期"这个词',
+  },
 ]
 
 export const linearAlgebraConcepts = [

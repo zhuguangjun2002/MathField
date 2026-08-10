@@ -13,6 +13,7 @@ const routes = [
   { path: '/calculus/arc-length', component: () => import('./views/concepts/ArcLengthView.vue') },
   { path: '/calculus/taylor', component: () => import('./views/concepts/TaylorView.vue') },
   { path: '/calculus/series', component: () => import('./views/concepts/SeriesView.vue') },
+  { path: '/calculus/ode', component: () => import('./views/concepts/OdeView.vue') },
   { path: '/linear-algebra', component: () => import('./views/CourseView.vue') },
   { path: '/linear-algebra/elimination', component: () => import('./views/linear-algebra/EliminationView.vue') },
   { path: '/linear-algebra/determinant', component: () => import('./views/linear-algebra/DeterminantView.vue') },
