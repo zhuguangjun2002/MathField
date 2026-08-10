@@ -188,6 +188,22 @@ export const calculusConcepts = [
     ],
     baseline: '无需新知识；这是一讲回头算总账的课',
   },
+
+  {
+    slug: 'variational',
+    path: '/calculus/variational',
+    title: '变分法与最速降线',
+    subtitle: '从所有曲线里挑出最好的那一条',
+    question: '1696 年那道让牛顿熬了一夜的题：小球沿什么形状的滑道下落最快？',
+    era: '1696 — 1755',
+    figures: '约翰·伯努利 · 牛顿 · 欧拉 · 拉格朗日',
+    prereqs: [
+      { slug: 'extremum', why: '整套方法就是把"令导数为零"搬到无穷维；费马原理那一节还直接被伯努利的解法用上' },
+      { slug: 'integration-methods', why: '推欧拉-拉格朗日方程的枢纽是一次分部积分（边界项被端点条件杀死）' },
+      { slug: 'ode', why: '变分把"挑曲线"化成解一个二阶微分方程' },
+    ],
+    baseline: '能量守恒 $\\tfrac12mv^2=mgh$、圆滚动划出的轨迹叫摆线',
+  },
 ]
 
 export const linearAlgebraConcepts = [

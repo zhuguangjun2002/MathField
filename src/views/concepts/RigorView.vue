@@ -121,7 +121,7 @@ import WeierstrassDemo from '../../demos/WeierstrassDemo.vue'
       1872 年，魏尔斯特拉斯给出了一个让整个数学界不安的例子：
       一个<strong>处处连续、却处处不可导</strong>的函数。
     </p>
-    <MathBlock tex="W(x) = \sum_{n=0}^{\infty} a^{\,n}\cos\bigl(b^{\,n}\pi x\bigr), \qquad 0<a<1,\ b \text{ 为奇整数},\ ab>1+\tfrac{3\pi}{2}" />
+    <MathBlock tex="W(x) = \sum_{n=0}^{\infty} a^{\,n}\cos\bigl(b^{\,n}\pi x\bigr), \qquad 0\lt a\lt 1,\ b \text{ 为奇整数},\ ab\gt 1+\tfrac{3\pi}{2}" />
     <p>
       它画得出来、连得上、没有断点也没有尖角——<strong>可它在每一点上都没有切线</strong>。
       当时的主流意见是"这种怪物不该被允许存在"（埃尔米特称之为"令人痛心的疫病"）。
@@ -186,7 +186,7 @@ import WeierstrassDemo from '../../demos/WeierstrassDemo.vue'
         <MathInline tex="(ab)^N \to \infty" />。也就是说，
         <strong>h 每缩小一档，就有一个更高频的项跳出来，
         贡献一个更大的差商</strong>——差商不收敛，导数不存在。
-        （原文那个更强的条件 <MathInline tex="ab>1+\frac{3\pi}{2}" />
+        （原文那个更强的条件 <MathInline tex="ab\gt 1+\frac{3\pi}{2}" />
         是为了保证低频项的贡献压不住这个爆炸。）
       </p>
       <p>

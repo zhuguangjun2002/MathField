@@ -17,6 +17,7 @@ const routes = [
   { path: '/calculus/gradient', component: () => import('./views/concepts/GradientView.vue') },
   { path: '/calculus/multiple-integral', component: () => import('./views/concepts/MultipleIntegralView.vue') },
   { path: '/calculus/rigor', component: () => import('./views/concepts/RigorView.vue') },
+  { path: '/calculus/variational', component: () => import('./views/concepts/VariationalView.vue') },
   { path: '/linear-algebra', component: () => import('./views/CourseView.vue') },
   { path: '/linear-algebra/elimination', component: () => import('./views/linear-algebra/EliminationView.vue') },
   { path: '/linear-algebra/determinant', component: () => import('./views/linear-algebra/DeterminantView.vue') },

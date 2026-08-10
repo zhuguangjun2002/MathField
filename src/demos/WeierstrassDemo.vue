@@ -98,7 +98,7 @@ usePlot(
         :min="0"
         :max="5"
         :step="0.25"
-        :display="(x) => '×10^' + x"
+        :display="(x) => '×' + Math.round(Math.pow(10, x)).toLocaleString('en-US') + ' 倍'"
       />
       <ControlSlider v-if="which === 'w'" label="级数取多少项" v-model="terms" :min="1" :max="16" :step="1" />
     </template>
@@ -120,7 +120,7 @@ usePlot(
         <li><b>中心位置 x₀</b>：放大镜对准哪一点。</li>
         <li>
           <b>放大倍数</b>：窗口半宽 = <MathInline tex="0.5\times 10^{-k}" />，
-          k 从 0 拖到 5，也就是<strong>最多放大十万倍</strong>。
+          滑杆拖的是 k（0 到 5，步长 0.25），<strong>读数直接显示放大倍数</strong>，最大十万倍。
         </li>
         <li>
           <b>级数取多少项</b>（只在 W 这一档出现）：<MathInline tex="W" /> 是无穷级数，
@@ -137,7 +137,7 @@ usePlot(
       </p>
       <p>
         <b>照着做一遍（一）：抛物线会变直。</b>切到<strong>对照组</strong>，
-        x₀ = <b>0.31</b>，把放大倍数从 <b>×10^0</b> 拖到 <b>×10^3</b>：
+        x₀ = <b>0.31</b>，把放大倍数从 <b>×1 倍</b>依次拖到 <b>×10</b>、<b>×100</b>、<b>×1,000 倍</b>：
         "偏离 ÷ 窗宽"从 <b>2.00e+0</b> 依次变成 <b>2.00e−1</b>、<b>2.00e−2</b>、<b>2.00e−3</b>——
         <strong>每放大 10 倍，它就小 10 倍</strong>，干净利落。这正是可导的量化含义
         （<router-link to="/calculus/derivative">第二讲</router-link>那个
@@ -145,7 +145,7 @@ usePlot(
       </p>
       <p>
         <b>照着做一遍（二）：W 永远是毛的。</b>切回<strong>魏尔斯特拉斯</strong>，
-        项数保持 <b>12</b>，同样把放大倍数从 ×10^0 拖到 ×10^3：
+        项数保持 <b>12</b>，同样把放大倍数从 ×1 拖到 ×1,000 倍：
         "偏离 ÷ 窗宽"分别是 <b>1.42e+0 → 1.18e+1 → 4.19e+1 → 3.54e+2</b>——
         <strong>不但没有变小，反而一路涨了两个半数量级</strong>。
         画面也一样：<strong>放大一千倍之后，它看上去和原来一样毛</strong>。
@@ -157,7 +157,7 @@ usePlot(
         每放大十倍约涨 <MathInline tex="10^{0.73}\approx 5.4" /> 倍——上面那串数正是这个节奏。）
       </p>
       <p>
-        <b>照着做一遍（三）：一个诚实的坑。</b>把项数拖到 <b>3</b>，再放大到 ×10^4：
+        <b>照着做一遍（三）：一个诚实的坑。</b>把项数拖到 <b>3</b>，再放大到 <b>×10,000 倍</b>：
         画面<strong>变直了</strong>，"偏离 ÷ 窗宽"掉到 <b>3.09e−1</b> 并继续往下走。
         <strong>这不是 W 的性质，是"只取三项"的性质</strong>——
         有限项的和是三个余弦的叠加，<strong>光滑得很</strong>，当然放大会变直。
@@ -166,11 +166,11 @@ usePlot(
         本 demo 的做法是：项数够大时，第 n 项的波长
         <MathInline tex="2/13^{\,n}" /> 早已远小于一个像素，画出来与真值无异——
         项数 12 时最高频项的波长约 <MathInline tex="1.1\times10^{-12}" />，
-        对 ×10^5 的窗口（宽 <MathInline tex="10^{-5}" />）绰绰有余。
+        对 ×100,000 倍的窗口（宽 <MathInline tex="10^{-5}" />）绰绰有余。
       </p>
       <p>
         （<b>再一个诚实的小注</b>：这里的 <MathInline tex="a=0.5,\ b=13" /> 取自
-        魏尔斯特拉斯原文的条件 <MathInline tex="ab>1+\tfrac{3\pi}{2}\approx 5.71" />
+        魏尔斯特拉斯原文的条件 <MathInline tex="ab\gt 1+\tfrac{3\pi}{2}\approx 5.71" />
         （这里 <MathInline tex="ab=6.5" />），它保证处处不可导。
         <strong>参数取得不对的话，函数可能是可导的</strong>——
         这个反例的每一个细节都是精心配平过的。）
