@@ -449,6 +449,7 @@ src/views/mathphys/        数学物理方程每讲一个页面（最早的零�
 src/views/numerical/       数值分析每讲一个页面；动画多为可复现的实算（浮点抵消、牛顿迭代、
                            龙格插值、求积、条件数），部分 demo 真用 float64 当场算出误差
 docs/course-plans.md       各课程蓝图（讲次、动画构想）——六门课 30 讲已全部上线
+docs/dev-setup.md          换机器搭环境：系统依赖、Node/Chrome/中文字体、验收清单、排错表
 ```
 
 ## 新增一讲的流程
@@ -575,3 +576,9 @@ python3 scripts/scan-math-katex.py       # 散文里漏掉 KaTeX 的公式（^ /
 node scripts/measure-readout.mjs         # demo 读数区横向溢出
 node scripts/measure-mathblock.mjs       # 独立成行公式横向溢出（会自动点开 RevealBox）
 ```
+
+两个 measure 脚本依赖 `playwright-core`（已在 devDependencies，`npm ci` 就有）
++ **系统装的 Google Chrome**（`channel: 'chrome'`，chromium / snap 版不行）。
+scan 脚本只用 Python 标准库。截图检查同样要 Chrome，还要中文字体 `fonts-noto-cjk`
+（缺了全是豆腐块）。换机器搭环境见 `docs/dev-setup.md`，那里带每条命令的预期输出
+——`scan-math-katex.py` 的**基线是「合计 5 处可疑」**（全是刻意保留的），多于 5 就是新欠账。

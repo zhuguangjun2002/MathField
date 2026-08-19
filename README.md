@@ -9,11 +9,15 @@
 ## 运行
 
 ```bash
-npm install     # 首次
+npm ci          # 首次（锁定 package-lock.json）
 npm run dev     # 开发服务器，浏览器打开提示的地址
 npm run build   # 构建到 dist/
 npm run preview # 预览构建产物
 ```
+
+**换机器 / 新装系统**见 [`docs/dev-setup.md`](docs/dev-setup.md)：除 Node 22 外还需要
+系统装的 Google Chrome（体检脚本与截图检查都用它）和中文字体 `fonts-noto-cjk`，
+文档里带逐条验收的预期输出。
 
 ## 部署（Cloudflare Pages）
 
@@ -109,6 +113,8 @@ localStorage 阅读进度、demo 回合制挑战模式（样板：ε–δ 攻防
 - [`CLAUDE.md`](CLAUDE.md) —— 开发工作指引：内容五段式风格约定、目录结构、
   新增一讲/新开一门课的流程、样式与动画配色约定、验证方法
 - [`docs/course-plans.md`](docs/course-plans.md) —— 各课程的完整蓝图、上线进度与内容复查进度
+- [`docs/dev-setup.md`](docs/dev-setup.md) —— 换机器时的环境搭建：系统依赖、Node/Chrome/字体、
+  验收清单（含每个体检脚本的预期输出）、排错表
 
 ## 新增一讲的步骤
 
