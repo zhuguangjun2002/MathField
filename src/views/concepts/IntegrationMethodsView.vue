@@ -260,6 +260,110 @@ import SubstitutionDemo from '../../demos/SubstitutionDemo.vue'
       （中间那步 <MathInline tex="\cos^2\theta = \frac{1+\cos 2\theta}{2}" /> 是中学的降幂公式，
       也是三角换元最常用的一块垫脚石。）
     </p>
+
+    <h3>第四件事：积分限跑到无穷怎么办（反常积分入门）</h3>
+    <p>
+      到这里为止，本讲所有公式都默认了一件事：积分区间 <MathInline tex="[a,b]" /> 是<strong>有限</strong>的，
+      被积函数在上面也<strong>不会窜到无穷</strong>。这两条是
+      <router-link to="/calculus/integral">黎曼和那一讲</router-link>定义里就写死的——
+      要把区间切成有限多条，条宽才有意义；要用矩形夹住每一条，函数在那一段上就得有个上下界。
+    </p>
+    <p>
+      可这两条都会破，而且破得很自然。看两个式子：
+    </p>
+    <MathBlock tex="\int_1^{\infty}\frac{\mathrm{d}x}{x^2} \qquad\text{与}\qquad \int_0^1 \frac{\mathrm{d}x}{\sqrt{x}}" />
+    <p>
+      左边那个的<strong>区间没有右端</strong>——"切成有限多条"从何谈起；右边那个区间虽短，
+      可 <MathInline tex="1/\sqrt{x}" /> 在 <MathInline tex="x\to 0" /> 时<strong>直冲无穷</strong>，
+      最左边那一条根本罩不住。<strong>两个式子按现有的定义都是没有意义的记号。</strong>
+    </p>
+    <p>
+      <strong>办法是不改定义，只加一道手续：先在合法的地方算，再让边界挪过去取极限。</strong>
+      这正是<router-link to="/calculus/limit">第一讲</router-link>那套语言的又一次出场——
+      凡是"到不了的地方"，就退回到到得了的地方，再问"越来越靠近时，答案趋向谁"。
+    </p>
+    <div class="definition">
+      <div class="def-title">📐 反常积分（两类）</div>
+      <p><strong>第一类，区间无限。</strong>先积到一个有限的 b，再让 b 跑向无穷：</p>
+      <MathBlock tex="\int_a^{\infty} f(x)\,\mathrm{d}x \;=\; \lim_{b\to\infty}\int_a^{b} f(x)\,\mathrm{d}x" />
+      <p>
+        <strong>第二类，函数在端点无界。</strong>设 f 在 <MathInline tex="x=a" /> 附近窜向无穷，
+        就从稍微靠右一点的地方起积，再让起点挪回去：
+      </p>
+      <MathBlock tex="\int_a^{b} f(x)\,\mathrm{d}x \;=\; \lim_{t\to a^{+}}\int_t^{b} f(x)\,\mathrm{d}x" />
+      <p>
+        右边那个极限<strong>存在且是个有限数</strong>，就说这个反常积分<strong>收敛</strong>，
+        那个数就是它的值；极限是无穷、或者根本不存在，就说它<strong>发散</strong>，
+        这时式子只是个记号，不代表任何数。
+      </p>
+    </div>
+    <p>
+      <strong>算两个，命运正好相反。</strong>手续加上了，剩下的活还是本讲的老本行——
+      找原函数，代上下限。先看 <MathInline tex="1/x^2" />：
+    </p>
+    <MathBlock tex="\int_1^{b}\frac{\mathrm{d}x}{x^2} = \Bigl[-\frac1x\Bigr]_1^{b} = 1 - \frac1b \;\xrightarrow[\ b\to\infty\ ]{}\; 1" />
+    <p>再看只差一个指数的 <MathInline tex="1/x" />：</p>
+    <MathBlock tex="\int_1^{b}\frac{\mathrm{d}x}{x} = \bigl[\ln x\bigr]_1^{b} = \ln b \;\xrightarrow[\ b\to\infty\ ]{}\; \infty" />
+    <p>
+      <strong>这件事值得停一下。</strong>两条曲线都在往 0 掉，画出来几乎看不出区别，
+      可一个圈出的面积是<strong>有限的 1</strong>，另一个是<strong>无限</strong>。
+      <strong>"掉向 0"根本不够，得掉得够快。</strong>
+      而且发散的那个慢得离谱：<MathInline tex="1/x" /> 下方的面积要攒到 10，
+      得积到 <MathInline tex="b = e^{10} \approx 22026" />；要攒到 100，
+      得积到 <MathInline tex="e^{100}\approx 2.7\times 10^{43}" />。
+      <strong>你在图上永远"看"不出它发散</strong>——这正是需要一条判据、而不是靠眼力的原因。
+    </p>
+    <p>
+      把两者放进同一个族里，分界线一清二楚。对 <MathInline tex="p \ne 1" />：
+    </p>
+    <MathBlock tex="\int_1^{b} x^{-p}\,\mathrm{d}x = \frac{b^{\,1-p}-1}{1-p}" />
+    <p>
+      <MathInline tex="p > 1" /> 时指数 <MathInline tex="1-p" /> 是负的，
+      <MathInline tex="b^{\,1-p}\to 0" />，极限存在，等于 <MathInline tex="\frac{1}{p-1}" />
+      （代 <MathInline tex="p=2" /> 得 1，和刚才算的一致；<MathInline tex="p=1.5" /> 得 2，
+      <MathInline tex="p=3" /> 得 0.5）；<MathInline tex="p < 1" /> 时指数为正，
+      <MathInline tex="b^{\,1-p}\to\infty" />，发散。而 <MathInline tex="p=1" /> 那一档正是上面
+      <MathInline tex="\ln b" /> 的情形，也发散。<strong>结论：在无穷远端，
+      <MathInline tex="\int_1^{\infty}x^{-p}" /> 当且仅当 <MathInline tex="p>1" /> 收敛。</strong>
+    </p>
+    <p>
+      <strong>第二类算一个，会撞见一件更反直觉的事。</strong>
+      <MathInline tex="1/\sqrt{x}" /> 在 0 处是竖着冲上去的，可它围出的面积：
+    </p>
+    <MathBlock tex="\int_t^{1}x^{-1/2}\,\mathrm{d}x = \bigl[2\sqrt{x}\bigr]_t^{1} = 2 - 2\sqrt{t} \;\xrightarrow[\ t\to 0^{+}\ ]{}\; 2" />
+    <p>
+      <strong>函数无限高，面积却只有 2。</strong>"无限高"和"面积无限大"是两件事——
+      高得快，但瘦得更快。<strong>而同一个族在这一端的分界线，方向正好翻了过来</strong>：
+      <MathInline tex="\int_0^1 x^{-p}" /> 是 <MathInline tex="p<1" /> 时收敛
+      （值 <MathInline tex="\frac{1}{1-p}" />，代 <MathInline tex="p=\tfrac12" /> 得 2，对上了），
+      <MathInline tex="p\ge 1" /> 时发散。
+      <strong>同一个 <MathInline tex="x^{-p}" />，在 0 附近要求它"别太陡"，在无穷远处要求它"够陡"，
+      而 <MathInline tex="p=1" /> 两头都不收——<MathInline tex="1/x" /> 是唯一两端都发散的那个。</strong>
+    </p>
+    <p>
+      顺带结清一笔旧账：<router-link to="/calculus/ftc">基本定理那一讲</router-link>算血药浓度的
+      总暴露量时，写的是 <MathInline tex="\text{AUC} = F(\infty) - F(0)" />，
+      当时只用一句"t 拖到很久以后 <MathInline tex="e^{-kt}" /> 归零"带过——
+      那个 <MathInline tex="F(\infty)" /> 正是这里的第一类反常积分，现在它有正式定义了。
+    </p>
+    <p>
+      这套记号不是摆设：<router-link to="/calculus/series">无穷级数那一讲</router-link>的
+      <strong>积分判别法</strong>整条建立在它上面，那里用
+      <MathInline tex="\int_1^{\infty}\mathrm{d}x/x = \infty" /> 判定调和级数
+      <MathInline tex="\sum 1/n" /> 发散、用 <MathInline tex="\int_1^{\infty}\mathrm{d}x/x^2 = 1" />
+      判定 <MathInline tex="\sum 1/n^2" /> 收敛——用的正是上面刚算出的那两个数。
+    </p>
+    <QuizBox
+      quiz-id="integration-methods-q3"
+      question="正文算出：在无穷远端，$\int_1^{\infty} x^{-p}\,dx$ 当且仅当 $p>1$ 时收敛。那么在原点端，$\int_0^1 x^{-p}\,dx$ 的收敛条件是什么？"
+      hint="别套用刚才的结论，回去看那两步计算。在 0 附近，指数越大函数冲得越猛；在无穷远，指数越大函数掉得越快。同一个指数在两头起的作用是反的。"
+      :options="[
+        { t: '$p<1$ 时收敛——和无穷远端的条件正好相反', why: '对。代进 $\\int_t^1 x^{-p} = \\frac{1-t^{1-p}}{1-p}$：$p<1$ 时指数 $1-p$ 为正，$t^{1-p}\\to 0$，极限是 $\\frac{1}{1-p}$；$p>1$ 时指数为负，$t^{1-p}\\to\\infty$，发散。在 0 附近要求函数「别太陡」，在无穷远处要求它「够陡」，所以 $p=1$ 两头都不收——$1/x$ 是唯一两端都发散的那个。' },
+        { t: '同样是 $p>1$ 时收敛，两端规律一致', why: '你把两端当成了同一件事。可危险来自相反的方向：在无穷远，麻烦是函数掉得太慢（尾巴太肥），所以要 $p$ 大；在 0 附近，麻烦是函数冲得太猛，所以要 $p$ 小。把 $p=2$ 代进 $\\int_0^1 x^{-2}$ 试试，得 $\\frac{1-t^{-1}}{-1}$，$t\\to 0^+$ 时直奔无穷。' },
+        { t: '两端都收敛，因为 $x^{-p}$ 在区间上处处为正、面积总是有限的', why: '「处处为正」和「面积有限」没有关系——正文那个 $\\int_1^{\\infty}\\mathrm{d}x/x$ 就处处为正，面积却是无限的，只是发散得慢（要积到 $e^{100}$ 才攒到 100）。有限与否看的是衰减速度，不是正负号。' },
+      ]"
+      :answer="0"
+    />
     <QuizBox
       quiz-id="integration-methods-q2"
       question="分部积分 $\int uv' = uv - \int u'v$ 看着只是把式子搬来搬去，凭什么它能算出原本算不出的积分？"

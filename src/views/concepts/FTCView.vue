@@ -292,6 +292,43 @@ import FTCDemo from '../../demos/FTCDemo.vue'
       与切条逼近的 49.9989 分毫不差。<strong>切条三百下，反查一行字</strong>——
       药理学家口袋里的 AUC 公式，全是这台机器批发的。
     </p>
+    <div class="story">
+      <div class="story-title">📜 1665 — 1716 年 · 公式冠着两个名字，而他们打了三十年官司</div>
+      <p>
+        这条公式的正式名字叫<strong>牛顿–莱布尼茨公式</strong>。中间那个连字符是数学界少见的
+        和解方式——因为这两个人生前为它打了一场几十年、且相当难看的官司。
+      </p>
+      <p>
+        <strong>牛顿</strong>在 1665—66 年那个躲瘟疫的"奇迹年"里就得到了它（他叫"流数法"），
+        可他<strong>拖了近四十年才正式发表</strong>，直到 1704 年把它作为《光学》的一份附录印出来。
+        <strong>莱布尼茨</strong>独立地在 1675 年秋天走到同一处，而且那几周里他一口气定下了
+        今天还在用的两个记号：<strong>10 月 29 日</strong>写下一个拉长的 S——
+        <MathInline tex="\int" />，取自拉丁文 <em>summa</em>（和），
+        因为积分本来就是把无穷多个小块"加"起来；<strong>11 月 11 日</strong>写下
+        <MathInline tex="\mathrm{d}" />。（<router-link to="/calculus/chain-rule">链式法则那一讲</router-link>
+        讲过 11 月 11 日的另一半故事：同一批手稿里，他还顺手写下了一个<strong>错</strong>的乘积法则，
+        并且当场自己否掉了。）他 1684 年发表，比牛顿早了整整二十年。
+      </p>
+      <p>
+        1699 年起，牛顿的支持者公开指控莱布尼茨剽窃；1712 年英国皇家学会成立"中立委员会"裁决，
+        判牛顿胜——而那份报告是牛顿本人匿名起草的，他当时正是皇家学会主席。
+        1716 年莱布尼茨在冷落中去世。今天的共识是<strong>两人各自独立发明</strong>：
+        牛顿更早想到，莱布尼茨更早发表。
+      </p>
+      <p>
+        <strong>但这一讲有个更具体的落点：判决归判决，你低头看看自己写的是谁的字。</strong>
+      </p>
+      <MathBlock tex="\int_a^b f(x)\,\mathrm{d}x = F(b) - F(a)" />
+      <p>
+        左边那个 <MathInline tex="\int" /> 是莱布尼茨的，那个
+        <MathInline tex="\mathrm{d}x" /> 也是莱布尼茨的。
+        牛顿的记号（<MathInline tex="\dot{x}" /> 那一套流数点）在这条以他领衔命名的公式里
+        <strong>一个字都没留下</strong>。<strong>官司判赢的那一方，输掉了记号</strong>——
+        而记号才是接下来一百年真正的战场：英国数学界出于民族感情死守点记号，
+        结果整整一个世纪落在欧陆后面，那笔账算在
+        <router-link to="/calculus/chain-rule">链式法则那一讲</router-link>。
+      </p>
+    </div>
     <QuizBox
       quiz-id="ftc-q2"
       question="基本定理说「连续函数都有原函数」。那 $e^{-x^2}$ 的原函数存在吗？写得出来吗？"
