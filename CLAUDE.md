@@ -80,6 +80,10 @@ grep -n 'sec-no' src/views/<course>/<X>View.vue | sed 's/<[^>]*>//g'
   除了 `$`，`hint` 里还不能有裸 `\command` 和 `^`——它们同样会原样显示）。
   hint 里的数学只能用 Unicode 轻量写法（i²=−1）；
   `question` 与 `options` 的 `t`/`why` 才走 RichText 可用 `$...$`。
+- **同一个坑还有个兄弟：挑战模式 `CHALLENGE` 数组里的 `why` 串**（2026-08-19 `DeterminantDemo`）。
+  它也是纯文本插值，写 `det = 2·v_y` 就原样露出下划线。**而且 `scan-math-katex.py` 查不到它**
+  ——那个脚本只扫 `<template>`，`why` 串在 `<script>` 里。写完一批挑战题自己 grep：
+  `grep "why: '" src/demos/*.vue | grep -E '_|\^|\\\\'`。
 - `:options` 是 JS 表达式：字符串用单引号包裹，内容里不能出现单引号（中文「」代替）；
   KaTeX 反斜杠要双写。而 `question` 是静态 HTML 属性，反斜杠必须**单写**——两个位置规则相反，
   写错的症状分别是编译报错和页面上冒出字面 "times"。
@@ -89,9 +93,11 @@ grep -n 'sec-no' src/views/<course>/<X>View.vue | sed 's/<[^>]*>//g'
   "你这么选是因为把 X 当成了 Y"——写完自问三个错项各对应哪种误解，答不上就重出。
 - 题干/选项里的数字同样要 `node -e` 验算。
 
-### demo 挑战模式写法约定（2026-08-07；已落地 5 个：EpsilonDelta / Eigen / PointsProblem / Residue / NewtonMethod）
+### demo 挑战模式写法约定（2026-08-07；**已落地 10 个**：EpsilonDelta / Eigen / PointsProblem /
+Residue / NewtonMethod / LimitSequence / Span / **MeanValue / Gradient / Determinant**
+——后三个 2026-08-19 补，是新增 10 讲的头三个）
 
-不抽通用组件（各 demo 的判定逻辑千差万别），沉淀的是样式（main.css 的 `.challenge-*`）和五条规矩：
+不抽通用组件（各 demo 的判定逻辑千差万别），沉淀的是样式（main.css 的 `.challenge-*`）和下面八条规矩：
 
 1. 只给**本来就有是非判定**的 demo 加挑战模式（判定容差照旧写进 `#note`）；
 2. 对手出招序列**固定写死或 seeded rng**（禁 `Math.random`），`#note` 列出全序列且逐关验算可赢；
@@ -113,6 +119,15 @@ grep -n 'sec-no' src/views/<course>/<X>View.vue | sed 's/<[^>]*>//g'
    把最阴那关调到 20px。截图一看却明显不共面——因为那根箭头本身很短，
    **20 像素在短箭头上是个大角度**。换成"三根投影之间的**最大夹角**"重挑数据，
    8° 那一档才真的像一条线。凡是给挑战定难度，先问一句：这个指标和读者眼睛看到的是同一件事吗。
+8. **判定容差之内能蒙对的题，等于没考**（2026-08-19 `GradientDemo`）。
+   那题要读者读等高线指出最陡方向，我给的站位答案是 23.0°，`#note` 里写的门道是
+   "两座山的拉力叠加，合力不指向任何一座山顶"——可它离最近那座峰的方位<strong>只差 3.6°</strong>，
+   而判定容差是 ±5°。**"朝最近的山顶走"这个天真猜法照样过关，门道那句话就成了假话。**
+   扫了一遍全平面重挑站位，换到离两座峰方位各差 58.9° 的那一点才立得住。
+   自查两步：① 把你想打的那个**天真猜法**明确写出来，算出它在每一关的偏差；
+   ② 逐关确认这个偏差**大于判定容差**。凡是 `#note` 里写着"这题是拿来打 X 的"，
+   就必须能证明 X 真的会被判错——否则删掉那句话，或者换题。
+
 7. **视角类 demo 要排掉"退化摆法"**（同日，同一个 demo）。合拢视角下有两种难看的巧合：
    ① 两根向量恰好相差一个视线方向 → 投影**精确重合成一根**；
    ② 某根向量正对镜头 → 缩成一点、整根消失。两种都让人以为"程序画少了"。
@@ -130,7 +145,7 @@ courses.js 课程级新增 `order/stage/difficulty/prereqCourses`，讲级新增
 
 `src/composables/useProgress.js`，localStorage 单 key `mathfield-progress`（v1 结构：
 `read` slug→时间戳、`quiz` quizId→true、`last` 最近访问）。"读完"判定 = ConceptPage 里
-IntersectionObserver 看到 `.concept-nav`（滚到讲末），30 讲零改动自动获得，新讲无需接线。
+IntersectionObserver 看到 `.concept-nav`（滚到讲末），40 讲零改动自动获得，新讲无需接线。
 读写全包 try/catch，隐私模式静默降级。
 
 ### 不许只给结论（2026-07-25 用户连提五次的同一类问题）
@@ -276,6 +291,24 @@ IntersectionObserver 看到 `.concept-nav`（滚到讲末），30 讲零改动�
   double 算出来就开始乱跳变号（$1+1/n$ 那步加法吃掉有效数字，再被 n 次方放大）。
   这类"你照着做会发现对不上"的坑值得主动写进正文，还顺手兑现了一次
   <router-link to="/numerical/float-error"> 回链
+
+### 欠账清单会过期，动笔前先回原文核一遍（2026-08-19）
+
+`docs/course-plans.md` 末尾那些"还欠什么"的条目，是**记账那一刻**的判断。
+后来某一轮往往顺手把它补掉了，却没回来销账。2026-08-19 处理"旧 5 讲加厚"那四笔，
+**其中两笔是陈账**：说"积分讲缺并非所有函数都可积"，可 `IntegralView` 肆节早就有了
+狄利克雷函数 + 勒贝格横切对照 + 一道建立在它上面的 QuizBox；说"基本定理讲只有直觉论证"，
+可 `FTCView` 贰节那个 RevealBox 是完整的极值夹逼证明，连 $h<0$ 和跳跃点都交代了。
+照着清单动笔就会写出重复内容。
+
+**规矩：动笔补任何一笔欠账之前，先 `grep` 原文确认它真的还缺。**
+确认之后还要多问一句**该补在哪一讲**——那次"反常积分入门"清单上记的是积分讲（第 5 讲），
+可积分讲在基本定理（第 6 讲）之前，那里还没有原函数，算 $\int_1^b x^{-2}$ 会超前引用；
+而 `courses.js` 的先修字段本来就写着"积分判别法要算 $\int_1^\infty x^{-p}$ 这类反常积分"
+指向第 7 讲。**补在第 7 讲，正好把 courses.js 那句一直悬空的话变成真的。**
+顺带一条通用的找活办法：**grep 一个从没定义过却被反复引用的记号**——
+那次 $\int_1^\infty$ 被 `SeriesView` 的积分判别法、`FTCView` 的 $F(\infty)$
+和 `courses.js` 的先修字段共三处引用，而全站没有一处定义它。
 
 ### 长推导默认收起（用 RevealBox）
 
@@ -448,7 +481,7 @@ src/views/complex/         复变函数每讲一个页面（复数运算在各 d
 src/views/mathphys/        数学物理方程每讲一个页面（最早的零基础范本，行文最细、推导放慢）
 src/views/numerical/       数值分析每讲一个页面；动画多为可复现的实算（浮点抵消、牛顿迭代、
                            龙格插值、求积、条件数），部分 demo 真用 float64 当场算出误差
-docs/course-plans.md       各课程蓝图（讲次、动画构想）——六门课 30 讲已全部上线
+docs/course-plans.md       各课程蓝图（讲次、动画构想）——六门课 40 讲已全部上线
 docs/dev-setup.md          换机器搭环境：系统依赖、Node/Chrome/中文字体、验收清单、排错表
 ```
 
@@ -576,6 +609,14 @@ python3 scripts/scan-math-katex.py       # 散文里漏掉 KaTeX 的公式（^ /
 node scripts/measure-readout.mjs         # demo 读数区横向溢出
 node scripts/measure-mathblock.mjs       # 独立成行公式横向溢出（会自动点开 RevealBox）
 ```
+
+**`scan-math-katex.py` 有个已知的误报源（2026-08-19 查明，未修）**：它抠 Math 标签用的正则是
+`<Math(Inline|Block)\b[^>]*/?>`，**`tex` 属性里只要含 `>` 或 `<`，标签就在那里被截断**，
+后半截当散文扫。全站有 131 个 tex 属性含 `<`/`>`，但只有截断处**紧跟 `\frac` 或花括号**
+时才真的误报——基线那 5 处里的 `WaveView` 一条就是这么来的。碰上了有两个选择：
+把不等号写成 `\gt` / `\lt` 绕开（渲染完全一致），或者把正则改成允许带引号的属性值
+`<Math(Inline|Block)\b(?:[^>"]|"[^"]*")*/?>`（修完基线会降到 4，`dev-setup.md` 里的
+预期输出要同步改）。
 
 两个 measure 脚本依赖 `playwright-core`（已在 devDependencies，`npm ci` 就有）
 + **系统装的 Google Chrome**（`channel: 'chrome'`，chromium / snap 版不行）。

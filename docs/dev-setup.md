@@ -83,7 +83,7 @@ git config --global user.email zhuguangjun2002@163.com
 ```bash
 npx vite build
 ```
-预期：`✓ built in ~3s`，无报错。
+预期：`✓ built in ~3s`（机器不同在 3–10s 之间浮动都正常），**无报错**。
 
 ```bash
 python3 scripts/scan-math-katex.py
@@ -93,6 +93,14 @@ python3 scripts/scan-math-katex.py
 （NewtonMethodDemo 的"计算器芯片不认识 √ 这个符号"、FTCView 的"共用一个 ∫ 记号"、
 PdeIntroView 的"∂ 这个弯尾巴的 d"）、以及 WaveView 里一条被误报的 `MathBlock`。
 **多于 5 处就是新引入的欠账**，逐条按 CLAUDE.md「公式书写约定」处理。
+
+两个提醒：
+- **Python 3.12 以上会先吐一行 `SyntaxWarning: "\s" is an invalid escape sequence`**
+  （脚本开头 docstring 里的 `\frac \sqrt` 被当成转义序列）。**纯噪音，不影响结果**，
+  照样输出 5 处；想清掉就把那个 docstring 加 `r` 前缀。
+- 这 5 处里的 `WaveView` 那条是**脚本的误报**，成因见 CLAUDE.md「常用命令」一节：
+  `tex` 属性里含 `>` 会把标签正则截断。新写公式若因此被误报，
+  把不等号写成 `\gt` / `\lt` 即可绕开。
 
 另外两个脚本要先起 dev server（另开一个终端，端口写死 5191）：
 
