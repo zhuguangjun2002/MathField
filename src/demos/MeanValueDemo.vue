@@ -60,6 +60,63 @@ const fKey = ref('cubic')
 const a = ref(-1.8)
 const b = ref(1.2)
 
+// ―― 挑战模式：五道"先猜有几个 c"的预判题 ――
+// 三个固定选项：0 = 一个都没有；1 = 恰好一个；2 = 两个或更多。
+// 每题的 c 个数都用本文件下面那套 cs() 算法（1600 点扫变号 + 二分 + 1e-6 复核）
+// 在 node 里逐题跑过一遍，轨迹见 #note 的分题列表。
+const CHALLENGE = [
+  // 割线斜率 −0.2652；cos x = −0.2652 在 (0.4, 5.2) 里有两解
+  { fKey: 'sine', a: 0.4, b: 5.2, ans: 2, why: '割线斜率 −0.265，cos x 取到它两次：1.839 与 4.444。' },
+  // 两端不等高，斜率 0.5，可 f′ 只有 ±1 两个值
+  { fKey: 'kink', a: -0.5, b: 1.5, ans: 0, why: 'f′ 只取 ±1，永远等不到 0.5；0 处是尖点，没有切线。' },
+  // x² − 1 = 0.0533 的两根是 ±1.0263，可 +1.0263 落在 b = 0.6 右边
+  { fKey: 'cubic', a: -2.0, b: 0.6, ans: 1, why: 'x²−1=0.0533 有两根 ±1.026，可 +1.026 在 b=0.6 之外。' },
+  // f′ = 2/(3∛x) = 0.1958 解出 c = 39.5，远在区间之外
+  { fKey: 'cusp', a: -1.0, b: 2.0, ans: 0, why: 'f′=0.1958 解得 c=39.5，远在区间外；0 处又是尖峰。' },
+  // 区间整段避开了 0，尖峰根本不在里面，定理照常成立
+  { fKey: 'cusp', a: 0.3, b: 2.0, ans: 1, why: '区间避开了 0，这段上它光滑，定理照常成立：c=0.985。' },
+]
+const challenge = ref(false)
+const round = ref(0)
+const picked = ref(null) // 本题已选的答案（null = 未答）
+const score = ref(0)
+// 未答题时不许把 c 画出来、也不许在读数区报个数——那本来就是答案
+const revealed = computed(() => !challenge.value || picked.value !== null)
+
+function loadRound() {
+  const r = CHALLENGE[round.value]
+  fKey.value = r.fKey
+  a.value = r.a
+  b.value = r.b
+}
+
+function startChallenge() {
+  challenge.value = true
+  round.value = 0
+  picked.value = null
+  score.value = 0
+  loadRound()
+}
+
+function quitChallenge() {
+  challenge.value = false
+  picked.value = null
+}
+
+function answer(n) {
+  if (picked.value !== null) return
+  picked.value = n
+  if (n === CHALLENGE[round.value].ans) score.value += 1
+}
+
+function nextRound() {
+  if (round.value < CHALLENGE.length - 1) {
+    round.value += 1
+    picked.value = null
+    loadRound()
+  }
+}
+
 const F = computed(() => FUNCS[fKey.value])
 
 function onFuncChange() {
@@ -130,8 +187,8 @@ usePlot(
     ctx.fillRect(v.X(A), v.pad.t, v.X(B) - v.X(A), v.ih)
     ctx.restore()
 
-    // 平行切线（先画，压在曲线下面）
-    for (const c of cs.value) {
+    // 平行切线（先画，压在曲线下面）——挑战未答时它就是答案，不画
+    for (const c of revealed.value ? cs.value : []) {
       plotFn(ctx, v, (x) => p.f(c) + m * (x - c), { color: C.green, width: 1.8, dash: [7, 5] })
     }
 
@@ -145,18 +202,20 @@ usePlot(
     drawLabel(ctx, v.X(A), v.Y(p.f(A)) - 12, `a=${fmt(A, 2)}`, { color: C.accent, align: 'center' })
     drawLabel(ctx, v.X(B), v.Y(p.f(B)) - 12, `b=${fmt(B, 2)}`, { color: C.accent, align: 'center' })
 
-    for (const c of cs.value) {
+    for (const c of revealed.value ? cs.value : []) {
       drawPoint(ctx, v, c, p.f(c), { color: C.green })
       drawLabel(ctx, v.X(c), v.Y(p.f(c)) + 20, `c=${fmt(c, 2)}`, { color: C.green, align: 'center' })
     }
 
     drawLabel(ctx, v.pad.l + 10, v.pad.t + 20, '— 割线（两端连线）', { color: C.accent, size: 12 })
     drawLabel(ctx, v.pad.l + 10, v.pad.t + 38, '- - 与它平行的切线', { color: C.green, size: 12 })
-    if (cs.value.length === 0) {
+    if (!revealed.value) {
+      drawLabel(ctx, v.pad.l + 10, v.pad.t + 60, '先猜：这段区间上有几个 c？', { color: C.indigo, size: 13 })
+    } else if (cs.value.length === 0) {
       drawLabel(ctx, v.pad.l + 10, v.pad.t + 60, '这个区间上一条也找不到', { color: C.accent, size: 13 })
     }
   },
-  { height: 380, watchSources: [fKey, a, b] },
+  { height: 380, watchSources: [fKey, a, b, challenge, picked] },
 )
 </script>
 
@@ -166,7 +225,7 @@ usePlot(
     <template #controls>
       <label class="ctrl">
         <span class="ctrl-label">函数</span>
-        <select v-model="fKey" class="ctrl-select" @change="onFuncChange">
+        <select v-model="fKey" class="ctrl-select" :disabled="challenge" @change="onFuncChange">
           <option v-for="(f, k) in FUNCS" :key="k" :value="k">{{ f.label }}</option>
         </select>
       </label>
@@ -177,6 +236,7 @@ usePlot(
         :max="F.xMax - 0.3"
         :step="0.05"
         :display="(x) => x.toFixed(2)"
+        :disabled="challenge"
       />
       <ControlSlider
         label="右端点 b"
@@ -185,10 +245,44 @@ usePlot(
         :max="F.xMax - 0.1"
         :step="0.05"
         :display="(x) => x.toFixed(2)"
+        :disabled="challenge"
       />
+      <div class="ctrl">
+        <button v-if="!challenge" class="challenge-btn" type="button" @click="startChallenge">
+          ⚔️ 开始挑战（5 题）
+        </button>
+        <template v-else>
+          <template v-if="picked === null">
+            <button class="challenge-btn" type="button" @click="answer(0)">甲 · 一个都没有</button>
+            <button class="challenge-btn" type="button" @click="answer(1)">乙 · 恰好一个</button>
+            <button class="challenge-btn" type="button" @click="answer(2)">丙 · 两个或更多</button>
+          </template>
+          <button
+            v-else-if="round < CHALLENGE.length - 1"
+            class="challenge-btn is-on"
+            type="button"
+            @click="nextRound"
+          >
+            下一题 →
+          </button>
+          <button class="challenge-btn" type="button" @click="quitChallenge">退出挑战</button>
+        </template>
+      </div>
     </template>
     <template #readout>
-      <template v-if="b - a < 0.15"> 区间太窄（b 必须明显大于 a），把两个端点拉开一点 </template>
+      <template v-if="challenge">
+        <span class="challenge-badge">第 {{ round + 1 }}/5 题 · 已对 {{ score }}</span><br />
+        <template v-if="picked === null">
+          割线斜率 <b>{{ show(slope) }}</b> · 这段区间上有几个 c？（图上暂不画出）
+        </template>
+        <template v-else-if="picked === CHALLENGE[round].ans">
+          ✅ 对！有 <b>{{ cs.length }}</b> 个。{{ CHALLENGE[round].why }}
+        </template>
+        <template v-else>
+          ❌ 实际有 <b>{{ cs.length }}</b> 个。{{ CHALLENGE[round].why }}
+        </template>
+      </template>
+      <template v-else-if="b - a < 0.15"> 区间太窄（b 必须明显大于 a），把两个端点拉开一点 </template>
       <template v-else>
         割线斜率 <MathInline tex="\frac{f(b)-f(a)}{b-a}" /> = <b>{{ show(slope) }}</b> ·
         找到 <b>{{ cs.length }}</b> 个 c<br />
@@ -252,6 +346,48 @@ usePlot(
         换个不对称的区间也一样：a = −1、b = 2 时斜率 0.1958，
         解出来的 <MathInline tex="c = (2/(3\times 0.1958))^3 = 39.5" /> <strong>远在区间之外</strong>。
       </p>
+      <p>
+        <b>挑战模式的规则。</b>点「开始挑战」后连出五道预判题（<b>题目写死在程序里，谁玩都是同样五道、
+        同样顺序</b>）。每题<b>替你锁定函数与区间</b>——挑战期间函数下拉和两根端点滑杆
+        <b>都是禁用的</b>；更要紧的是，<b>答题前图上不画绿色切线、不标 c，读数区也不报个数</b>，
+        否则点开就是抄答案。你手里只有曲线、红色割线和它的斜率。答完立刻揭晓，图和读数一起回来对账。
+        三个选项每题相同：<b>甲</b> 一个都没有、<b>乙</b> 恰好一个、<b>丙</b> 两个或更多。
+      </p>
+      <p>
+        <b>五道题的门道</b>（想自己先玩就别往下看）：
+      </p>
+      <ul>
+        <li>
+          <b>① sin x，[0.4, 5.2]</b> → <b>两个</b>。割线斜率 −0.2652，而
+          <MathInline tex="\cos x = -0.2652" /> 在这段里有两解（1.8392 与 4.4440）。
+          <b>定理只保证"至少一个"，从不保证唯一</b>——这一题就是拿来打这个的。
+        </li>
+        <li>
+          <b>② |x| − 0.5，[−0.5, 1.5]</b> → <b>一个都没有</b>。这题故意让两端<em>不</em>等高
+          （斜率 0.5，不是 0），好挡住"哦这是罗尔那一档"的条件反射。可
+          <MathInline tex="f'" /> 只有 −1 和 +1 两个值，<b>永远等不到 0.5</b>；
+          中间那个"该斜 0.5"的位置正是 0 处的尖点，那里根本没有切线。
+        </li>
+        <li>
+          <b>③ x³/3 − x，[−2.0, 0.6]</b> → <b>恰好一个</b>。这题最阴：函数光滑、
+          方程 <MathInline tex="x^2-1=0.0533" /> 老老实实解出<b>两个</b>根 ±1.0263——
+          可 <b>+1.0263 落在右端点 0.6 的外面</b>，不算数。
+          <b>"方程有几个根"和"区间里有几个 c"是两件事。</b>
+        </li>
+        <li>
+          <b>④ ∛(x²)，[−1.0, 2.0]</b> → <b>一个都没有</b>。斜率 0.1958，
+          而 <MathInline tex="f'(x)=\frac{2}{3\sqrt[3]{x}}=0.1958" /> 解出 c = 39.5，
+          <b>远在区间之外</b>；区间内唯一可疑的 0 处又是尖峰。<b>和 ③ 正好配成一对</b>：
+          ③ 是两根出界一个，④ 是唯一的根整个出界。
+        </li>
+        <li>
+          <b>⑤ ∛(x²)，[0.3, 2.0]</b> → <b>恰好一个</b>（c = 0.9845）。这题是全组的落点：
+          同一个"反例函数"，只把区间挪得<b>整段避开 0</b>，尖峰就不在里面了，
+          这段上它光滑得很，<b>定理照常成立</b>。
+          <b>坏的从来不是函数，是函数与区间的搭配</b>——
+          "不满足条件"和"结论不成立"是两回事，条件只是<em>充分</em>的。
+        </li>
+      </ul>
       <p>
         （<b>两个诚实的小注</b>：① 程序找 c 的办法是把
         <MathInline tex="f'(x)-\text{割线斜率}" /> 沿区间扫 1600 个点找变号，再二分定位到
