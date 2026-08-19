@@ -6,8 +6,9 @@
 //   node scripts/measure-mathblock.mjs                    # 全站所有讲，1280px 桌面宽
 //   node scripts/measure-mathblock.mjs /calculus/taylor   # 单页，逐个宽度档
 //
-// 前置：先起 dev server（npm run dev -- --port 5191 --strictPort），并装有 playwright。
-// 本机 playwright 在 npx 缓存里，故下面按需回退到那个路径；系统 chrome 用 channel:'chrome'。
+// 前置：先起 dev server（npm run dev -- --port 5191 --strictPort）。
+// playwright-core 是本项目的 devDependency（npm ci 就有），浏览器用系统装的 Chrome
+// （channel:'chrome'），所以不必下载 playwright 自带的那份 chromium。
 //
 // 超宽了怎么办：① \begin{aligned} 按等号断行（&= 对齐）；② 把公式尾巴上的中文注释
 // （\text{（辐角相加）}）挪回正文；③ 实在断不开就拆成两个 MathBlock。
@@ -15,14 +16,7 @@ import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 
-let chromium
-try {
-  ;({ chromium } = await import('playwright'))
-} catch {
-  ;({ chromium } = await import(
-    '/home/laozhu/.npm/_npx/e41f203b7505f1fb/node_modules/playwright/index.mjs'
-  ))
-}
+import { chromium } from 'playwright-core'
 
 const BASE = process.env.BASE_URL || 'http://localhost:5191'
 const ROOT = path.dirname(path.dirname(fileURLToPath(import.meta.url)))
